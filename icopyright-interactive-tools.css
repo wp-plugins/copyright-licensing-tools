@@ -1,0 +1,53 @@
+@charset
+"utf-8"
+;
+/* CSS Document */
+
+/*
+This css file will provide the styles for all icopyright interactive tools
+that will appear on the blog content.
+
+1) icopyright interactive copyright notice
+
+/*styles interactive copyright notice*/
+.icopyright-interactive-notice {
+    clear: both;
+    margin: 10px 0px 0px 0px;
+    padding: 0px;
+    height: 40px;
+    font-size: 12px;
+    line-height: 1.2em;
+}
+
+.icopyright-interactive-notice a {
+    color: #336699;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0px;
+    padding: 0px 0px 10px 30px;
+    font-size: 10px;
+    line-height: 1.2em;
+    background-image: url(http://staging.icopyright.net:80/rights/images/icopy-w.gif);
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+
+.icopyright-interactive-notice a:hover {
+    color: #E8B900;
+    background-image: url(http://staging.icopyright.net:80/rights/images/icopy-g.gif);
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+
+.icopyright-interactive-notice span {
+    color: #336699;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0px 0px 0px 30px;
+    padding: 0px 0px 0px 0px;
+    font-size: 12px;
+    line-height: 1.2em;
+}
+
+.icopyright-interactive-notice p {
+    margin: 0px;
+    padding: 0px;
+}
