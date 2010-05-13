@@ -5,7 +5,7 @@ Plugin URI: http://info.icopyright.com/wordpress-plugin
 Description: The iCopyright plugin will add article tools that enable visitors to your site to print, email, post, and republish your posts. This includes ad-supported free uses as well as licensing options for a fee. This plugin also adds an interactive copyright notice at the bottom of your pages. To fully activate the plugin, you must click on "Settings" below to register your site/blog and get a Publication ID. For detailed instructions, click the "Visit Plugin Site" link below.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 1.0.2
+Version: 1.0.3
 */
 
 
@@ -14,30 +14,30 @@ Version: 1.0.2
 //define URL to iCopyright API
 define("ICOPYRIGHT_API_URL","http://license.icopyright.net/api/xml/publisher/add");
 
-//define URL to iCopyright
-//assuming other file structures will be intact.
+//define URL to iCopyright; assuming other file structures will be intact.
 define("ICOPYRIGHT_URL","http://license.icopyright.net/");
 
+//define the plugin's name
+define("ICOPYRIGHT_PLUGIN_NAME", "copyright-licensing-tools");
+define("ICOPYRIGHT_PLUGIN_DIR", WP_PLUGIN_DIR . "/" . ICOPYRIGHT_PLUGIN_NAME);
+define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 
-
-//leave this page for including functions organised into files.
-//for easy reference.
-
-//include plugin functions
-include (WP_PLUGIN_DIR . '/icopyright/icopyright-functions.php');
+//leave this page for including functions organised into files for easy reference.
 
 //include plugin admin page
-include (WP_PLUGIN_DIR . '/icopyright/icopyright-admin.php');
+include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-admin.php');
 
+//include plugin functions
+include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-functions.php');
 
 //hook in icopyright-interactive-tools.css into theme template <head>
 function load_icopyright_script(){
 //register script
-wp_register_script('icopyright-notice-js', WP_PLUGIN_URL . '/icopyright/icopyright-interactive-tools.js','', '1.0');
-wp_register_style('icopyright_notice', WP_PLUGIN_URL.'/icopyright/icopyright-interactive-tools.css', $deps, '1.0', 'screen');
+wp_register_script('icopyright-notice-js', ICOPYRIGHT_PLUGIN_URL . '/icopyright-interactive-tools.js','', '1.0');
+wp_register_style('icopyright_notice', ICOPYRIGHT_PLUGIN_URL . '/icopyright-interactive-tools.css', $deps, '1.0', 'screen');
 //load script
-wp_enqueue_script('icopyright-notice-js', WP_PLUGIN_URL . '/icopyright/icopyright-interactive-tools.js','', '1.0');
-wp_enqueue_style( 'icopyright_notice', WP_PLUGIN_URL.'/icopyright/icopyright-interactive-tools.css', $deps, '1.0', 'screen' );
+wp_enqueue_script('icopyright-notice-js', ICOPYRIGHT_PLUGIN_URL . '/icopyright-interactive-tools.js','', '1.0');
+wp_enqueue_style( 'icopyright_notice', ICOPYRIGHT_PLUGIN_URL . '/icopyright-interactive-tools.css', $deps, '1.0', 'screen' );
 } 
 
 //add script to theme <head>

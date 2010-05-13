@@ -181,17 +181,17 @@ function icopyright_admin(){
 </p>
 
 <!--Interactive Tools Selection -->
-<div id="A1" style="float:left;margin:0px 50px 0px 0px;height:530px;<?php $display = $icopyright_option['display']; if($display=="manual"){echo "display:none;";}?>">
+<div id="A1" style="float:left;margin:0 50px 0 0;height:530px;<?php $display = $icopyright_option['display']; if($display=="manual"){echo "display:none;";}?>">
 <p>
 <strong><?php _e('iCopyright Article Tools: ')?></strong>
 <br /><br />
-<img src="<?php echo WP_PLUGIN_URL."/icopyright/";?>images/horizontal-toolbar.jpg" alt="horizontal-toolbar" align="absbottom"/>
+<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/horizontal-toolbar.jpg" alt="horizontal-toolbar" align="absbottom"/>
 <br /><br />
 
 <?php _e('Horizontal Toolbar ')?>
 <input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_option['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> /><br /><br />
 
-<img src="<?php echo WP_PLUGIN_URL."/icopyright/";?>images/vertical-toolbar.jpg" alt="vertical-toolbar" align="absbottom"/>
+<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/vertical-toolbar.jpg" alt="vertical-toolbar" align="absbottom"/>
 <br /><br />
 
 <?php _e('Vertical Toolbar ')?>
@@ -234,11 +234,11 @@ Show only Interactive Copyright Notice
 
 </div>
 
-<div id="A2" style="float:left;margin:0px 50px 0px 0px;height:360px;<?php $display2 = $icopyright_option['display']; if($display2=="manual"){echo "display:none;";}?>">
+<div id="A2" style="float:left;margin:0 50px 0 0;height:360px;<?php $display2 = $icopyright_option['display']; if($display2=="manual"){echo "display:none;";}?>">
 <p>
 <strong><?php _e('Interactive Copyright Notice: ')?></strong>
 <br /><br />
-<img src="<?php echo WP_PLUGIN_URL."/icopyright/";?>images/interactive_copyright_notice.jpg" alt="Copyright Notice" align="absbottom"/>
+<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/interactive_copyright_notice.jpg" alt="Copyright Notice" align="absbottom"/>
 <br />
 <br />
 No option available.
@@ -248,11 +248,11 @@ No option available.
 
 
 <!--WordPress shortcodes -->
-<div id="M1" style="float:left;margin:0px 50px 0px 0px;display:none;height:300px;<?php $display3 = $icopyright_option['display']; if($display3=="manual"){echo "display:block;";}?>">
+<div id="M1" style="float:left;margin:0 50px 0 0;display:none;height:300px;<?php $display3 = $icopyright_option['display']; if($display3=="manual"){echo "display:block;";}?>">
 <p>
 <strong><?php _e('iCopyright Article Tools WordPress Shortcode: ')?></strong>
 <br /><br />
-<img src="<?php echo WP_PLUGIN_URL."/icopyright/";?>images/horizontal-toolbar.jpg" alt="horizontal-toolbar" align="absbottom"/>
+<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/horizontal-toolbar.jpg" alt="horizontal-toolbar" align="absbottom"/>
 <br />
 <br />
 
@@ -261,7 +261,7 @@ No option available.
 <br />
 
 
-<img src="<?php echo WP_PLUGIN_URL."/icopyright/";?>images/vertical-toolbar.jpg" alt="vertical-toolbar" align="absbottom"/>
+<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/vertical-toolbar.jpg" alt="vertical-toolbar" align="absbottom"/>
 <br />
 <br />
 
@@ -270,11 +270,11 @@ No option available.
 
 </div>
 
-<div id="M2" style="float:left;margin:0px 50px 0px 0px;display:none;height:300px;<?php $display4 = $icopyright_option['display']; if($display4=="manual"){echo "display:block;";}?>">
+<div id="M2" style="float:left;margin:0 50px 0 0;display:none;height:300px;<?php $display4 = $icopyright_option['display']; if($display4=="manual"){echo "display:block;";}?>">
 <p>
 <strong><?php _e('Interactive Copyright Notice WordPress Shortcode: ')?></strong>
 <br /><br />
-<img src="<?php echo WP_PLUGIN_URL."/icopyright/";?>images/interactive_copyright_notice.jpg" alt="Copyright Notice" align="absbottom"/>
+<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/interactive_copyright_notice.jpg" alt="Copyright Notice" align="absbottom"/>
 <br />
 <br />
 [interactive copyright notice]
@@ -282,7 +282,7 @@ No option available.
 
 </div>
 
-<div id="M3" style="float:left;margin:0px 50px 0px 0px;display:none;height:160px;<?php $display5 = $icopyright_option['display']; if($display5=="manual"){echo "display:block;";}?>">
+<div id="M3" style="float:left;margin:0 50px 0 0;display:none;height:160px;<?php $display5 = $icopyright_option['display']; if($display5=="manual"){echo "display:block;";}?>">
 <p>
 <strong><?php _e('Available WordPress Shortcode Attributes: ')?></strong>
 </p>
@@ -323,7 +323,7 @@ No option available.
 <p>Please copy the following url and paste into iCopyright Conductor under Tag & Feed Settings. This is a plugin generated xml information of your articles for iCopyright Conductor. This information does not contain any of your private or security information that will compromise your blog.
 </p>
 <?php
-$icopyright_feed_url = WP_PLUGIN_URL."/icopyright/icopyright_xml.php?id=*";
+$icopyright_feed_url = ICOPYRIGHT_PLUGIN_URL . "/icopyright_xml.php?id=*";
 ?>
 <input name="" type="text" value="<?php echo $icopyright_feed_url; ?>" style="width:80%"/>
 
@@ -361,7 +361,7 @@ $css .=".widefat tr td {border:none;height:30px;}";
 $css .=".widefat input {background:none;border:1px solid #666666}";
 $css .=".widefat tr {background-color: #eee;}";
 $css .=".widefat tr.odd {background-color: #fff;}";
-$image_url = WP_PLUGIN_URL."/icopyright/images/icopyright-logo.png";
+$image_url = ICOPYRIGHT_PLUGIN_URL."/images/icopyright-logo.png";
 $css .= "#icopyright-logo{width:30px;height:30px;background-image:url('$image_url');background-repeat:no-repeat;}";
 $css .="</style>\n";
 echo $css;
