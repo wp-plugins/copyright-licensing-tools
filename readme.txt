@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== Copyright & Licensing Tools ===
 Contributors: iCopyright, Inc.  
 Tags: icopyright, copyright
 Requires at least: 2.9.2
