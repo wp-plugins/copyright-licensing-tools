@@ -5,14 +5,14 @@ Plugin URI: http://info.icopyright.com/wordpress-plugin
 Description: The iCopyright plugin will add article tools that enable visitors to your site to print, email, post, and republish your posts. This includes ad-supported free uses as well as licensing options for a fee. This plugin also adds an interactive copyright notice at the bottom of your pages. To fully activate the plugin, you must click on "Settings" below to register your site/blog and get a Publication ID. For detailed instructions, click the "Visit Plugin Site" link below.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 1.0.4
+Version: 1.0.5
 */
 
 
 //define constant that need to be changed from test environment to live environment
 
 //define URL to iCopyright API
-define("ICOPYRIGHT_API_URL","http://aux1.icopyright.net/api/xml/publisher/add");
+define("ICOPYRIGHT_API_URL","http://license.icopyright.net/api/xml/publisher/add");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 define("ICOPYRIGHT_URL","http://license.icopyright.net/");
