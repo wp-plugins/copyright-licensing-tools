@@ -111,7 +111,7 @@ function icopyright_post_data($postdata){
 //Generate Horizontal Toolbar from hosted script or directy
 function icopyright_horizontal_toolbar(){
 
-    //script hosted on staging.icopyright.net
+    //script hosted on license.icopyright.net
 
     //get publication id from options table from icopyright_admin array
 	$pub_id = get_option('icopyright_admin');
@@ -150,7 +150,7 @@ function icopyright_horizontal_toolbar(){
 //Generate Vertical Toolbar from hosted script
 function icopyright_vertical_toolbar(){
     
-	//script hosted on staging.icopyright.net
+	//script hosted on license.icopyright.net
 
     //get publication id from options table from icopyright_admin array
 	$pub_id = get_option('icopyright_admin');

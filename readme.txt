@@ -3,7 +3,7 @@ Contributors: iCopyright, Inc.
 Tags: icopyright, copyright
 Requires at least: 2.9.2
 Tested up to: 2.9.2
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 The iCopyright plugin will add article tools that enable visitors to your site to print, email, post, and republish your posts.
 

@@ -12,11 +12,11 @@ Version: 1.0
 //define constant that need to be changed from test environment to live environment
 
 //define URL to iCopyright API
-define("ICOPYRIGHT_API_URL","http://staging.icopyright.net/api/xml/publisher/add");
+define("ICOPYRIGHT_API_URL","http://license.icopyright.net/api/xml/publisher/add");
 
 //define URL to iCopyright
 //assuming other file structures will be intact.
-define("ICOPYRIGHT_URL","http://staging.icopyright.net/");
+define("ICOPYRIGHT_URL","http://license.icopyright.net/");
 
 
 
