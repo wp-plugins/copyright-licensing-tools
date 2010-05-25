@@ -18,9 +18,11 @@ $display_form = 'style="display:none"';
 //form fields and inputs
 $form = "<div class=\"icopyright_registration\" id=\"icopyright_registration_form\" $display_form>";
 
-$form .='<form name="icopyright_register_form" id="icopyright_register_form" method="post" action="">';
+$form .='<form name="icopyright_register_form" id="icopyright_register_form" method="post" action="" onsubmit="return validate_icopyright_tou(this)">';
 
-$form .='<h3><u>Publication ID Registeration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(Back to Option Form)</a></h3>';
+$form .="<div id='tou_error' class='updated faded' style='display:none;'></div>";
+
+$form .='<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(Back to Option Form)</a></h3>';
 
 $form .='<strong><p>Complete the fields below to get a Publication ID number. Required fields indicated by *</p></strong>';
 
@@ -64,11 +66,517 @@ $form .="<tr><td width=\"400px\"><label>State/Province:</label></td><td><input s
 //postal
 $form .="<tr class=\"odd\"><td width=\"400px\"><label>Postal Code:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"postal\" value=\"$postal\"/>*</td></tr>";
 
+$two_digit_country_description = array(
+'AF--Afghanistan',
+'AL--Albania',
+'DZ--Algeria',
+'AS--American Samoa',
+'AD--Andorra',
+'AO--Angola',
+'AI--Anguilla',
+'AQ--Antarctica',
+'AG--Antigua And Barbuda',
+'AR--Argentina',
+'AM--Armenia',
+'AW--Aruba',
+'AU--Australia',
+'AT--Austria',
+'AZ--Azerbaijan',
+'BS--Bahamas',
+'BH--Bahrain',
+'BD--Bangladesh',
+'BB--Barbados',
+'BY--Belarus',
+'BE--Belgium',
+'BZ--Belize',
+'BJ--Benin',
+'BM--Bermuda',
+'BT--Bhutan',
+'BO--Bolivia',
+'BA--Bosnia And Herzegovina',
+'BW--Botswana',
+'BV--Bouvet Island',
+'BR--Brazil',
+'IO--British Indian Ocean Territory',
+'BN--Brunei',
+'BG--Bulgaria',
+'BF--Burkina Faso',
+'BI--Burundi',
+'KH--Cambodia',
+'CM--Cameroon',
+'CA--Canada',
+'CV--Cape Verde',
+'KY--Cayman Islands',
+'CF--Central African Republic',
+'TD--Chad',
+'CL--Chile',
+'CN--China',
+'CX--Christmas Island',
+'CC--Cocos (Keeling) Islands',
+'CO--Columbia',
+'KM--Comoros',
+'CG--Congo',
+'CK--Cook Islands',
+'CR--Costa Rica',
+'CI--Cote D\'Ivorie (Ivory Coast)',
+'HR--Croatia (Hrvatska)',
+'CU--Cuba',
+'CY--Cyprus',
+'CZ--Czech Republic',
+'CD--Democratic Republic Of Congo (Zaire)',
+'DK--Denmark',
+'DJ--Djibouti',
+'DM--Dominica',
+'DO--Dominican Republic',
+'TP--East Timor',
+'EC--Ecuador',
+'EG--Egypt',
+'SV--El Salvador',
+'GQ--Equatorial Guinea',
+'ER--Eritrea',
+'EE--Estonia',
+'ET--Ethiopia',
+'FK--Falkland Islands (Malvinas)',
+'FO--Faroe Islands',
+'FJ--Fiji',
+'FI--Finland',
+'FR--France',
+'FX--France, Metropolitan',
+'GF--French Guinea',
+'PF--French Polynesia',
+'TF--French Southern Territories',
+'GA--Gabon',
+'GM--Gambia',
+'GE--Georgia',
+'DE--Germany',
+'GH--Ghana',
+'GI--Gibraltar',
+'GR--Greece',
+'GL--Greenland',
+'GD--Grenada',
+'GP--Guadeloupe',
+'GU--Guam',
+'GT--Guatemala',
+'GN--Guinea',
+'GW--Guinea-Bissau',
+'GY--Guyana',
+'HT--Haiti',
+'HM--Heard And McDonald Islands',
+'HN--Honduras',
+'HK--Hong Kong',
+'HU--Hungary',
+'IS--Iceland',
+'IN--India',
+'ID--Indonesia',
+'IR--Iran',
+'IQ--Iraq',
+'IE--Ireland',
+'IL--Israel',
+'IT--Italy',
+'JM--Jamaica',
+'JP--Japan',
+'JO--Jordan',
+'KZ--Kazakhstan',
+'KE--Kenya',
+'KI--Kiribati',
+'KW--Kuwait',
+'KG--Kyrgyzstan',
+'LA--Laos',
+'LV--Latvia',
+'LB--Lebanon',
+'LS--Lesotho',
+'LR--Liberia',
+'LY--Libya',
+'LI--Liechtenstein',
+'LT--Lithuania',
+'LU--Luxembourg',
+'MO--Macau',
+'MK--Macedonia',
+'MG--Madagascar',
+'MW--Malawi',
+'MY--Malaysia',
+'MV--Maldives',
+'ML--Mali',
+'MT--Malta',
+'MH--Marshall Islands',
+'MQ--Martinique',
+'MR--Mauritania',
+'MU--Mauritius',
+'YT--Mayotte',
+'MX--Mexico',
+'FM--Micronesia',
+'MD--Moldova',
+'MC--Monaco',
+'MN--Mongolia',
+'MS--Montserrat',
+'MA--Morocco',
+'MZ--Mozambique',
+'MM--Myanmar (Burma)',
+'NA--Namibia',
+'NR--Nauru',
+'NP--Nepal',
+'NL--Netherlands',
+'AN--Netherlands Antilles',
+'NC--New Caledonia',
+'NZ--New Zealand',
+'NI--Nicaragua',
+'NE--Niger',
+'NG--Nigeria',
+'NU--Niue',
+'NF--Norfolk Island',
+'KP--North Korea',
+'MP--Northern Mariana Islands',
+'NO--Norway',
+'OM--Oman',
+'PK--Pakistan',
+'PW--Palau',
+'PA--Panama',
+'PG--Papua New Guinea',
+'PY--Paraguay',
+'PE--Peru',
+'PH--Philippines',
+'PN--Pitcairn',
+'PL--Poland',
+'PT--Portugal',
+'PR--Puerto Rico',
+'QA--Qatar',
+'RE--Reunion',
+'RO--Romania',
+'RU--Russia',
+'RW--Rwanda',
+'SH--Saint Helena',
+'KN--Saint Kitts And Nevis',
+'LC--Saint Lucia',
+'PM--Saint Pierre And Miquelon',
+'VC--Saint Vincent And The Grenadines',
+'SM--San Marino',
+'ST--Sao Tome And Principe',
+'SA--Saudi Arabia',
+'SN--Senegal',
+'SC--Seychelles',
+'SL--Sierra Leone',
+'SG--Singapore',
+'SK--Slovak Republic',
+'SI--Slovenia',
+'SB--Solomon Islands',
+'SO--Somalia',
+'ZA--South Africa',
+'GS--South Georgia And South Sandwich Islands',
+'KR--South Korea',
+'ES--Spain',
+'LK--Sri Lanka',
+'SD--Sudan',
+'SR--Suriname',
+'SJ--Svalbard And Jan Mayen',
+'SZ--Swaziland',
+'SE--Sweden',
+'CH--Switzerland',
+'SY--Syria',
+'TW--Taiwan',
+'TJ--Tajikistan',
+'TZ--Tanzania',
+'TH--Thailand',
+'TG--Togo',
+'TK--Tokelau',
+'TO--Tonga',
+'TT--Trinidad And Tobago',
+'TN--Tunisia',
+'TR--Turkey',
+'TM--Turkmenistan',
+'TC--Turks And Caicos Islands',
+'TV--Tuvalu',
+'UG--Uganda',
+'UA--Ukraine',
+'AE--United Arab Emirates',
+'UK--United Kingdom',
+'US--United States',
+'UM--United States Minor Outlying Islands',
+'UY--Uruguay',
+'UZ--Uzbekistan',
+'VU--Vanuatu',
+'VA--Vatican City (Holy See)',
+'VE--Venezuela',
+'VN--Vietnam',
+'VG--Virgin Islands (British)',
+'VI--Virgin Islands (US)',
+'WF--Wallis And Futuna Islands',
+'EH--Western Sahara',
+'WS--Western Samoa',
+'YE--Yemen',
+'YU--Yugoslavia',
+'ZM--Zambia',
+'ZW--Zimbabwe'
+);
+
+$two_digit_country_code = array(
+'AF',
+'AL',
+'DZ',
+'AS',
+'AD',
+'AO',
+'AI',
+'AQ',
+'AG',
+'AR',
+'AM',
+'AW',
+'AU',
+'AT',
+'AZ',
+'BS',
+'BH',
+'BD',
+'BB',
+'BY',
+'BE',
+'BZ',
+'BJ',
+'BM',
+'BT',
+'BO',
+'BA',
+'BW',
+'BV',
+'BR',
+'IO',
+'BN',
+'BG',
+'BF',
+'BI',
+'KH',
+'CM',
+'CA',
+'CV',
+'KY',
+'CF',
+'TD',
+'CL',
+'CN',
+'CX',
+'CC',
+'CO',
+'KM',
+'CG',
+'CK',
+'CR',
+'CI',
+'HR',
+'CU',
+'CY',
+'CZ',
+'CD',
+'DK',
+'DJ',
+'DM',
+'DO',
+'TP',
+'EC',
+'EG',
+'SV',
+'GQ',
+'ER',
+'EE',
+'ET',
+'FK',
+'FO',
+'FJ',
+'FI',
+'FR',
+'FX',
+'GF',
+'PF',
+'TF',
+'GA',
+'GM',
+'GE',
+'DE',
+'GH',
+'GI',
+'GR',
+'GL',
+'GD',
+'GP',
+'GU',
+'GT',
+'GN',
+'GW',
+'GY',
+'HT',
+'HM',
+'HN',
+'HK',
+'HU',
+'IS',
+'IN',
+'ID',
+'IR',
+'IQ',
+'IE',
+'IL',
+'IT',
+'JM',
+'JP',
+'JO',
+'KZ',
+'KE',
+'KI',
+'KW',
+'KG',
+'LA',
+'LV',
+'LB',
+'LS',
+'LR',
+'LY',
+'LI',
+'LT',
+'LU',
+'MO',
+'MK',
+'MG',
+'MW',
+'MY',
+'MV',
+'ML',
+'MT',
+'MH',
+'MQ',
+'MR',
+'MU',
+'YT',
+'MX',
+'FM',
+'MD',
+'MC',
+'MN',
+'MS',
+'MA',
+'MZ',
+'MM',
+'NA',
+'NR',
+'NP',
+'NL',
+'AN',
+'NC',
+'NZ',
+'NI',
+'NE',
+'NG',
+'NU',
+'NF',
+'KP',
+'MP',
+'NO',
+'OM',
+'PK',
+'PW',
+'PA',
+'PG',
+'PY',
+'PE',
+'PH',
+'PN',
+'PL',
+'PT',
+'PR',
+'QA',
+'RE',
+'RO',
+'RU',
+'RW',
+'SH',
+'KN',
+'LC',
+'PM',
+'VC',
+'SM',
+'ST',
+'SA',
+'SN',
+'SC',
+'SL',
+'SG',
+'SK',
+'SI',
+'SB',
+'SO',
+'ZA',
+'GS',
+'KR',
+'ES',
+'LK',
+'SD',
+'SR',
+'SJ',
+'SZ',
+'SE',
+'CH',
+'SY',
+'TW',
+'TJ',
+'TZ',
+'TH',
+'TG',
+'TK',
+'TO',
+'TT',
+'TN',
+'TR',
+'TM',
+'TC',
+'TV',
+'UG',
+'UA',
+'AE',
+'UK',
+'US',
+'UM',
+'UY',
+'UZ',
+'VU',
+'VA',
+'VE',
+'VN',
+'VG',
+'VI',
+'WF',
+'EH',
+'WS',
+'YE',
+'YU',
+'ZM',
+'ZW'
+);
+
 //country
-$form .="<tr><td width=\"400px\"><label>Country:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"country\" value=\"$country\"/>*</td></tr>";
+$form .="<tr><td width=\"400px\"><label>Country:</label></td><td>";
+$form .="<select name=\"country\"/><option value=''>Please Select One</option>";
+
+//create country option value using $two_digit_country_description and $two_digit_country_code arrays.
+for($i=0;$i<239;$i++){
+$form .="<option value='$two_digit_country_code[$i]'>$two_digit_country_description[$i]</option>";
+}
+
+
+$form.="</select>*</td></tr>";
 
 //phone
 $form .="<tr class=\"odd\"><td width=\"400px\"><label>Phone:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"phone\" value=\"$phone\"/>*</td></tr>";
+
+//TOU
+$form .="<tr><td width=\"400px\"><label>Terms of Use:</label></td><td><a href='http://license.icopyright.net/publisher/statichtml/plugin-publisher-tou.html' target='_blank'>I agree with the terms of use.</a> <input id=\"tou\" name=\"tou\" type=\"checkbox\" value=\"true\" style='border:none;'";
+
+//get global value to determine whether form has been posted before.
+//if true, we will check the checkbox.
+//global variable set in icopyright-admin.php line 103
+global $icopyright_tou_checked;
+if($icopyright_tou_checked=='true'){
+$form.="checked=yes>*</td></tr>";
+}else{
+$form.=">*</td></tr>";
+}
 
 $form .='</table>';
 
@@ -113,9 +621,10 @@ function icopyright_horizontal_toolbar(){
 
     //script hosted on license.icopyright.net
 
-    //get publication id from options table from icopyright_admin array
-	$pub_id = get_option('icopyright_admin');
-	$pub_id_no = $pub_id['pub_id'];
+    //get publication id and ez_excerpt setting from options table from icopyright_admin array
+	$admin_option = get_option('icopyright_admin');
+	$pub_id_no = $admin_option['pub_id'];
+	$ez_excerpt = $admin_option['ez_excerpt'];
 	
 	//assign ICOPYRIGHT_URL constant
 	$icopyright_url = ICOPYRIGHT_URL;
@@ -127,9 +636,13 @@ function icopyright_horizontal_toolbar(){
 	//construct link href
     $toolbar = "\n<!-- iCopyright Horizontal Article Toolbar -->\n";
 	$toolbar .= "<script type=\"text/javascript\">\n";
-	$toolbar .= "icx_publication_id = '$pub_id_no';\n";
-	$toolbar .= "icx_content_id = '$post_id';\n";
-	//construct toolbar link urls
+	$toolbar .= "var icx_publication_id = '$pub_id_no';\n";
+	$toolbar .= "var icx_content_id = '$post_id';\n";
+
+	//check for ez_excerpt status, if yes, output into javascript
+	if($ez_excerpt=='yes'){
+	$toolbar .= "var icx_ez_excerpt = true;\n";	
+	}
     $toolbar .= "</script>\n";
 	
 	$css_url = ICOPYRIGHT_URL.'rights/style/horz-toolbar.css';
@@ -144,7 +657,11 @@ function icopyright_horizontal_toolbar(){
 	$toolbar .=  icopyright_toolbar_float();
 	$toolbar .= "<!--End of iCopyright Horizontal Article Toolbar -->\n";
 	
+	//add conditional check so that toolbar will only display in full page or full post
+	if(is_page()||is_single()){
 	return $toolbar;
+	}
+
 }
 
 //Generate Vertical Toolbar from hosted script
@@ -152,9 +669,10 @@ function icopyright_vertical_toolbar(){
     
 	//script hosted on license.icopyright.net
 
-    //get publication id from options table from icopyright_admin array
-	$pub_id = get_option('icopyright_admin');
-	$pub_id_no = $pub_id['pub_id'];
+    //get publication id and ez_excerpt setting from options table from icopyright_admin array
+	$admin_option = get_option('icopyright_admin');
+	$pub_id_no = $admin_option['pub_id'];
+	$ez_excerpt = $admin_option['ez_excerpt'];
 	
 	//assign ICOPYRIGHT_URL constant
 	$icopyright_url = ICOPYRIGHT_URL;
@@ -166,8 +684,13 @@ function icopyright_vertical_toolbar(){
   
     $toolbar = "\n<!-- iCopyright Vertical Article Toolbar -->\n";
 	$toolbar .= "<script type=\"text/javascript\">\n";
-	$toolbar .= "icx_publication_id = '$pub_id_no';\n";
-	$toolbar .= "icx_content_id = '$post_id';\n";
+	$toolbar .= "var icx_publication_id = '$pub_id_no';\n";
+	$toolbar .= "var icx_content_id = '$post_id';\n";
+	
+	//check for ez_excerpt status, if yes, output into javascript
+	if($ez_excerpt=='yes'){
+	$toolbar .= "var icx_ez_excerpt = true;\n";	
+	}
 
 	//construct toolbar link urls
     $toolbar .= "</script>\n";
@@ -184,8 +707,10 @@ function icopyright_vertical_toolbar(){
 	$toolbar .=  icopyright_toolbar_float();
 	$toolbar .= "<!--End of iCopyright Vertical Article Toolbar -->\n";
 	
+	//add conditional check so that toolbar will only display in full page or full post
+	if(is_page()||is_single()){
 	return $toolbar;
-
+    }
 }
 
 
@@ -229,7 +754,10 @@ $icn = <<<NOTICE
 
 NOTICE;
 
-return $icn;
+	//add conditional check so that notice will only display in full page or full post
+	if(is_page()||is_single()){
+	return $icn;
+	}
 }
 
 

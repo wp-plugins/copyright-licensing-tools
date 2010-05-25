@@ -22,6 +22,7 @@ function icopyright_admin(){
 			 $icopyright_tools = stripslashes($_POST['icopyright_tools']);
 			 $icopyright_align = stripslashes($_POST['icopyright_align']);
 			 $icopyright_show = stripslashes($_POST['icopyright_show']);
+			 $icopyright_ez_excerpt = stripslashes($_POST['icopyright_ez_excerpt']);
 			 
 			 //assign value to icopyright admin settings array
 			 //for saving into options table as an array value.
@@ -29,7 +30,8 @@ function icopyright_admin(){
 			                           'display' => $icopyright_display,
 									   'tools' => $icopyright_tools,
 									   'align' => $icopyright_align,
-									   'show' => $icopyright_show,									   
+									   'show' => $icopyright_show,
+									   'ez_excerpt'=> $icopyright_ez_excerpt,									   
 			                           );
 			 //update array value icopyright admin into WordPress Database Options table
 			 update_option('icopyright_admin',$icopyright_admin);                        
@@ -86,7 +88,7 @@ function icopyright_admin(){
 		
 		    //check status code for 400
 			if ($icopyright_form_status=='400'){
-			echo "<div  id=\"message\" class=\"updated fade\">";
+			echo "<div id=\"message\" class=\"updated fade\">";
 			echo "<strong><p>The following fields needs your attention</p></strong>";	 
 			echo '<ol>';
 			//error
@@ -96,8 +98,13 @@ function icopyright_admin(){
 			echo '</ol>';
 		    echo "</div>";
 			
+			//check terms of agreement box, since the blogger had already checked and posted the form.
+			global $icopyright_tou_checked;
+			$icopyright_tou_checked = 'true';
+									
 			global $show_icopyright_register_form;
 			$show_icopyright_register_form = 'true';
+					
 
 		   }//end if ($icopyright_form_status=='400')
 		   
@@ -115,7 +122,7 @@ function icopyright_admin(){
 			//update array value $icopyright_pubid_new into WordPress Database Options table
 			update_option('icopyright_admin',$icopyright_pubid_new);
             
-			echo "<div  id=\"message\" class=\"updated fade\">";
+			echo "<div id=\"message\" class=\"updated fade\">";
 			echo "<strong><p>Registration was successfull! 
 			Your Publication ID Number Is: $icopyright_pubid_res . It has been automatically updated into your settings.<br/> You will receive a Welcome Email, please follow the instructions in the email and log into iCopyright Conductor to complete the final steps of account activation. </p></strong>";
 		    echo "</div>";
@@ -132,7 +139,7 @@ function icopyright_admin(){
 ?>
 <div class="wrap">
 
-<div id="icopyright-logo" class="icon32"><br /></div><h2><?php _e("iCopyright Settings"); ?></h2>
+<h2><?php _e("iCopyright Settings"); ?></h2>
 
 <div id="icopyright_option" <?php global $show_icopyright_register_form; if($show_icopyright_register_form=='true'){echo'style="display:none"';} ?> >
 <p>
@@ -155,6 +162,19 @@ function icopyright_admin(){
 <p>
   <strong><?php _e('Publication ID:')?></strong> 
 <input type="text" name="icopyright_pubid" style="width:200px" value="<?php $icopyright_pubid = $icopyright_option['pub_id']; echo $icopyright_pubid; ?>"/> or <a href="#" onclick="show_icopyright_form()">click here to register</a>
+</p>
+
+
+<!--Toggle EZ Excerpt Feature -->
+<p>
+<strong><?php _e('Enable EZ Excerpt feature: ')?></strong>
+
+<?php _e('Yes ')?>
+<input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> />
+
+<?php _e('No ')?>
+<input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?>/>
+
 </p>
 
 
@@ -317,18 +337,6 @@ No option available.
 
 <br />
 
-<p>
-<strong><?php _e('iCopyright Article Feed: ')?></strong>
-</p>
-<p>Please copy the following url and paste into iCopyright Conductor under Tag & Feed Settings. This is a plugin generated xml information of your articles for iCopyright Conductor. This information does not contain any of your private or security information that will compromise your blog.
-</p>
-<?php
-$icopyright_feed_url = ICOPYRIGHT_PLUGIN_URL . "/icopyright_xml.php?id=*";
-?>
-<input name="" type="text" value="<?php echo $icopyright_feed_url; ?>" style="width:80%"/>
-
-
-
 </div><!--end icopyright_option -->
 
 <?php 
@@ -368,6 +376,8 @@ echo $css;
 
 $js = "<!-- icopyright admin javascript -->\n";
 $js .="<script type=\"text/javascript\">\n";
+
+$js .="function validate_icopyright_tou(){if(!document.getElementById('tou').checked){document.getElementById('tou_error').innerHTML='<strong><p>The following fields needs your attention</p></strong><ol><li>Terms of Use: You need to agree to the Terms of Use, before submitting for registration. You may view the terms <a href=\"http://license.icopyright.net/publisher/statichtml/plugin-publisher-tou.html\" target=\"_blank\">here.</a></li></ol>';document.getElementById('tou_error').style.display='block';return false;}else{document.getElementById('tou_error').style.display='none';return true;}}\n";
 
 $js .="function show_icopyright_form(){document.getElementById('icopyright_registration_form').style.display='block';
 document.getElementById('icopyright_option').style.display='none';document.getElementById('fname').focus();}\n";
