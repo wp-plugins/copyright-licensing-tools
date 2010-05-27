@@ -645,14 +645,9 @@ function icopyright_horizontal_toolbar(){
 	}
     $toolbar .= "</script>\n";
 	
-	$css_url = ICOPYRIGHT_URL.'rights/style/horz-toolbar.css';
-	$toolbar_script_url = ICOPYRIGHT_URL.'rights/js/icx-toolbar.js';//ICOPYRIGHT_URL constant defined in icopyright.php
-	$functions_script_url = ICOPYRIGHT_URL.'rights/js/icx-functions.js';//ICOPYRIGHT_URL constant defined in icopyright.php
+	$toolbar_script_url = ICOPYRIGHT_URL.'rights/js/horz-toolbar.js';//ICOPYRIGHT_URL constant defined in icopyright.php
 
-   
     $toolbar .= "<script type=\"text/javascript\" src=\"$toolbar_script_url\"></script>\n";
-    $toolbar .= "<script type=\"text/javascript\" src=\"$functions_script_url\"></script>\n";
-    $toolbar .="<link rel='stylesheet' href='$css_url' type='text/css' media='screen' />";
 	//extra css to control float from admin
 	$toolbar .=  icopyright_toolbar_float();
 	$toolbar .= "<!--End of iCopyright Horizontal Article Toolbar -->\n";
@@ -695,14 +690,9 @@ function icopyright_vertical_toolbar(){
 	//construct toolbar link urls
     $toolbar .= "</script>\n";
 	
-	$css_url = ICOPYRIGHT_URL.'rights/style/vert-toolbar.css';
-	$toolbar_script_url = ICOPYRIGHT_URL.'rights/js/icx-toolbar.js';//ICOPYRIGHT_URL constant defined in icopyright.php
-	$functions_script_url = ICOPYRIGHT_URL.'rights/js/icx-functions.js';//ICOPYRIGHT_URL constant defined in icopyright.php
-
+	$toolbar_script_url = ICOPYRIGHT_URL.'rights/js/vert-toolbar.js';//ICOPYRIGHT_URL constant defined in icopyright.php
 
     $toolbar .= "<script type=\"text/javascript\" src=\"$toolbar_script_url\"></script>\n";
-    $toolbar .= "<script type=\"text/javascript\" src=\"$functions_script_url\"></script>\n";
-	$toolbar .="<link rel='stylesheet' href='$css_url' type='text/css' media='screen' />";
 	//extra css to control float from admin
 	$toolbar .=  icopyright_toolbar_float();
 	$toolbar .= "<!--End of iCopyright Vertical Article Toolbar -->\n";
