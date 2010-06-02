@@ -3,7 +3,7 @@ Contributors: iCopyright, Inc.
 Tags: icopyright, copyright
 Requires at least: 2.9.2
 Tested up to: 2.9.2
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 
 The iCopyright plugin will add article tools that enable visitors to your site to print, email, post, and republish your posts.
 
@@ -48,3 +48,6 @@ Returned API endpoints to original location
 3. Display toolbars only in full page or full post.
 4. Ez Excerpt feature.
 5. Remove xml feed sentences from admin settings page.
+
+= 1.0.7 =
+EZ excerpt scripting files fixed
