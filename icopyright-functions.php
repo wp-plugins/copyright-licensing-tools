@@ -556,7 +556,11 @@ $form .="<select name=\"country\"/><option value=''>Please Select One</option>";
 
 //create country option value using $two_digit_country_description and $two_digit_country_code arrays.
 for($i=0;$i<239;$i++){
-$form .="<option value='$two_digit_country_code[$i]'>$two_digit_country_description[$i]</option>";
+$form .="<option value='$two_digit_country_code[$i]'";
+
+if($two_digit_country_code[$i] == $country){$form.='selected="selected"';}
+
+$form .=">$two_digit_country_description[$i]</option>";
 }
 
 
@@ -566,7 +570,9 @@ $form.="</select>*</td></tr>";
 $form .="<tr class=\"odd\"><td width=\"400px\"><label>Phone:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"phone\" value=\"$phone\"/>*</td></tr>";
 
 //TOU
-$form .="<tr><td width=\"400px\"><label>Terms of Use:</label></td><td><a href='http://license.icopyright.net/publisher/statichtml/plugin-publisher-tou.html' target='_blank'>I agree with the terms of use.</a> <input id=\"tou\" name=\"tou\" type=\"checkbox\" value=\"true\" style='border:none;'";
+$form .="<tr><td width=\"400px\"><label>Terms of Use:</label></td><td>I agree with the<a href='";
+$form .= ICOPYRIGHT_URL."publisher/statichtml/CSA-Online-Plugin.pdf";
+$form .="' target='_blank'> terms of use.</a> <input id=\"tou\" name=\"tou\" type=\"checkbox\" value=\"true\" style='border:none;'";
 
 //get global value to determine whether form has been posted before.
 //if true, we will check the checkbox.
@@ -626,6 +632,12 @@ function icopyright_horizontal_toolbar(){
 	$pub_id_no = $admin_option['pub_id'];
 	$ez_excerpt = $admin_option['ez_excerpt'];
 	
+	//check publication id is not empty and all numerics
+	//if not return nothing to content filter by just simply let return;
+	if(empty($pub_id_no)||!is_numeric($pub_id_no)){
+	return;
+	}
+	
 	//assign ICOPYRIGHT_URL constant
 	$icopyright_url = ICOPYRIGHT_URL;
 	
@@ -654,7 +666,12 @@ function icopyright_horizontal_toolbar(){
 	
 	//add conditional check so that toolbar will only display in full page or full post
 	if(is_page()||is_single()){
-	return $toolbar;
+	// check for icopyright custom field from post editor
+	$icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
+	// if blogger choose to hide particular post, we will not display it, if not display as normal
+	if($icopyright_hide_toolbar !== 'yes') { 
+		return $toolbar;
+		}
 	}
 
 }
@@ -668,6 +685,12 @@ function icopyright_vertical_toolbar(){
 	$admin_option = get_option('icopyright_admin');
 	$pub_id_no = $admin_option['pub_id'];
 	$ez_excerpt = $admin_option['ez_excerpt'];
+	
+	//check publication id is not empty and all numerics
+	//if not return nothing to content filter by just simply let return;
+	if(empty($pub_id_no)||!is_numeric($pub_id_no)){
+	return;
+	}
 	
 	//assign ICOPYRIGHT_URL constant
 	$icopyright_url = ICOPYRIGHT_URL;
@@ -699,7 +722,12 @@ function icopyright_vertical_toolbar(){
 	
 	//add conditional check so that toolbar will only display in full page or full post
 	if(is_page()||is_single()){
-	return $toolbar;
+	// check for icopyright custom field from post editor
+	$icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
+	// if blogger choose to hide particular post, we will not display it, if not display as normal
+	if($icopyright_hide_toolbar !== 'yes') { 
+		return $toolbar;
+		}
     }
 }
 
@@ -710,6 +738,12 @@ function icopyright_interactive_notice(){
 	//get publication id from options table from icopyright_admin array
 	$pub_id = get_option('icopyright_admin');
 	$pub_id_no = $pub_id['pub_id'];
+	
+	//check publication id is not empty and all numerics
+	//if not return nothing to content filter by just simply let return;
+	if(empty($pub_id_no)||!is_numeric($pub_id_no)){
+	return;
+	}
 	
 	//assign ICOPYRIGHT_URL constant
 	$icopyright_url = ICOPYRIGHT_URL;
@@ -746,7 +780,15 @@ NOTICE;
 
 	//add conditional check so that notice will only display in full page or full post
 	if(is_page()||is_single()){
-	return $icn;
+	// check for icopyright custom field from post editor
+	//get post id 
+    global $post;
+	$post_id = $post->ID;
+	$icopyright_hide_toolbar = get_post_meta($post_id, 'icopyright_hide_toolbar', $single = true);
+	// if blogger choose to hide particular post, we will not display it, if not display as normal
+	if($icopyright_hide_toolbar !== 'yes') { 
+		return $icn;
+		}
 	}
 }
 
@@ -863,4 +905,80 @@ function auto_add_icopyright_toolbars($content){
     
 }
 add_filter('the_content','auto_add_icopyright_toolbars');
+
+//added in Version 1.0.8
+//add custom meta data box to admin page!
+
+//adds a custom meta box to the add or edit Post and Page editor
+function icopyright_add_custom_box() {
+
+  if( function_exists( 'add_meta_box' )) {
+
+    add_meta_box( 'icopyright_sectionid', __( 'iCopyright Custom Field', 'icopyright_textdomain' ), 
+                'icopyright_inner_custom_box', 'post', 'normal' ,'high');
+
+    add_meta_box( 'icopyright_sectionid', __( 'iCopyright Custom Field', 'icopyright_textdomain' ), 
+                'icopyright_inner_custom_box', 'page', 'normal' ,'high');
+
+   } 
+
+}
+
+//creates the inner fields for the custom meta box
+function icopyright_inner_custom_box() {
+
+  //Create icopyright_admin_nonce for verification
+  echo '<input type="hidden" name="icopyright_noncename" id="icopyright_noncename" value="' . 
+        wp_create_nonce('icopyright_admin_nonce') . '" />';
+
+    //use WordPress global post object
+    //determine post type, so as to get correct post id object.
+	//for future compatibility if there is a change in page or post object.
+    global $post;
+    if($post->post_type == 'page'){
+        $content .= $post->ID;
+    } elseif($post->post_type == 'post') {
+        $content .= $post->ID;
+    }
+  
+  //retrieve custom field data
+  $data = get_post_meta($content, 'icopyright_hide_toolbar', true);
+ 
+  echo "<p><label>Do not offer iCopyright Article Tools on this story</label> <input name=\"icopyright_hide_toolbar\" type=\"checkbox\" value=\"yes\"";
+  if($data == 'yes'){echo 'checked';}else{echo '';};
+  echo " /></p>";
+  
+ 
+}
+
+//saves our custom field data, when the post is saved
+function icopyright_save_postdata( $post_id ) {
+
+  //check admin nonce
+  if ( !wp_verify_nonce( $_POST['icopyright_noncename'],'icopyright_admin_nonce')) {
+    return $post_id;
+  }
+
+  //check user permission
+  if ( 'page' == $_POST['post_type'] ) {
+    if ( !current_user_can( 'edit_page', $post_id ))
+      return $post_id;
+  } else {
+    if ( !current_user_can( 'edit_post', $post_id ))
+      return $post_id;
+  }
+
+  //assign posted data
+  $mydata = $_POST['icopyright_hide_toolbar'];
+
+  //update custom field
+  update_post_meta($post_id, 'icopyright_hide_toolbar', $mydata);
+
+}
+
+//hook in admin_menu action to create the custom meta box
+add_action('admin_menu', 'icopyright_add_custom_box');
+
+//hook in save_post action to save custom field data
+add_action('save_post', 'icopyright_save_postdata');
 ?>

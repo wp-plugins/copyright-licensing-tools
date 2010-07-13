@@ -3,13 +3,13 @@ Contributors: iCopyright, Inc.
 Tags: icopyright, copyright
 Requires at least: 2.9.2
 Tested up to: 2.9.2
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 
-The iCopyright plugin will add article tools that enable visitors to your site to print, email, post, and republish your posts.
+The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content.
 
 == Description ==
 
-The iCopyright plugin will add article tools that enable visitors to your site to print, email, post, and republish your posts. This includes ad-supported free uses as well as licensing options for a fee. This plugin also adds an interactive copyright notice at the bottom of your pages.
+The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. By iCopyright, Inc.
 
 == Installation ==
 
@@ -51,3 +51,10 @@ Returned API endpoints to original location
 
 = 1.0.7 =
 EZ excerpt scripting files fixed
+
+= 1.0.8 =
+1. Change terms of use location.
+2. Tweaks to settings page.
+3. Prevent rendering of licensing tools without publication ID.
+4. Added context and moved location of EZ Excerpt option.
+5. Add ability to exclude licensing tools from certain article.

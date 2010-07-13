@@ -13,9 +13,12 @@ function icopyright_admin(){
      //add values into option table
      if(isset($_POST['submitted'])== 'yes-update-me'){
 
+			 //assign error
+			 $error_message = '';
+			 
 			 //check nonce
 			 check_admin_referer('icopyright_settings-options');
-			 
+			 		 
 			 //assign posted value
 			 $icopyright_pubid = stripslashes($_POST['icopyright_pubid']);
 			 $icopyright_display = stripslashes($_POST['icopyright_display']);
@@ -23,6 +26,17 @@ function icopyright_admin(){
 			 $icopyright_align = stripslashes($_POST['icopyright_align']);
 			 $icopyright_show = stripslashes($_POST['icopyright_show']);
 			 $icopyright_ez_excerpt = stripslashes($_POST['icopyright_ez_excerpt']);
+			 
+			 //check publication id
+			 if(empty($icopyright_pubid)){
+			 $error_message .= '<div id="message" class="updated fade"><p><strong>Empty Publication ID, Please key in Publication ID or sign up for one!</strong></p></div>';
+			 }
+			 
+			 //check for numerical publication id when id is not empty
+			 if(!empty($icopyright_pubid)&&!is_numeric($icopyright_pubid)){
+			 $error_message .= '<div id="message" class="updated fade"><p><strong>Publication ID error, Please key in numerics only!</strong></p></div>';
+			 }
+		 
 			 
 			 //assign value to icopyright admin settings array
 			 //for saving into options table as an array value.
@@ -33,11 +47,19 @@ function icopyright_admin(){
 									   'show' => $icopyright_show,
 									   'ez_excerpt'=> $icopyright_ez_excerpt,									   
 			                           );
+		     //check if no error, then update admin setting
+			 if(empty($error_message)){
 			 //update array value icopyright admin into WordPress Database Options table
-			 update_option('icopyright_admin',$icopyright_admin);                        
-			 		 
-		     //print success message to blogger
-			 echo "<div  id=\"message\" class=\"updated fade\"><p><strong>Options Updated!</strong></p></div>";	 
+			 update_option('icopyright_admin',$icopyright_admin);
+			 }                        
+			 
+			 //check error message, if there is any, show it to blogger		 
+		     if(!empty($error_message)){
+			 echo $error_message;
+			 }else{
+			 //if no error, print success message to blogger
+			 echo "<div  id=\"message\" class=\"updated fade\"><p><strong>Options Updated!</strong></p></div>";
+			 }	 
 			 
 	}//end if $_POST['submitted']
 	
@@ -162,19 +184,6 @@ function icopyright_admin(){
 <p>
   <strong><?php _e('Publication ID:')?></strong> 
 <input type="text" name="icopyright_pubid" style="width:200px" value="<?php $icopyright_pubid = $icopyright_option['pub_id']; echo $icopyright_pubid; ?>"/> or <a href="#" onclick="show_icopyright_form()">click here to register</a>
-</p>
-
-
-<!--Toggle EZ Excerpt Feature -->
-<p>
-<strong><?php _e('Enable EZ Excerpt feature: ')?></strong>
-
-<?php _e('Yes ')?>
-<input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> />
-
-<?php _e('No ')?>
-<input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?>/>
-
 </p>
 
 
@@ -326,7 +335,31 @@ No option available.
 
 </div>
 
+
 <br clear="all"/>
+
+<!--Toggle EZ Excerpt Feature -->
+<p>
+<strong><?php _e('Enable EZ Excerpt feature: ')?></strong>
+
+<?php _e('Yes ')?>
+<input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> />
+
+<?php _e('No ')?>
+<input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?>/>
+<span style="font-size:10px">
+<br/>(When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Post Excerpt to Web?".<br/>If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
+</span>
+</p>
+
+<br/>
+
+<!--visit conductor link-->
+<p>
+<strong><a href="<?php echo ICOPYRIGHT_URL.'publisher/';?>" target="_blank"><?php _e('Visit Conductor ')?></a></strong>
+</p>
+
+<br/>
 
 <p>
 <input type="hidden" name="submitted" value="yes-update-me"/>
@@ -377,7 +410,7 @@ echo $css;
 $js = "<!-- icopyright admin javascript -->\n";
 $js .="<script type=\"text/javascript\">\n";
 
-$js .="function validate_icopyright_tou(){if(!document.getElementById('tou').checked){document.getElementById('tou_error').innerHTML='<strong><p>The following fields needs your attention</p></strong><ol><li>Terms of Use: You need to agree to the Terms of Use, before submitting for registration. You may view the terms <a href=\"http://license.icopyright.net/publisher/statichtml/plugin-publisher-tou.html\" target=\"_blank\">here.</a></li></ol>';document.getElementById('tou_error').style.display='block';return false;}else{document.getElementById('tou_error').style.display='none';return true;}}\n";
+$js .="function validate_icopyright_tou(){if(!document.getElementById('tou').checked){document.getElementById('tou_error').innerHTML='<strong><p>The following fields needs your attention</p></strong><ol><li>Terms of Use: You need to agree to the Terms of Use, before submitting for registration. You may view the terms <a href=\"http://license.icopyright.net/publisher/statichtml/CSA-Online-Plugin.pdf\" target=\"_blank\">here.</a></li></ol>';document.getElementById('tou_error').style.display='block';return false;}else{document.getElementById('tou_error').style.display='none';return true;}}\n";
 
 $js .="function show_icopyright_form(){document.getElementById('icopyright_registration_form').style.display='block';
 document.getElementById('icopyright_option').style.display='none';document.getElementById('fname').focus();}\n";
