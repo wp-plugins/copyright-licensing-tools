@@ -99,4 +99,23 @@ function icopyright_remove_settings(){
 delete_option('icopyright_admin');
 }
 register_uninstall_hook( __FILE__, 'icopyright_remove_settings' );
+
+function icopyright_default_settings(){
+
+$check_admin_setting = get_option('icopyright_admin');
+
+if(empty($check_admin_setting)){
+             $icopyright_admin = array('pub_id' => '',
+			                           'display' => 'auto',
+									   'tools' => 'horizontal',
+									   'align' => 'left',
+									   'show' => 'both',
+									   'ez_excerpt'=> 'yes',									   			                           );
+
+			 update_option('icopyright_admin',$icopyright_admin);
+       
+}
+
+}
+register_activation_hook( __FILE__, 'icopyright_default_settings' );
 ?>

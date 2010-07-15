@@ -407,10 +407,12 @@ $css .= "#icopyright-logo{width:30px;height:30px;background-image:url('$image_ur
 $css .="</style>\n";
 echo $css;
 
+$icopyright_pdf_url = ICOPYRIGHT_URL."publisher/statichtml/CSA-Online-Plugin.pdf";
+
 $js = "<!-- icopyright admin javascript -->\n";
 $js .="<script type=\"text/javascript\">\n";
 
-$js .="function validate_icopyright_tou(){if(!document.getElementById('tou').checked){document.getElementById('tou_error').innerHTML='<strong><p>The following fields needs your attention</p></strong><ol><li>Terms of Use: You need to agree to the Terms of Use, before submitting for registration. You may view the terms <a href=\"http://license.icopyright.net/publisher/statichtml/CSA-Online-Plugin.pdf\" target=\"_blank\">here.</a></li></ol>';document.getElementById('tou_error').style.display='block';return false;}else{document.getElementById('tou_error').style.display='none';return true;}}\n";
+$js .="function validate_icopyright_tou(){if(!document.getElementById('tou').checked){document.getElementById('tou_error').innerHTML='<strong><p>The following fields needs your attention</p></strong><ol><li>Terms of Use: You need to agree to the Terms of Use, before submitting for registration. You may view the terms <a href=\"$icopyright_pdf_url\" target=\"_blank\">here.</a></li></ol>';document.getElementById('tou_error').style.display='block';return false;}else{document.getElementById('tou_error').style.display='none';return true;}}\n";
 
 $js .="function show_icopyright_form(){document.getElementById('icopyright_registration_form').style.display='block';
 document.getElementById('icopyright_option').style.display='none';document.getElementById('fname').focus();}\n";
