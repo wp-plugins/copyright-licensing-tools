@@ -128,7 +128,7 @@ $check_admin_setting = get_option('icopyright_admin');
 
 		function icopyright_warning() {
 echo "
-			<div id='icopyright-warning' class='updated fade'><p><strong>".__('Copyright and Licensing Tools is almost ready.')."</strong> ".sprintf(__('You must <a href="%1$s">register or enter your Publication Id</a> for it to work.'), "options-general.php?page=icopyright")."</p></div>
+			<div id='icopyright-warning' class='updated fade'><p><strong>".__('Copyright and Licensing Tools is almost ready.')."</strong> ".sprintf(__('You must register or enter your Publication Id for it to work. <a href="%1$s">Please click to visit iCopyright Settings Page.</a>'), "options-general.php?page=icopyright")."</p></div>
 			";
 		}
 		add_action('admin_notices','icopyright_warning');
