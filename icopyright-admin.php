@@ -59,6 +59,7 @@ function icopyright_admin(){
 			 }else{
 			 //if no error, print success message to blogger
 			 echo "<div  id=\"message\" class=\"updated fade\"><p><strong>Options Updated!</strong></p></div>";
+			 echo "<script type='text/javascript'>document.getElementById('icopyright-warning').style.display='none';</script>";
 			 }	 
 			 
 	}//end if $_POST['submitted']
@@ -148,6 +149,8 @@ function icopyright_admin(){
 			echo "<strong><p>Registration was successfull! 
 			Your Publication ID Number Is: $icopyright_pubid_res . It has been automatically updated into your settings.<br/> You will receive a Welcome Email, please follow the instructions in the email and log into iCopyright Conductor to complete the final steps of account activation. </p></strong>";
 		    echo "</div>";
+			
+			echo "<script type='text/javascript'>document.getElementById('icopyright-warning').style.display='none';</script>";
 			
 			global $show_icopyright_register_form;
 			$show_icopyright_register_form = 'false';

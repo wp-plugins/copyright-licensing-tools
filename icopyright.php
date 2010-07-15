@@ -118,4 +118,22 @@ if(empty($check_admin_setting)){
 
 }
 register_activation_hook( __FILE__, 'icopyright_default_settings' );
+
+//admin warnings notice if empty publication id
+function icopyright_admin_warning(){
+
+$check_admin_setting = get_option('icopyright_admin');
+
+  if(empty($check_admin_setting['pub_id'])){
+
+		function icopyright_warning() {
+echo "
+			<div id='icopyright-warning' class='updated fade'><p><strong>".__('Copyright and Licensing Tools is almost ready.')."</strong> ".sprintf(__('You must <a href="%1$s">register or enter your Publication Id</a> for it to work.'), "options-general.php?page=icopyright")."</p></div>
+			";
+		}
+		add_action('admin_notices','icopyright_warning');
+  }
+
+}
+add_action('init','icopyright_admin_warning');
 ?>
