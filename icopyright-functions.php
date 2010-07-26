@@ -22,7 +22,7 @@ $form .='<form name="icopyright_register_form" id="icopyright_register_form" met
 
 $form .="<div id='tou_error' class='updated faded' style='display:none;'></div>";
 
-$form .='<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(Back to Option Form)</a></h3>';
+$form .='<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(Click here to enter and save your Publication Id, if you already had one.)</a></h3>';
 
 $form .='<strong><p>Complete the fields below to get a Publication ID number. Required fields indicated by *</p></strong>';
 

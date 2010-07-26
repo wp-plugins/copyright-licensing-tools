@@ -140,10 +140,18 @@ function icopyright_admin(){
 			
 			//cast xml publication id object into array for updating into options table
 			$icopyright_pubid_array = (array)$icopyright_pubid_res;
-			$icopyright_pubid_new['pub_id'] = $icopyright_pubid_array[0];
-									
-			//update array value $icopyright_pubid_new into WordPress Database Options table
-			update_option('icopyright_admin',$icopyright_pubid_new);
+			
+			//auto update admin setting with response publication id,
+			//and other default values.
+			$icopyright_admin_default = array('pub_id' => $icopyright_pubid_array[0],
+			                         'display' => 'auto',
+			     				     'tools' => 'horizontal',
+									 'align' => 'left',
+									 'show' => 'both',
+									 'ez_excerpt'=> 'yes',									   			                           );
+            //update array value $icopyright_pubid_new into WordPress Database Options table
+			update_option('icopyright_admin',$icopyright_admin_default);
+
             
 			echo "<div id=\"message\" class=\"updated fade\">";
 			echo "<strong><p>Registration was successfull! 
@@ -166,16 +174,12 @@ function icopyright_admin(){
 
 <h2><?php _e("iCopyright Settings"); ?></h2>
 
+<p>
+These settings affect how the iCopyright Article Tools and Interactive Copyright Notice work. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>.
+</p>
+
+
 <div id="icopyright_option" <?php global $show_icopyright_register_form; if($show_icopyright_register_form=='true'){echo'style="display:none"';} ?> >
-<p>
-<?php _e("To activate the iCopyright Article Tools and Interactive Copyright Notice, you must get a Publication ID number and enter it into the field below, then click \"Save Settings\".<br/>Your site will be enabled with a default set of tools that enable visitors to use and share your content."); ?>
-</p>
-
-<p>
-<?php _e('If you do not have a Publication ID number, please <a href="#" onclick="show_icopyright_form()">click here to register</a> and get one for your site.<br/>After you register, you will receive an email with instructions on how to edit the rules under which people can use your content freely, or buy the rights to use it for a fee.<br/> If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>.')?>
-</p>
-
-<br />
 
 <form name="icopyrightform" id="icopyrightform" method="post" action="">
 
@@ -183,12 +187,6 @@ function icopyright_admin(){
 
 
 <?php $icopyright_option = get_option('icopyright_admin'); ?>
-
-<p>
-  <strong><?php _e('Publication ID:')?></strong> 
-<input type="text" name="icopyright_pubid" style="width:200px" value="<?php $icopyright_pubid = $icopyright_option['pub_id']; echo $icopyright_pubid; ?>"/> or <a href="#" onclick="show_icopyright_form()">click here to register</a>
-</p>
-
 
 <!--interactive tools deployment -->
 <p>
@@ -351,11 +349,26 @@ No option available.
 <?php _e('No ')?>
 <input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?>/>
 <span style="font-size:10px">
-<br/>(When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Post Excerpt to Web?".<br/>If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
+<br/>(When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Obtain a License?".<br/>If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
 </span>
 </p>
 
 <br/>
+
+<!--Publication ID-->
+<p>
+  <strong><?php _e('Publication ID:')?></strong> 
+<input type="text" name="icopyright_pubid" style="width:200px" value="<?php $icopyright_pubid = $icopyright_option['pub_id']; echo $icopyright_pubid; ?>"/> 
+<?php
+if(empty($icopyright_pubid)){
+echo 'or <a href="#" onclick="show_icopyright_form()">click here to register</a>';
+}else{
+echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advance User Only.</span>';
+}
+?>
+</p>
+
+<br />
 
 <!--visit conductor link-->
 <p>
@@ -387,9 +400,11 @@ create_icopyright_register_form($fname,$lname,$email,$password,$pname,$url,$line
 
 //function to add sub menu link under WordPress Admin Settings.
 function icopyright_admin_menu() {
-	$icopyrightpage = add_submenu_page('options-general.php', 'iCopyright', 'iCopyright', 8, 'icopyright', 'icopyright_admin');
+	$icopyrightpage = add_submenu_page('options-general.php', 'iCopyright', 'iCopyright', 'activate_plugins', 'icopyright', 'icopyright_admin');
 	//add admin css and javascripts only to icopyright settings page if there is any.
     add_action( "admin_print_scripts-$icopyrightpage", 'icopyright_admin_scripts');
+	add_action( 'admin_footer-'. $icopyrightpage, 'icopyright_admin_footer_script' );
+
 }
 
 //hook admin_menu to display admin page
@@ -432,5 +447,36 @@ $js .="</script>\n";
 
 echo $js;
 
+}
+//function to generate icopyright admin footer scripts 
+//to control display of register form or settings form
+function icopyright_admin_footer_script() {
+
+//check if empty publication id, show register form,
+//if not hide form, show settings
+$icopyright_option = get_option('icopyright_admin');
+$icopyright_pubid = $icopyright_option['pub_id'];
+
+	if(empty($icopyright_pubid)){
+	
+	$initial_js ="<script type=\"text/javascript\">\n";
+	$initial_js .="
+	document.getElementById('icopyright_registration_form').style.display='block';
+	document.getElementById('icopyright_option').style.display='none';
+	document.getElementById('fname').focus();\n";
+	$initial_js .="</script>\n";
+	echo $initial_js;
+	
+	}else{
+	
+	$initial_js ="<script type=\"text/javascript\">\n";
+	$initial_js .="
+	document.getElementById('icopyright_registration_form').style.display='none';
+	document.getElementById('icopyright_option').style.display='block';
+	document.getElementById('fname').focus();\n";
+	$initial_js .="</script>\n";
+	echo $initial_js;
+	
+	}
 }
 ?>
