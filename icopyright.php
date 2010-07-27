@@ -110,6 +110,7 @@ if(empty($check_admin_setting)){
 									   'tools' => 'horizontal',
 									   'align' => 'left',
 									   'show' => 'both',
+									   'show_multiple' => 'both',
 									   'ez_excerpt'=> 'yes',									   			                           );
 
 			 update_option('icopyright_admin',$icopyright_admin);

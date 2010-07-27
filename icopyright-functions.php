@@ -664,15 +664,14 @@ function icopyright_horizontal_toolbar(){
 	$toolbar .=  icopyright_toolbar_float();
 	$toolbar .= "<!--End of iCopyright Horizontal Article Toolbar -->\n";
 	
-	//add conditional check so that toolbar will only display in full page or full post
-	if(is_page()||is_single()){
+
 	// check for icopyright custom field from post editor
 	$icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
 	// if blogger choose to hide particular post, we will not display it, if not display as normal
 	if($icopyright_hide_toolbar !== 'yes') { 
 		return $toolbar;
 		}
-	}
+
 
 }
 
@@ -720,15 +719,14 @@ function icopyright_vertical_toolbar(){
 	$toolbar .=  icopyright_toolbar_float();
 	$toolbar .= "<!--End of iCopyright Vertical Article Toolbar -->\n";
 	
-	//add conditional check so that toolbar will only display in full page or full post
-	if(is_page()||is_single()){
+
 	// check for icopyright custom field from post editor
 	$icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
 	// if blogger choose to hide particular post, we will not display it, if not display as normal
 	if($icopyright_hide_toolbar !== 'yes') { 
 		return $toolbar;
 		}
-    }
+
 }
 
 
@@ -778,8 +776,7 @@ $icn = <<<NOTICE
 
 NOTICE;
 
-	//add conditional check so that notice will only display in full page or full post
-	if(is_page()||is_single()){
+
 	// check for icopyright custom field from post editor
 	//get post id 
     global $post;
@@ -789,7 +786,7 @@ NOTICE;
 	if($icopyright_hide_toolbar !== 'yes') { 
 		return $icn;
 		}
-	}
+
 }
 
 
@@ -845,66 +842,193 @@ function icopyright_interactive_copyright_notice_shortcode($atts) {
 add_shortcode('interactive copyright notice', 'icopyright_interactive_copyright_notice_shortcode');
 
 
-
-//filter content and automatically add icopyright toolbars
+//Since Version 1.0
+//Added Multiple Post Display Option -- Version 2.8
+//Added intensive condition checks -- Version 2.8
+//function to filter content or excerpt and automatically add icopyright toolbars and interactive copyright notice
 function auto_add_icopyright_toolbars($content){
 
    //get settings from icopyright_admin option array   
    $setting = get_option('icopyright_admin');
    $display_status = $setting['display'];//deployment
    $selected_toolbar = $setting['tools'];//toolbar selected
-   $show_option = $setting['show'];//show only top bar or bottom notice or both
+   
+   //Single Post Display Option
+   //valves includes, both, tools, notice.
+   //both - means display both article tools and interactive copyright notice
+   //tools - means display only article tools
+   //notice - means displays only interactive copyright notice
+   $single_display_option = $setting['show'];
+   
+   //Multiple Post Display Option
+   //valves includes, both, tools, notice.
+   //both - means display both article tools and interactive copyright notice
+   //tools - means display only article tools
+   //notice - means displays only interactive copyright notice
+   //nothing - means hide all article tools and interactive notice.
+   $multiple_display_option = $setting['show_multiple'];
    
    //if automatic deployment of toolbars are selected in the admin
    //or empty option, which is new installation
    //we will auto add toolbars and copyright notice into post content
-   if($display_status=="auto"&&!is_feed()){
    
-   if($show_option=="both"){//show both top and bottom tools
-	   //check toolbar selection for horizontal or vertical toolbar
-	   if($selected_toolbar=="horizontal"){
-	   $top_bar = icopyright_horizontal_toolbar();
-	   $bottom_bar = icopyright_interactive_notice();
-	   return $top_bar.$content.$bottom_bar;
-	   }//end if
+   //condition check
+   //display with options only in full page and full post
+   //excluding feeds, and attachment such as images.
+   if(($display_status=="auto"&&!is_feed()&&!is_attachment())&&(is_page()||is_single())){
+   
+			if($single_display_option=="both"){//show both top and bottom tools
+			   //check toolbar selection for horizontal or vertical toolbar
+			   if($selected_toolbar=="horizontal"){
+			   $top_bar = icopyright_horizontal_toolbar();
+			   $bottom_bar = icopyright_interactive_notice();
+			   return $top_bar.$content.$bottom_bar;
+			   }//end if
+			   
+			   if($selected_toolbar=="vertical"){
+			   $top_bar = icopyright_vertical_toolbar();
+			   $bottom_bar = icopyright_interactive_notice();
+			   return $top_bar.$content.$bottom_bar;
+			   }//end if
+			}//end if single_display_option equal to both
+			
+			
+			if($single_display_option=="tools"){//show only top article toolbars
+			   //check toolbar selection for horizontal or vertical toolbar
+			   if($selected_toolbar=="horizontal"){
+			   $top_bar = icopyright_horizontal_toolbar();
+			   return $top_bar.$content;
+			   }//end if
+			   
+			   if($selected_toolbar=="vertical"){
+			   $top_bar = icopyright_vertical_toolbar();
+			   return $top_bar.$content;
+			   }//end if
+			}// end if single_display_option equals to tools
+			
+			
+			if($single_display_option=="notice"){//show only bottom interactive notice
+			   $bottom_bar = icopyright_interactive_notice();
+			   return $content.$bottom_bar;
+			}// end if single_display_option equals to notice
+   
+   
+  //condition check
+  //display with options other than in full page or full post
+  //this applies to home page, categories, archives, and tags.
+  //excluding feeds, and attachment such as images.
+  }elseif($display_status=="auto"&&!is_feed()&&!is_attachment()){
+  
+		   if($multiple_display_option=="both"){//show both top and bottom tools
+			   //check toolbar selection for horizontal or vertical toolbar
+			   if($selected_toolbar=="horizontal"){
+			   $top_bar = icopyright_horizontal_toolbar();
+			   $bottom_bar = icopyright_interactive_notice();
+			   return $top_bar.$content.$bottom_bar;
+			   }//end if
+			   
+			   if($selected_toolbar=="vertical"){
+			   $top_bar = icopyright_vertical_toolbar();
+			   $bottom_bar = icopyright_interactive_notice();
+			   return $top_bar.$content.$bottom_bar;
+			   }//end if
+		   }//end if multiple_display_option equal to both
 	   
-	   if($selected_toolbar=="vertical"){
-	   $top_bar = icopyright_vertical_toolbar();
-	   $bottom_bar = icopyright_interactive_notice();
-	   return $top_bar.$content.$bottom_bar;
-	   }//end if
-   }//end if show_option equal to both
-   
-   
-   if($show_option=="tools"){//show only top article toolbars
-	   //check toolbar selection for horizontal or vertical toolbar
-	   if($selected_toolbar=="horizontal"){
-	   $top_bar = icopyright_horizontal_toolbar();
-	   return $top_bar.$content;
-	   }//end if
 	   
-	   if($selected_toolbar=="vertical"){
-	   $top_bar = icopyright_vertical_toolbar();
-	   return $top_bar.$content;
-	   }//end if
-   }// end if show_option equals to tools
-   
-   
-   if($show_option=="notice"){//show only bottom interactive notice
-       $bottom_bar = icopyright_interactive_notice();
-	   return $content.$bottom_bar;
-   }// end if show_option equals to notice
-   
-   
-   
+		   if($multiple_display_option=="tools"){//show only top article toolbars
+			   //check toolbar selection for horizontal or vertical toolbar
+			   if($selected_toolbar=="horizontal"){
+			   $top_bar = icopyright_horizontal_toolbar();
+			   return $top_bar.$content;
+			   }//end if
+			   
+			   if($selected_toolbar=="vertical"){
+			   $top_bar = icopyright_vertical_toolbar();
+			   return $top_bar.$content;
+			   }//end if
+		   }// end if multiple_display_option equals to tools
+		   
+		   
+		   if($multiple_display_option=="notice"){//show only bottom interactive notice
+			   $bottom_bar = icopyright_interactive_notice();
+			   return $content.$bottom_bar;
+		   }// end if multiple_display_option equals to notice
+		  
+			if($multiple_display_option=="nothing"){//hide all article tools and interactive notice.
+			   //return content without tools or notice
+			   return $content;
+		   }// end if multiple_display_option equals to nothing
+  
+  
   }else{
   //if display setting is manual, we will return content only
   return $content;
   
-  }
+  }//end if(($display_status=="auto"&&!is_feed()&&!is_attachment())&&(is_page()||is_single())){
     
-}
+}//end function auto_add_icopyright_toolbars($content)
+
+//since version 1.0
 add_filter('the_content','auto_add_icopyright_toolbars');
+//Version 1.0.8
+//add toolbars in excerpt
+add_filter('the_excerpt','auto_add_icopyright_toolbars');
+
+//added in Version 1.0.8
+//replace wp_trim_excerpt() found in wp-includes/formatting.php in version WordPress 3.0
+//wp_trim_excerpt() is filtered in get_the_excerpt(),
+//which is used by the_excerpt() to display excerpt in WordPress Loop (List of Multiple Post)
+//We need to remove tool bar from content if empty excerpt
+//so as to prevent toolbars duplication.
+function icopyright_trim_excerpt($text){
+	$raw_excerpt = $text;
+	
+	//if empty text
+	if ( '' == $text ) {
+	    //if there is no excerpt crafted from add post admin
+		//WordPress will use the_content instead.
+		//therefore we need to remove tools filter in content,
+		//so as not to cause duplicate, 
+		//anyway the strip_tags below will cause the tools bars to malfunction
+		remove_filter('the_content','auto_add_icopyright_toolbars');
+		
+		//The following are default wp_trim_excerpt() behaviour, left for theme compatibility.
+		//codes copy and paste from wp_trim_excerpt with added explanation.
+		
+		//if empty use content.
+		$text = get_the_content('');
+        //remove shortcodes
+		$text = strip_shortcodes( $text );
+        //apply content filters
+		$text = apply_filters('the_content', $text);
+		//replace > with html character entity to prevent script executing.
+		$text = str_replace(']]>', ']]&gt;', $text);
+		//strip out html tags.
+		$text = strip_tags($text);
+		//excerpt_length filter, default 55 words
+		$excerpt_length = apply_filters('excerpt_length', 55);
+		//excerpt_more filter, default [...]
+		$excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
+		// split the phrase by any number of commas or space characters,
+        // which include " ", \r, \t, \n and \f
+		$words = preg_split("/[\n\r\t ]+/", $text, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
+		if ( count($words) > $excerpt_length ) {
+			array_pop($words);
+			$text = implode(' ', $words);
+			$text = $text . $excerpt_more;
+		} else {
+			$text = implode(' ', $words);
+		}
+	}
+	return apply_filters('icopyright_trim_excerpt', $text, $raw_excerpt);
+
+}
+//added in Version 1.0.8
+//set priority to 0 so that wp_trim_excerpt() gets removed 
+//and our function icopyright_trim_excerpt() gets added before any theme function filters into it.
+remove_filter('get_the_excerpt','wp_trim_excerpt',0);
+add_filter('get_the_excerpt','icopyright_trim_excerpt',0);
+
 
 //added in Version 1.0.8
 //add custom meta data box to admin page!

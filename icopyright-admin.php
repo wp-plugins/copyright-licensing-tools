@@ -25,6 +25,7 @@ function icopyright_admin(){
 			 $icopyright_tools = stripslashes($_POST['icopyright_tools']);
 			 $icopyright_align = stripslashes($_POST['icopyright_align']);
 			 $icopyright_show = stripslashes($_POST['icopyright_show']);
+			 $icopyright_show_multiple = stripslashes($_POST['icopyright_show_multiple']);
 			 $icopyright_ez_excerpt = stripslashes($_POST['icopyright_ez_excerpt']);
 			 
 			 //check publication id
@@ -45,6 +46,7 @@ function icopyright_admin(){
 									   'tools' => $icopyright_tools,
 									   'align' => $icopyright_align,
 									   'show' => $icopyright_show,
+									   'show_multiple' => $icopyright_show_multiple,
 									   'ez_excerpt'=> $icopyright_ez_excerpt,									   
 			                           );
 		     //check if no error, then update admin setting
@@ -148,6 +150,7 @@ function icopyright_admin(){
 			     				     'tools' => 'horizontal',
 									 'align' => 'left',
 									 'show' => 'both',
+									 'show_multiple' => 'both',
 									 'ez_excerpt'=> 'yes',									   			                           );
             //update array value $icopyright_pubid_new into WordPress Database Options table
 			update_option('icopyright_admin',$icopyright_admin_default);
@@ -211,7 +214,7 @@ These settings affect how the iCopyright Article Tools and Interactive Copyright
 </p>
 
 <!--Interactive Tools Selection -->
-<div id="A1" style="float:left;margin:0 50px 0 0;height:530px;<?php $display = $icopyright_option['display']; if($display=="manual"){echo "display:none;";}?>">
+<div id="A1" style="float:left;margin:0 50px 0 0;height:700px;<?php $display = $icopyright_option['display']; if($display=="manual"){echo "display:none;";}?>">
 <p>
 <strong><?php _e('iCopyright Article Tools: ')?></strong>
 <br /><br />
@@ -242,8 +245,9 @@ Right
 
 <br />
 
+<!--single post display option-->
 <p>
-<strong><?php _e('Display Option:')?></strong>
+<strong><?php _e('Single Post Display Option:')?></strong>
 <br />
 <br />
 Show both iCopyright Article Tools and Interactive Copyright Notice
@@ -261,6 +265,32 @@ Show only Interactive Copyright Notice
 </p>
 
 
+<br />
+
+
+<!--Multiple Post display option added in Version 1.0.8-->
+<p>
+<strong><?php _e('Multiple Post Display Option:')?></strong>
+<br />
+<br />
+Show both iCopyright Article Tools and Interactive Copyright Notice
+<input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = $icopyright_option['show_multiple']; if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> />
+<br />
+
+
+Show only iCopyright Article Tools 
+<input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="tools"){echo "checked";}?> />
+<br />
+
+
+Show only Interactive Copyright Notice
+<input name="icopyright_show_multiple" type="radio" value="notice" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="notice"){echo "checked";}?> />
+<br />
+
+
+Show nothing
+<input name="icopyright_show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="nothing"){echo "checked";}?> />
+</p>
 
 </div>
 
