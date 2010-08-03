@@ -18,9 +18,9 @@ The iCopyright plugin adds article tools (print, email, post, and republish) and
 
 == Frequently Asked Questions ==
 
+= Why are there no Frequently Asked Questions? =
 
-== Screenshots ==
-
+We haven't received any yet.  Have one?  Send it to <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>.
 
 == Changelog ==
 
