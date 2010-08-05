@@ -158,7 +158,7 @@ function icopyright_admin(){
             
 			echo "<div id=\"message\" class=\"updated fade\">";
 			echo "<strong><p>Registration was successfull! 
-			Your Publication ID Number Is: $icopyright_pubid_res . It has been automatically updated into your settings.<br/> You will receive a Welcome Email, please follow the instructions in the email and log into iCopyright Conductor to complete the final steps of account activation. </p></strong>";
+			Your Publication ID Number Is: $icopyright_pubid_res . It has been automatically updated into your settings.<br/> You will receive a Welcome Email when your publication goes live. </p></strong>";
 		    echo "</div>";
 			
 			echo "<script type='text/javascript'>document.getElementById('icopyright-warning').style.display='none';</script>";
@@ -178,7 +178,7 @@ function icopyright_admin(){
 <h2><?php _e("iCopyright Settings"); ?></h2>
 
 <p>
-These settings affect how the iCopyright Article Tools and Interactive Copyright Notice work. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>.
+These settings affect how the iCopyright Article Tools and Interactive Copyright Notice work. If you need assistance, please <a href='http://info.icopyright.com/wordpress-plugin' target="_blank">click here</a> or email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>.
 </p>
 
 
@@ -379,7 +379,8 @@ No option available.
 <?php _e('No ')?>
 <input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?>/>
 <span style="font-size:10px">
-<br/>(When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Obtain a License?".<br/>If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
+<br/>(For EZ Excerpt to be enabled, the display option selected above must include iCopyright Article Tools.<br />
+ When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Obtain a License?".<br/>If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
 </span>
 </p>
 
@@ -393,7 +394,7 @@ No option available.
 if(empty($icopyright_pubid)){
 echo 'or <a href="#" onclick="show_icopyright_form()">click here to register</a>';
 }else{
-echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advance User Only.</span>';
+echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced User Only.</span>';
 }
 ?>
 </p>
