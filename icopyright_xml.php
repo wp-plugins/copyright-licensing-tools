@@ -69,7 +69,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
     $icx_headline = $res->post_title;
     
     //get story from database
-	//add in <br> to format content
+	//add in <br> to format content, so that no break tags are inserting during processing of shortcodes!
 	$icx_story_raw = nl2br($res->post_content);
 
 	//do_shortcode on video embed in content.
