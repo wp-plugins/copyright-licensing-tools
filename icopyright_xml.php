@@ -67,9 +67,26 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
     // get heading
     $icx_headline = $res->post_title;
+    
+    //get story from database
+	//add in <br> to format content
+	$icx_story_raw = nl2br($res->post_content);
 
-    //get story
-    $icx_story = nl2br($res->post_content);
+	//do_shortcode on video embed in content.
+	//show it only as a link to avoid XML Structure Error in Feed!
+	$run_embed = new WP_Embed;
+    $icx_story_pro_1 = $run_embed->run_shortcode($icx_story_raw);
+	
+	//assign id passed to feed to global post id
+	//so that shortcodes like gallery that needs the post id will work!
+	global $post;
+	$post->ID = $icopyright_post_id;
+	
+	//do all other shortcodes
+	$icx_story_pro_2 = do_shortcode($icx_story_pro_1);
+    
+	//assign final processed content to produce in feed.
+	$icx_story = $icx_story_pro_2;
 
     //get url
     $icx_url = get_permalink($icopyright_post_id);

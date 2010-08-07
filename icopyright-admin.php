@@ -157,8 +157,7 @@ function icopyright_admin(){
 
             
 			echo "<div id=\"message\" class=\"updated fade\">";
-			echo "<strong><p>Registration was successfull! 
-			Your Publication ID Number Is: $icopyright_pubid_res . It has been automatically updated into your settings.<br/> You will receive a Welcome Email when your publication goes live. </p></strong>";
+			echo "<strong><h3>Your registration was successful! An iCopyright Conductor account has been created for you, and your unique Publication ID number is: $icopyright_pubid_res . You do not have to remember this number unless you encounter a problem later. You will receive a welcome email from iCopyright Conductor momentarily. When you have completed the steps on this page, you can navigate to iCopyright Conductor to make additional adjustments to your services by clicking on the Visit Conductor link below or by following the steps in your email from iCopyright Conductor. </h3></strong>";
 		    echo "</div>";
 			
 			echo "<script type='text/javascript'>document.getElementById('icopyright-warning').style.display='none';</script>";
@@ -178,7 +177,7 @@ function icopyright_admin(){
 <h2><?php _e("iCopyright Settings"); ?></h2>
 
 <p>
-These settings affect how the iCopyright Article Tools and Interactive Copyright Notice work. If you need assistance, please <a href='http://info.icopyright.com/wordpress-plugin' target="_blank">click here</a> or email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>.
+The following settings will determine how the iCopyright Article Tools and Interactive Copyright notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>.
 </p>
 
 
@@ -197,8 +196,9 @@ These settings affect how the iCopyright Article Tools and Interactive Copyright
 <br />
 <br />
 
-<?php _e('Automatic ')?>
+
 <input name="icopyright_display" type="radio" value="auto"  onclick="hide_manual_option()" <?php $icopyright_display = $icopyright_option['display']; if(empty($icopyright_display)||$icopyright_display=="auto"){echo "checked";}?> />
+<?php _e('Automatic ')?>
 <span style="font-size:10px">
 (<?php _e('iCopyright Article Toolbar and Interactive Copyright Notice will be automatically added into Content of Blog Post')?>)
 </span>
@@ -206,8 +206,8 @@ These settings affect how the iCopyright Article Tools and Interactive Copyright
 <br />
 
 
-<?php _e('Manual ')?>
 <input name="icopyright_display" type="radio" value="manual" onclick="show_manual_option()" <?php $icopyright_display2 = $icopyright_option['display']; if($icopyright_display2=="manual"){echo "checked";}?>/>
+<?php _e('Manual ')?>
 <span style="font-size:10px">
 (<?php _e('Deploy iCopyright Article Toolbar and Interactive Copyright Notice into Content of Blog Post, using WordPress Shortcode')?>)
 </span>
@@ -221,14 +221,14 @@ These settings affect how the iCopyright Article Tools and Interactive Copyright
 <img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/horizontal-toolbar.jpg" alt="horizontal-toolbar" align="absbottom"/>
 <br /><br />
 
-<?php _e('Horizontal Toolbar ')?>
-<input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_option['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> /><br /><br />
+
+<input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_option['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> /> <?php _e('Horizontal Toolbar ')?><br /><br />
 
 <img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/vertical-toolbar.jpg" alt="vertical-toolbar" align="absbottom"/>
 <br /><br />
 
-<?php _e('Vertical Toolbar ')?>
-<input name="icopyright_tools" type="radio" value="vertical" <?php $icopyright_tools2 = $icopyright_option['tools']; if($icopyright_tools2=="vertical"){echo "checked";}?> />
+
+<input name="icopyright_tools" type="radio" value="vertical" <?php $icopyright_tools2 = $icopyright_option['tools']; if($icopyright_tools2=="vertical"){echo "checked";}?> /> <?php _e('Vertical Toolbar ')?>
 </p>
 
 <br />
@@ -237,10 +237,9 @@ These settings affect how the iCopyright Article Tools and Interactive Copyright
 <strong><?php _e('iCopyright Article Tools Alignment:')?></strong>
 <br />
 <br />
-left 
-<input name="icopyright_align" type="radio" value="left" <?php $icopyright_align = $icopyright_option['align']; if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> />
-Right
-<input name="icopyright_align" type="radio" value="right" <?php $icopyright_align = $icopyright_option['align'];if($icopyright_align=="right"){echo "checked";}?> />
+<input name="icopyright_align" type="radio" value="left" <?php $icopyright_align = $icopyright_option['align']; if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> /> <?php _e('Left ')?>
+
+<input name="icopyright_align" type="radio" value="right" <?php $icopyright_align = $icopyright_option['align'];if($icopyright_align=="right"){echo "checked";}?> /> <?php _e('Right ')?>
 </p>
 
 <br />
@@ -250,18 +249,17 @@ Right
 <strong><?php _e('Single Post Display Option:')?></strong>
 <br />
 <br />
-Show both iCopyright Article Tools and Interactive Copyright Notice
-<input name="icopyright_show" type="radio" value="both" <?php $icopyright_show = $icopyright_option['show']; if(empty($icopyright_show)||$icopyright_show=="both"){echo "checked";}?> />
+<input name="icopyright_show" type="radio" value="both" <?php $icopyright_show = $icopyright_option['show']; if(empty($icopyright_show)||$icopyright_show=="both"){echo "checked";}?> /> <?php _e('Show both iCopyright Article Tools and Interactive Copyright Notice ')?>
 <br />
 
 
-Show only iCopyright Article Tools 
-<input name="icopyright_show" type="radio" value="tools" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="tools"){echo "checked";}?> />
+
+<input name="icopyright_show" type="radio" value="tools" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="tools"){echo "checked";}?> /> <?php _e('Show only iCopyright Article Tools ')?>
 <br />
 
 
-Show only Interactive Copyright Notice
-<input name="icopyright_show" type="radio" value="notice" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="notice"){echo "checked";}?> />
+
+<input name="icopyright_show" type="radio" value="notice" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="notice"){echo "checked";}?> /> <?php _e('Show only Interactive Copyright Notice ')?>
 </p>
 
 
@@ -273,23 +271,23 @@ Show only Interactive Copyright Notice
 <strong><?php _e('Multiple Post Display Option:')?></strong>
 <br />
 <br />
-Show both iCopyright Article Tools and Interactive Copyright Notice
-<input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = $icopyright_option['show_multiple']; if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> />
+
+<input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = $icopyright_option['show_multiple']; if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> /> <?php _e('Show both iCopyright Article Tools and Interactive Copyright Notice ')?>
 <br />
 
 
-Show only iCopyright Article Tools 
-<input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="tools"){echo "checked";}?> />
+ 
+<input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="tools"){echo "checked";}?> /> <?php _e('Show only iCopyright Article Tools ')?>
 <br />
 
 
-Show only Interactive Copyright Notice
-<input name="icopyright_show_multiple" type="radio" value="notice" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="notice"){echo "checked";}?> />
-<br />
+
+<input name="icopyright_show_multiple" type="radio" value="notice" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="notice"){echo "checked";}?> /> <?php _e('Show only Interactive Copyright Notice ')?>
+<br /> 
 
 
-Show nothing
-<input name="icopyright_show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="nothing"){echo "checked";}?> />
+
+<input name="icopyright_show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="nothing"){echo "checked";}?> /> <?php _e('Show nothing ')?>
 </p>
 
 </div>
@@ -373,13 +371,17 @@ No option available.
 <p>
 <strong><?php _e('Enable EZ Excerpt feature: ')?></strong>
 
-<?php _e('Yes ')?>
-<input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> />
+<br />
+<br />
 
-<?php _e('No ')?>
-<input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?>/>
+<input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> /> <?php _e('Yes ')?>
+
+
+<input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?>/> <?php _e('No ')?>
 <span style="font-size:10px">
-<br/>(For EZ Excerpt to be enabled, the display option selected above must include iCopyright Article Tools.<br />
+<br/>
+<br />
+(For EZ Excerpt to be enabled, the display option selected above must include iCopyright Article Tools.<br />
  When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Obtain a License?".<br/>If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
 </span>
 </p>
@@ -401,17 +403,22 @@ echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced Us
 
 <br />
 
+
+<p>
+<input type="hidden" name="submitted" value="yes-update-me"/>
+<input type="submit" name="submit" value="Save Settings" class="button-primary" />
+</p>
+
+
+<br />
+
+
 <!--visit conductor link-->
 <p>
 <strong><a href="<?php echo ICOPYRIGHT_URL.'publisher/';?>" target="_blank"><?php _e('Visit Conductor ')?></a></strong>
 </p>
 
 <br/>
-
-<p>
-<input type="hidden" name="submitted" value="yes-update-me"/>
-<input type="submit" name="submit" value="Save Settings" class="button-primary" />
-</p>
 
 </form>
 
