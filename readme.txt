@@ -3,7 +3,7 @@ Contributors: iCopyright, Inc.
 Tags: icopyright, copyright, prints, reprints, eprint, e-print, email, post, republish, share, article tools, monetize, monetization, distribute, distribution, piracy, infringement, syndication, reuse, re-use, advertisement, ads, license, licensing
 Requires at least: 2.9.2
 Tested up to: 3.0
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 
 The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content.
 
@@ -20,10 +20,7 @@ The iCopyright plugin adds article tools (print, email, post, and republish) and
 
 = Why are there no Frequently Asked Questions? =
 
-We haven't received any yet.  Have one?  Send it to <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>.
-
-== Screenshots ==
-
+We haven't received any yet.  Have one?  Send it to <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>
 
 == Changelog ==
 
@@ -61,3 +58,14 @@ EZ excerpt scripting files fixed
 3. Prevent rendering of licensing tools without publication ID.
 4. Added context and moved location of EZ Excerpt option.
 5. Added ability to exclude licensing tools from certain article.
+
+= 1.1.1 =
+1. Change successful registration status message
+2. Change format of radio buttons in settings panel
+3. WP Shortcodes are not being interpreted in feed content
+4. Change first sentence under the words "iCopyright Settings"
+5. Move "visit conductor" link below settings button
+6. EZ Excerpt doesn't function if only the interactive notice is displayed
+7. Simple text changes to settings page
+
+	
