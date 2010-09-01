@@ -75,7 +75,9 @@ function icopyright_admin(){
 		$fname = $_POST['fname'];
 		$lname = $_POST['lname'];
 		$email = $_POST['email'];
+		$email2 = $_POST['email2'];// not posted to API but required to re-populate form
 		$password = $_POST['password'];
+		$password2 = $_POST['password2'];// not posted to API but required to re-populate form
 		$pname = $_POST['pname'];
 		$url = $_POST['url'];
 		$line1 = $_POST['line1'];
@@ -154,10 +156,11 @@ function icopyright_admin(){
 									 'ez_excerpt'=> 'yes',									   			                           );
             //update array value $icopyright_pubid_new into WordPress Database Options table
 			update_option('icopyright_admin',$icopyright_admin_default);
-
+            
+			$icopyright_conductor_url = ICOPYRIGHT_URL."publisher/";  
             
 			echo "<div id=\"message\" class=\"updated fade\">";
-			echo "<strong><h3>Your registration was successful! An iCopyright Conductor account has been created for you, and your unique Publication ID number is: $icopyright_pubid_res . You do not have to remember this number unless you encounter a problem later. You will receive a welcome email from iCopyright Conductor momentarily. When you have completed the steps on this page, you can navigate to iCopyright Conductor to make additional adjustments to your services by clicking on the Visit Conductor link below or by following the steps in your email from iCopyright Conductor. </h3></strong>";
+			echo "<strong><h3>Congratulations, your website is now live with iCopyright! You can adjust the default settings below if you wish. You may find it helpful to view the video <a href='http://info.icopyright.com/wordpress-plugin' target='_blank'>\"Introduction to iCopyright\"</a>. Feel free to visit your new <a href='$icopyright_conductor_url' target='_blank'>iCopyright Conductor</a> account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.</h3></strong>";
 		    echo "</div>";
 			
 			echo "<script type='text/javascript'>document.getElementById('icopyright-warning').style.display='none';</script>";
@@ -176,12 +179,11 @@ function icopyright_admin(){
 
 <h2><?php _e("iCopyright Settings"); ?></h2>
 
-<p>
-The following settings will determine how the iCopyright Article Tools and Interactive Copyright notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a>.
-</p>
-
-
 <div id="icopyright_option" <?php global $show_icopyright_register_form; if($show_icopyright_register_form=='true'){echo'style="display:none"';} ?> >
+
+<p>
+The following settings will determine how the iCopyright Article Tools and Interactive Copyright notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-plugin" target="_blank">help</a>.
+</p>
 
 <form name="icopyrightform" id="icopyrightform" method="post" action="">
 
@@ -415,7 +417,7 @@ echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced Us
 
 <!--visit conductor link-->
 <p>
-<strong><a href="<?php echo ICOPYRIGHT_URL.'publisher/';?>" target="_blank"><?php _e('Visit Conductor ')?></a></strong>
+<strong><a href="<?php echo ICOPYRIGHT_URL.'publisher/';?>" target="_blank"><?php _e('Log in to Conductor')?></a> to enable additional services, adjust further settings, and view usage reports.</strong>
 </p>
 
 <br/>
@@ -428,7 +430,7 @@ echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced Us
 
 <?php 
 if($icopyright_form_status!='200'){
-create_icopyright_register_form($fname,$lname,$email,$password,$pname,$url,$line1,$line2,$line3,$city,$state,$postal,$country,$phone);
+create_icopyright_register_form($fname,$lname,$email,$email2,$password,$password2,$pname,$url,$line1,$line2,$line3,$city,$state,$postal,$country,$phone);
 }
 ?>
 
@@ -438,7 +440,7 @@ create_icopyright_register_form($fname,$lname,$email,$password,$pname,$url,$line
 
 //function to add sub menu link under WordPress Admin Settings.
 function icopyright_admin_menu() {
-	$icopyrightpage = add_submenu_page('options-general.php', 'iCopyright', 'iCopyright', 'activate_plugins', 'icopyright', 'icopyright_admin');
+	$icopyrightpage = add_submenu_page('options-general.php', 'iCopyright', 'iCopyright', 'activate_plugins', 'icopyright.php', 'icopyright_admin');
 	//add admin css and javascripts only to icopyright settings page if there is any.
     add_action( "admin_print_scripts-$icopyrightpage", 'icopyright_admin_scripts');
 	add_action( 'admin_footer-'. $icopyrightpage, 'icopyright_admin_footer_script' );
@@ -468,7 +470,39 @@ $icopyright_pdf_url = ICOPYRIGHT_URL."publisher/statichtml/CSA-Online-Plugin.pdf
 $js = "<!-- icopyright admin javascript -->\n";
 $js .="<script type=\"text/javascript\">\n";
 
-$js .="function validate_icopyright_tou(){if(!document.getElementById('tou').checked){document.getElementById('tou_error').innerHTML='<strong><p>The following fields needs your attention</p></strong><ol><li>Terms of Use: You need to agree to the Terms of Use, before submitting for registration. You may view the terms <a href=\"$icopyright_pdf_url\" target=\"_blank\">here.</a></li></ol>';document.getElementById('tou_error').style.display='block';return false;}else{document.getElementById('tou_error').style.display='none';return true;}}\n";
+//version 1.1.2
+//added form validation for email and password in addition to tou validation
+$js .="function validate_icopyright_form(){
+
+var error_message = '';
+
+//validate tou
+
+if(!document.getElementById('tou').checked){
+error_message+='<li>Terms of Use: You need to agree to the Terms of Use, before submitting for registration. You may view the terms <a href=\"$icopyright_pdf_url\" target=\"_blank\">here.</a></li>';
+}
+
+var email1 = document.getElementById('email').value;
+var email2 = document.getElementById('email2').value;
+if(email1!==email2){
+error_message+='<li>Email Address of Site Admin: Retype email address is different. Both email address needs to be the same.</li>';
+}
+
+var password1 = document.getElementById('password').value;
+var password2 = document.getElementById('password2').value;
+if(password1!==password2){
+error_message+='<li>Create Password for iCopyright Console: Retype password is different. Both password needs to be the same.</li>';
+}
+
+if(error_message!=''){
+document.getElementById('register_error_message').innerHTML = '<strong><p>The following fields needs your attention</p></strong><ol>'+error_message+'</ol>';
+document.getElementById('register_error_message').style.display='block';
+return false;
+}else{
+document.getElementById('register_error_message').style.display='none';
+return true;
+}
+}\n";
 
 $js .="function show_icopyright_form(){document.getElementById('icopyright_registration_form').style.display='block';
 document.getElementById('icopyright_option').style.display='none';document.getElementById('fname').focus();}\n";

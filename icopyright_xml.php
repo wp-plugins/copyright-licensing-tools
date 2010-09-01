@@ -93,14 +93,28 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 
     // get category
     $category = get_the_category($icopyright_post_id);
-    $icx_section = $category[0]->cat_name;
+	$icx_section_raw = $category[0]->cat_name;
+	
+	//check, if category is Uncategorized or uncategorized
+	//we hide it from feed
+	switch($icx_section_raw){
+	case "Uncategorized":
+	$icx_section = '';
+	break;
+	case "uncategorized":
+	$icx_section = '';
+	break;
+	default:
+	$icx_section = $icx_section_raw;
+	break;
+	}
 
 	// Construct the XML feed output
 	$xml = "<icx>\n";
 	$xml.="<icx_authors>$icx_author</icx_authors>\n";
 	$xml.="<icx_byline>$icx_byline</icx_byline>\n";
 	$xml.="<icx_copyright>$icx_copyright</icx_copyright>\n";
-	$xml.="<icx_deckheader>$icx_headline</icx_deckheader>\n";
+	$xml.="<icx_deckheader></icx_deckheader>\n";
 	$xml.="<icx_headline>$icx_headline</icx_headline>\n";
 	$xml.="<icx_pubdate>$icx_pubdate</icx_pubdate>\n";
 	$xml.="<icx_pubyear>$icx_pubyear</icx_pubyear>\n";

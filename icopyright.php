@@ -5,7 +5,7 @@ Plugin URI: http://info.icopyright.com/wordpress-plugin
 Description: The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 1.1.1
+Version: 1.1.2
 */
 
 
@@ -89,8 +89,10 @@ add_filter('plugin_row_meta', 'icopyright_settings_link', 10, 2);
 //function to create settings link
 function icopyright_settings_link($links, $file) {
     if ($file == plugin_basename(__FILE__)) {
-        $settings_link = "<a href=\"options-general.php?page=icopyright\">Settings</a>";
+        $settings_link = "<a href=\"options-general.php?page=icopyright.php\">Settings</a>";
+		$video_link = "<a href=\"http://info.icopyright.com/wordpress-plugin\" target=\"_blank\">View a video introduction to iCopyright</a>";//added version 1.1.2
         $links[] = $settings_link;
+		$links[] .= $video_link;//added version 1.1.2
     }
     return $links;
 }
@@ -123,13 +125,32 @@ register_activation_hook( __FILE__, 'icopyright_default_settings' );
 //admin warnings notice if empty publication id
 function icopyright_admin_warning(){
 
+/***since version 1.1.2***/
+
+//setup admin url to icopyright settings page
+$icopyright_settings_url = admin_url() . "options-general.php?page=icopyright.php";
+
+//setup current url
+$current_page_url = icopyright_current_page_url();
+
+//compare current url with constructed settings url
+// to determine if we are on settings page			
+if($current_page_url==$icopyright_settings_url){
+$show_warning_message = false;// Yes we are, do not show message!
+}else{
+$show_warning_message = true;// else not on settings page, show message!
+}
+/**end of version 1.1.2 addition*****/
+
 $check_admin_setting = get_option('icopyright_admin');
 
-  if(empty($check_admin_setting['pub_id'])){
+  //condition check to show admin warning,
+  //if publication id is empty and is not on settings page.
+  if((empty($check_admin_setting['pub_id'])) && ($show_warning_message == true)){
 
 		function icopyright_warning() {
 echo "
-			<div id='icopyright-warning' class='updated fade'><p><strong>".__('Copyright and Licensing Tools is almost ready.')."</strong> ".sprintf(__('You must register or enter your Publication Id for it to work. <a href="%1$s">Please click to visit iCopyright Settings Page.</a>'), "options-general.php?page=icopyright")."</p></div>
+			<div id='icopyright-warning' class='updated fade'><p><strong>".__('Copyright and Licensing Tools is almost ready.')."</strong> ".sprintf(__('You must register or enter your Publication Id for it to work. <a href="%1$s">Please click to visit iCopyright Settings Page.</a>'), "options-general.php?page=icopyright.php")."</p></div>
 			";
 		}
 		add_action('admin_notices','icopyright_warning');

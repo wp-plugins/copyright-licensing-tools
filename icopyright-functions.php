@@ -2,7 +2,7 @@
 //This file contains functions of icopyright plugin
 
 //function to dynamically create registration form!
-function create_icopyright_register_form($fname,$lname,$email,$password,$pname,$url,$line1,$line2,$line3,$city,$state,$postal,$country,$phone){
+function create_icopyright_register_form($fname,$lname,$email,$email2,$password,$password2,$pname,$url,$line1,$line2,$line3,$city,$state,$postal,$country,$phone){
 
 //check whether form has been submitted with errors
 //if there is errors change display form to block
@@ -18,13 +18,13 @@ $display_form = 'style="display:none"';
 //form fields and inputs
 $form = "<div class=\"icopyright_registration\" id=\"icopyright_registration_form\" $display_form>";
 
-$form .='<form name="icopyright_register_form" id="icopyright_register_form" method="post" action="" onsubmit="return validate_icopyright_tou(this)">';
+$form .='<form name="icopyright_register_form" id="icopyright_register_form" method="post" action="" onsubmit="return validate_icopyright_form(this)">';
 
-$form .="<div id='tou_error' class='updated faded' style='display:none;'></div>";
+$form .="<div id='register_error_message' class='updated faded' style='display:none;'></div>";
 
 $form .='<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(Click here to enter and save your Publication Id, if you already had one.)</a></h3>';
 
-$form .='<strong><p>Complete the fields below to get a Publication ID number. Required fields indicated by *</p></strong>';
+$form .='<strong><p>Complete the fields below to get a Publication ID number. Required fields indicated by *. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-plugin" target="_blank">help</a>.</p></strong>';
 
 $form .='<table class="widefat">';
 
@@ -35,10 +35,16 @@ $form .="<tr><td width=\"400px\"><label>First Name of Site Admin:</label></td><t
 $form .="<tr class=\"odd\"><td width=\"400px\"><label>Last Name of Site Admin:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"lname\" value=\"$lname\"/>*</td></tr>";
 
 //email
-$form .="<tr><td width=\"400px\"><label>Email Address of Site Admin:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" value=\"$email\"/>*</td></tr>";
+$form .="<tr><td width=\"400px\"><label>Email Address of Site Admin:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" id=\"email\" value=\"$email\"/>*</td></tr>";
+
+//email
+$form .="<tr><td width=\"400px\"><label>Email Address of Site Admin (Retype):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email2\" id=\"email2\" value=\"$email2\"/>*</td></tr>";
 
 //password
-$form .="<tr class=\"odd\"><td width=\"400px\"><label>Password for iCopyright Console (must be at least 6 characters):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"password\" value=\"$password\"/>*</td></tr>";
+$form .="<tr class=\"odd\"><td width=\"400px\"><label>Create Password for iCopyright Console <br/>(must be at least 6 characters):</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password\" id=\"password\" value=\"$password\"/>*</td></tr>";
+
+//password retype
+$form .="<tr class=\"odd\"><td width=\"400px\"><label>Create Password for iCopyright Console (Retype):</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password2\" id=\"password2\" value=\"$password2\"/>*</td></tr>";
 
 //pname
 $form .="<tr><td width=\"400px\"><label>Site Title (the name of your blog or publication):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"pname\" value=\"$pname\"/>*</td></tr>";
@@ -604,16 +610,14 @@ function icopyright_post_data($postdata){
 		   
 		   $api_url = ICOPYRIGHT_API_URL;//ICOPYRIGHT_API_URL constant defined in icopyright.php
 		   
-		   $rs_ch = curl_init("$api_url");
-		   curl_setopt($rs_ch, CURLOPT_POST, 1);
-		   curl_setopt($rs_ch, CURLOPT_POSTFIELDS ,$postdata);
-		   curl_setopt($rs_ch, CURLOPT_FOLLOWLOCATION ,1);
-		   curl_setopt($rs_ch, CURLOPT_HEADER ,0);  // DO NOT RETURN HTTP HEADERS
-		   curl_setopt($rs_ch, CURLOPT_RETURNTRANSFER ,1);  // RETURN THE CONTENTS OF THE CALL
-		   //curl_setopt($rs_ch, CURLOPT_TIMEOUT, 20);//set time out 
-		   $res = curl_exec($rs_ch);
-		   curl_close($rs_ch);
-		   return $res;
+		   $rs_ch = curl_init("$api_url");//initiate PHP CURL 
+		   curl_setopt($rs_ch, CURLOPT_POST, 1);//initiate http POST
+		   curl_setopt($rs_ch, CURLOPT_POSTFIELDS ,$postdata);//post data fields
+		   curl_setopt($rs_ch, CURLOPT_HEADER ,0);  // Do not return header
+		   curl_setopt($rs_ch, CURLOPT_RETURNTRANSFER ,1);  // Return content of the call
+		   $res = curl_exec($rs_ch);// execute response data
+		   curl_close($rs_ch);// close PHP CURL
+		   return $res;// return data to plugin to process 
 		   }
 
 
@@ -630,7 +634,6 @@ function icopyright_horizontal_toolbar(){
     //get publication id and ez_excerpt setting from options table from icopyright_admin array
 	$admin_option = get_option('icopyright_admin');
 	$pub_id_no = $admin_option['pub_id'];
-	$ez_excerpt = $admin_option['ez_excerpt'];
 	
 	//check publication id is not empty and all numerics
 	//if not return nothing to content filter by just simply let return;
@@ -645,16 +648,10 @@ function icopyright_horizontal_toolbar(){
     global $post;
 	$post_id = $post->ID;
 	
-	//construct link href
+	//content id
     $toolbar = "\n<!-- iCopyright Horizontal Article Toolbar -->\n";
 	$toolbar .= "<script type=\"text/javascript\">\n";
-	$toolbar .= "var icx_publication_id = '$pub_id_no';\n";
 	$toolbar .= "var icx_content_id = '$post_id';\n";
-
-	//check for ez_excerpt status, if yes, output into javascript
-	if($ez_excerpt=='yes'){
-	$toolbar .= "var icx_ez_excerpt = true;\n";	
-	}
     $toolbar .= "</script>\n";
 	
 	$toolbar_script_url = ICOPYRIGHT_URL.'rights/js/horz-toolbar.js';//ICOPYRIGHT_URL constant defined in icopyright.php
@@ -683,7 +680,6 @@ function icopyright_vertical_toolbar(){
     //get publication id and ez_excerpt setting from options table from icopyright_admin array
 	$admin_option = get_option('icopyright_admin');
 	$pub_id_no = $admin_option['pub_id'];
-	$ez_excerpt = $admin_option['ez_excerpt'];
 	
 	//check publication id is not empty and all numerics
 	//if not return nothing to content filter by just simply let return;
@@ -698,18 +694,10 @@ function icopyright_vertical_toolbar(){
     global $post;
 	$post_id = $post->ID;
 	
-  
+   //content id
     $toolbar = "\n<!-- iCopyright Vertical Article Toolbar -->\n";
 	$toolbar .= "<script type=\"text/javascript\">\n";
-	$toolbar .= "var icx_publication_id = '$pub_id_no';\n";
 	$toolbar .= "var icx_content_id = '$post_id';\n";
-	
-	//check for ez_excerpt status, if yes, output into javascript
-	if($ez_excerpt=='yes'){
-	$toolbar .= "var icx_ez_excerpt = true;\n";	
-	}
-
-	//construct toolbar link urls
     $toolbar .= "</script>\n";
 	
 	$toolbar_script_url = ICOPYRIGHT_URL.'rights/js/vert-toolbar.js';//ICOPYRIGHT_URL constant defined in icopyright.php
@@ -1105,4 +1093,50 @@ add_action('admin_menu', 'icopyright_add_custom_box');
 
 //hook in save_post action to save custom field data
 add_action('save_post', 'icopyright_save_postdata');
+
+
+//Since Version 1.1.2 
+//function to get current page url to be used for 
+//condition check in icopyright_admin_warning() found in icopyright.php
+function icopyright_current_page_url() {
+    $pageURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://";
+    if ($_SERVER["SERVER_PORT"] != "80") {
+        $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"];
+    }
+    else
+    {
+        $pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+    }
+    return $pageURL;
+}
+//Since Version 1.1.2
+//function to print ez_excerpt variable and publication id variable to <head> of web page
+function icopyright_hook_javascript_variable(){
+//get publication id and ez_excerpt setting from options table from icopyright_admin array
+$admin_option = get_option('icopyright_admin');
+//assign publication id
+$pub_id_no = $admin_option['pub_id'];
+//if not empty publication id, output javascript!
+	if(!empty($pub_id_no)){
+		
+		//assign ez_excerpt status
+		$ez_excerpt = $admin_option['ez_excerpt'];
+		
+		//print out javascript variables
+		$js = "\n<!--Javascript Variables Generated by Copyright and Licensing Tools Plugin-->\n";
+		$js .= "<script type='text/javascript'>\n";
+		$js .= "var icx_publication_id = '$pub_id_no';\n";
+		
+		//check for ez_excerpt status, if yes, output into javascript
+		if($ez_excerpt=='yes'){
+		$js .= "var icx_ez_excerpt = true;\n";	
+		}
+		
+		$js .= "</script>\n\n";
+		
+		//print to <head>
+		echo $js;
+	}
+}
+add_action('wp_head','icopyright_hook_javascript_variable');
 ?>
