@@ -13,14 +13,14 @@ The iCopyright plugin adds article tools (print, email, post, and republish) and
 
 == Installation ==
 
-=Install Plugin Using Search=
+= Install Plugin Using Search =
 
    1. Click 'Install Now' in search results row
    2. Click 'OK' to accept plugin installation
    3. Once installed, click Activate Plugin link
    4. Configure the plugin through Settings
 
-=or, install Plugin in .ZIP Format=
+= or, install Plugin in .ZIP Format =
 
    1. Visit Plugins > Add New > Upload in WordPress admin
    2. Upload icopyright.zip file
