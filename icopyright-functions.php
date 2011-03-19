@@ -620,8 +620,21 @@ function icopyright_post_data($postdata){
 		   return $res;// return data to plugin to process 
 		   }
 
-
-
+function icopyright_post_update_feed_url($id,$postdata,$header){
+		   		   
+		   $api_url = ICOPYRIGHT_UPDATE_API_URL."/".$id;
+		   
+		   $rs_ch = curl_init("$api_url");//initiate PHP CURL 
+		   curl_setopt($rs_ch, CURLOPT_POST, 1);//initiate http POST
+		   curl_setopt($rs_ch, CURLOPT_POSTFIELDS ,$postdata);//post data fields
+		   curl_setopt($rs_ch, CURLOPT_HEADER ,0);  // Do not return header
+		   curl_setopt($rs_ch,CURLOPT_HTTPHEADER,$header);
+		   curl_setopt($rs_ch, CURLOPT_RETURNTRANSFER ,1);  // Return content of the call
+		   $res = curl_exec($rs_ch);// execute response data
+		   curl_close($rs_ch);// close PHP CURL
+		   return $res;// return data to plugin to process 
+		   }
+		   
 //WordPress Shortcodes to generate tool bars for content
 //functions to generate tool bars, reuseable for auto inclusion or manual inclusion.
 //Admin option to select toolbars and change auto to manual display

@@ -156,11 +156,45 @@ function icopyright_admin(){
 									 'ez_excerpt'=> 'yes',									   			                           );
             //update array value $icopyright_pubid_new into WordPress Database Options table
 			update_option('icopyright_admin',$icopyright_admin_default);
-            
+			
+			$plugin_feed_url = WP_PLUGIN_URL."/copyright-licensing-tools/icopyright_xml.php?id=*";
+			
+			//create post data string
+			$id2 = $icopyright_pubid_array[0];
+		    $postdata2 = "feed_url=$plugin_feed_url";
+		    $header_encode = base64_encode("$email:$password");
+		    $header2 = array("Authorization: Basic $header_encode");
+
+		    //post data to API using CURL and assigning response.
+		    $response2 = icopyright_post_update_feed_url($id2,$postdata2,$header2);
+		    $response2 = str_replace( 'ns0:' , '' , $response2);
+		    $response2 = str_replace( 'ns0:' , '' , $response2);
+
+		     $xml2 = @simplexml_load_string($response2);
+		     
+		     $icopyright_feed_status = $xml2->status['code'];
+		     
+		     if ($icopyright_feed_status=='200'){
+		     //successful feed url update, we show no additional message
+		     
+		     $update_feed_error = "";
+		     }elseif ($icopyright_feed_status=='400'){
+		     //update unsuccessful, we show additional instruction
+		     
+		     $update_feed_error = "There is an error in updating your feed url. You may need to login to iCopyright Conductor to update your feed url, if there is a problem using your plugin.";
+		     
+		     }else{
+		     //if no status code or wrong status code, could be server down
+		     //we show server down message
+		     
+		     $update_feed_error = "However, our API server is experiencing some problems. You may need to login to iCopyright Conductor to update your feed url, if there is a problem using your plugin.";		     
+		     }		                 
+			
+			
 			$icopyright_conductor_url = ICOPYRIGHT_URL."publisher/";  
             
 			echo "<div id=\"message\" class=\"updated fade\">";
-			echo "<strong><h3>Congratulations, your website is now live with iCopyright! You can adjust the default settings below if you wish. You may find it helpful to view the video <a href='http://info.icopyright.com/wordpress-plugin' target='_blank'>\"Introduction to iCopyright\"</a>. Feel free to visit your new <a href='$icopyright_conductor_url' target='_blank'>iCopyright Conductor</a> account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.</h3></strong>";
+			echo "<strong><h3>Congratulations, your website is now live with iCopyright! You can adjust the default settings below if you wish. You may find it helpful to view the video <a href='http://info.icopyright.com/wordpress-plugin' target='_blank'>\"Introduction to iCopyright\"</a>. Feel free to visit your new <a href='$icopyright_conductor_url' target='_blank'>iCopyright Conductor</a> account to explore your new capabilities. A welcome email has been sent to you with some helpful hints. $update_feed_error</h3></strong>";
 		    echo "</div>";
 			
 			echo "<script type='text/javascript'>document.getElementById('icopyright-warning').style.display='none';</script>";
@@ -305,7 +339,6 @@ No option available.
 </p>
 
 </div>
-
 
 <!--WordPress shortcodes -->
 <div id="M1" style="float:left;margin:0 50px 0 0;display:none;height:300px;<?php $display3 = $icopyright_option['display']; if($display3=="manual"){echo "display:block;";}?>">
