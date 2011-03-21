@@ -403,6 +403,7 @@ No option available.
 <br clear="all"/>
 
 <!--Toggle EZ Excerpt Feature -->
+<!--
 <p>
 <strong><?php _e('Enable EZ Excerpt feature: ')?></strong>
 
@@ -422,6 +423,7 @@ No option available.
 </p>
 
 <br/>
+-->
 
 <!--Publication ID-->
 <p>
