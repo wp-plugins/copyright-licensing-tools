@@ -27,7 +27,11 @@ function icopyright_admin(){
 			 $icopyright_show = stripslashes($_POST['icopyright_show']);
 			 $icopyright_show_multiple = stripslashes($_POST['icopyright_show_multiple']);
 			 $icopyright_ez_excerpt = stripslashes($_POST['icopyright_ez_excerpt']);
+			 $icopyright_syndication = stripslashes($_POST['icopyright_syndication']);
+			 $icopyright_conductor_email = stripslashes($_POST['icopyright_conductor_email']);
+			 $icopyright_conductor_password = stripslashes($_POST['icopyright_conductor_password']);			 
 			 
+			 			 			 
 			 //check publication id
 			 if(empty($icopyright_pubid)){
 			 $error_message .= '<div id="message" class="updated fade"><p><strong>Empty Publication ID, Please key in Publication ID or sign up for one!</strong></p></div>';
@@ -37,8 +41,57 @@ function icopyright_admin(){
 			 if(!empty($icopyright_pubid)&&!is_numeric($icopyright_pubid)){
 			 $error_message .= '<div id="message" class="updated fade"><p><strong>Publication ID error, Please key in numerics only!</strong></p></div>';
 			 }
-		 
+			
+			//check conductor email
+			//since version 1.1.4
+			 if(empty($icopyright_conductor_email)){
+			 $error_message .= '<div id="message" class="updated fade"><p><strong>Empty Email Address, Please key in Conductor Login Email Address!</strong></p></div>';
+			 }else{
+			 //update option
+			 update_option('icopyright_conductor_email',$icopyright_conductor_email);
+			 }
 			 
+			 
+			 //check conductor password
+			 //since version 1.1.4
+			 if(empty($icopyright_conductor_password)){
+			 $error_message .= '<div id="message" class="updated fade"><p><strong>Empty Password, Please key in Conductor Login Password!</strong></p></div>';
+			 }else{
+			 //update option
+			 update_option('icopyright_conductor_password',$icopyright_conductor_password);
+			 }						 
+			 
+			 						 		 			 
+			 //do ez excerpt setting, after email address and password are updated for old users.
+			 //since version 1.1.4
+			 $conductor_password = get_option('icopyright_conductor_password');
+			 $conductor_email = get_option('icopyright_conductor_email');
+			 $user_agent = ICOPYRIGHT_USERAGENT;
+			 
+			 if($icopyright_ez_excerpt=='yes'){
+			 //user enabled ez excerpt
+			 $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
+			 //checked for response, but not sure why there is no response from API?
+			 //print_r($ez_res);			 
+			 }else{
+			 //user disabled ez excerpt
+			 $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
+			 //print_r($ez_res);	
+			}
+			
+			//do syndication setting, variables same as ez excerpt setting, except api call.
+			//since version 1.1.4
+			if($icopyright_syndication=='yes'){
+			 //user enabled syndication
+			 $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
+			 //checked for response, but not sure why there is no response from API?
+			 //print_r($syndicate_res);			 
+			 }else{
+			 //user disabled syndication
+			 $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
+			 //print_r($syndicate_res);		
+			}			 
+		 			 
 			 //assign value to icopyright admin settings array
 			 //for saving into options table as an array value.
 			 $icopyright_admin = array('pub_id' => $icopyright_pubid,
@@ -47,7 +100,8 @@ function icopyright_admin(){
 									   'align' => $icopyright_align,
 									   'show' => $icopyright_show,
 									   'show_multiple' => $icopyright_show_multiple,
-									   'ez_excerpt'=> $icopyright_ez_excerpt,									   
+									   'ez_excerpt'=> $icopyright_ez_excerpt,
+									   'syndication'=> $icopyright_syndication,									   
 			                           );
 		     //check if no error, then update admin setting
 			 if(empty($error_message)){
@@ -88,15 +142,17 @@ function icopyright_admin(){
 		$postal = $_POST['postal'];
 		$country = $_POST['country'];
 		$phone = $_POST['phone'];
+		$description = $_POST['description'];
 
 		
 		//create post data string
 		$postdata = "fname=$fname&lname=$lname&email=$email&password=$password&pname=$pname&url=$url";
 		$postdata .= "&line1=$line1&line2=$line2&line3=$line3&city=$city&state=$state&postal=$postal&country=$country";
-		$postdata .= "&phone=$phone";
+		$postdata .= "&phone=$phone&description=$description";
 		
 		//post data to API using CURL and assigning response.
-		$response = icopyright_post_data($postdata);
+		$useragent = ICOPYRIGHT_USERAGENT;
+		$response = icopyright_post_new_publisher($postdata, $useragent, $email, $password);
 		$response = str_replace( 'ns0:' , '' , $response);
 		$response = str_replace( 'ns0:' , '' , $response);
 		
@@ -153,10 +209,17 @@ function icopyright_admin(){
 									 'align' => 'left',
 									 'show' => 'both',
 									 'show_multiple' => 'both',
-									 'ez_excerpt'=> 'yes',									   			                           );
+									 'ez_excerpt'=> 'yes',
+									 'syndication'=>'yes'		
+									 );
             //update array value $icopyright_pubid_new into WordPress Database Options table
 			update_option('icopyright_admin',$icopyright_admin_default);
 			
+			//update conductor password and email into option for ez excerpt use.
+			//since version 1.1.4
+			update_option('icopyright_conductor_password',$password);
+			update_option('icopyright_conductor_email',$email);
+						 			
 			$plugin_feed_url = WP_PLUGIN_URL."/copyright-licensing-tools/icopyright_xml.php?id=*";
 			
 			//create post data string
@@ -194,7 +257,7 @@ function icopyright_admin(){
 			$icopyright_conductor_url = ICOPYRIGHT_URL."publisher/";  
             
 			echo "<div id=\"message\" class=\"updated fade\">";
-			echo "<strong><h3>Congratulations, your website is now live with iCopyright! You can adjust the default settings below if you wish. You may find it helpful to view the video <a href='http://info.icopyright.com/wordpress-plugin' target='_blank'>\"Introduction to iCopyright\"</a>. Feel free to visit your new <a href='$icopyright_conductor_url' target='_blank'>iCopyright Conductor</a> account to explore your new capabilities. A welcome email has been sent to you with some helpful hints. $update_feed_error</h3></strong>";
+			echo "<strong><h3>Congratulations, your website is now live with iCopyright! Please review the default settings below and make any changes you wish. You may find it helpful to view the video <a href='http://info.icopyright.com/icopyright-video' target='_blank'>\"Introduction to iCopyright\"</a>. Feel free to visit your new <a href='$icopyright_conductor_url' target='_blank'>Conductor</a> account to explore your new capabilities. A welcome email has been sent to you with some helpful hints. $update_feed_error</h3></strong>";
 		    echo "</div>";
 			
 			echo "<script type='text/javascript'>document.getElementById('icopyright-warning').style.display='none';</script>";
@@ -403,7 +466,7 @@ No option available.
 <br clear="all"/>
 
 <!--Toggle EZ Excerpt Feature -->
-<!--
+
 <p>
 <strong><?php _e('Enable EZ Excerpt feature: ')?></strong>
 
@@ -417,13 +480,34 @@ No option available.
 <span style="font-size:10px">
 <br/>
 <br />
-(For EZ Excerpt to be enabled, the display option selected above must include iCopyright Article Tools.<br />
- When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Obtain a License?".<br/>If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
+(For EZ Excerpt to be enabled, the display option selected above must include iCopyright Article Tools. When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Obtain a License?".<br/> If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
 </span>
 </p>
 
 <br/>
--->
+
+
+<!--Syndication -->
+
+<p>
+<strong><?php _e('Syndication: ')?></strong>
+
+<br />
+<br />
+
+<input name="icopyright_syndication" type="radio" value="yes" <?php $icopyright_syndication = $icopyright_option['syndication']; if(empty($icopyright_syndication)||$icopyright_syndication=="yes"){echo "checked";}?> /> <?php _e('Yes ')?>
+
+
+<input name="icopyright_syndication" type="radio" value="no" <?php $icopyright_syndication2 = $icopyright_option['syndication']; if($icopyright_syndication2=="no"){echo "checked";}?>/> <?php _e('No ')?>
+<span style="font-size:10px">
+<br/>
+<br />
+(The Syndication Feed service enables other websites to subscribe to a feed of your content and pay you based on the number of times your articles are viewed on their site at a CPM rate you specify.<br/> When you receive your Welcome email, click to go into Conductor and set the business terms you would like. Until you do that, default pricing and business terms will apply.)
+</span>
+</p>
+
+<br/>
+
 
 <!--Publication ID-->
 <p>
@@ -440,7 +524,33 @@ echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced Us
 
 <br />
 
+<!--Conductor email-->
+<p>
+<strong><?php _e('Email Address:')?></strong> 
+<input type="text" name="icopyright_conductor_email" style="width:200px;" value="<?php $icopyright_conductor_email = get_option('icopyright_conductor_email'); echo $icopyright_conductor_email; ?>"/> 
+<?php
+if(empty($icopyright_conductor_email)){
+echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Please enter your Conductor login Email address here.</span>';
+}
+?>
+</p>
 
+<br />
+
+<!--Conductor password-->
+<p>
+<strong><?php _e('Password:')?></strong> 
+<input type="password" name="icopyright_conductor_password" style="width:200px;margin-left:30px;" value="<?php $icopyright_conductor_password = get_option('icopyright_conductor_password'); echo $icopyright_conductor_password; ?>"/> 
+<?php
+if(empty($icopyright_conductor_password)){
+echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Please enter your Conductor login Password here.</span>';
+}
+?>
+</p>
+
+<br />
+			
+			
 <p>
 <input type="hidden" name="submitted" value="yes-update-me"/>
 <input type="submit" name="submit" value="Save Settings" class="button-primary" />
@@ -465,7 +575,7 @@ echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced Us
 
 <?php 
 if($icopyright_form_status!='200'){
-create_icopyright_register_form($fname,$lname,$email,$email2,$password,$password2,$pname,$url,$line1,$line2,$line3,$city,$state,$postal,$country,$phone);
+create_icopyright_register_form($fname,$lname,$email,$email2,$password,$password2,$pname,$url,$line1,$line2,$line3,$city,$state,$postal,$country,$phone,$description);
 }
 ?>
 

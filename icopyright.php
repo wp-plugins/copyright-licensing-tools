@@ -5,25 +5,29 @@ Plugin URI: http://info.icopyright.com/wordpress-plugin
 Description: The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 1.1.3
+Version: 1.1.4
 */
 
 
 //define constant that need to be changed from test environment to live environment
 
-//define URL to iCopyright API
-define("ICOPYRIGHT_API_URL","http://license.icopyright.net/api/xml/publisher/add");
-define("ICOPYRIGHT_UPDATE_API_URL","http://license.icopyright.net/api/xml/publication/update");
-
-//define URL to iCopyright; assuming other file structures will be intact.
-define("ICOPYRIGHT_URL","http://license.icopyright.net/");
-
-//define the plugin's name
+//define the plugin's name, directory, and url
 define("ICOPYRIGHT_PLUGIN_NAME", "copyright-licensing-tools");
 define("ICOPYRIGHT_PLUGIN_DIR", WP_PLUGIN_DIR . "/" . ICOPYRIGHT_PLUGIN_NAME);
 define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 
-//leave this page for including functions organised into files for easy reference.
+//include icopyright common functions file, there is defined server settings.
+//since version 1.1.4
+include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
+
+//define user agent
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.1.4");
+
+//define URL to iCopyright; assuming other file structures will be intact.
+//url constructed from define server from icopyright-common.php
+//updated version 1.1.4
+$icopyright_url = icopyright_get_server(TRUE)."/";
+define("ICOPYRIGHT_URL",$icopyright_url);
 
 //include plugin admin page
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-admin.php');
@@ -65,7 +69,7 @@ $str = <<<CSS
 <!--icopyright embedded css -->
 <style type="text/css">
 .icx-toolbar{
-float:right;
+float:right !important;
 margin:0px 0px 10px 10px;
 }
 </style>\n
@@ -114,10 +118,15 @@ if(empty($check_admin_setting)){
 									   'align' => 'left',
 									   'show' => 'both',
 									   'show_multiple' => 'both',
-									   'ez_excerpt'=> 'yes',									   			                           );
+									   'ez_excerpt'=> 'yes',
+									   'syndication'=>'yes'
+							   	     );
 
 			 update_option('icopyright_admin',$icopyright_admin);
-       
+			 //prepare blank option to save conductor password into option to use for ez excerpt setting.
+			 //since version 1.1.4
+			 update_option('icopyright_conductor_password','');
+			 update_option('icopyright_conductor_email','');       
 }
 
 }

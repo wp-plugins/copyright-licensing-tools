@@ -28,6 +28,13 @@ function format_date($date)
 //get id http queried from icopyright conductor
 $icopyright_post_id = $_GET['id'];
 
+//check whether user disable article tools for post, if yes, we hide feed too.
+$hide_toolbar = get_post_meta($icopyright_post_id, 'icopyright_hide_toolbar', true);
+if($hide_toolbar=='yes'){
+//stop script
+die();
+}
+
 global $wpdb;
 
 $posttable = $wpdb->prefix."posts";

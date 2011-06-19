@@ -26,12 +26,12 @@ that will appear on the blog content.
   padding: 0 0 10px 30px;
   font-size: 10px;
   line-height: 1.2em;
-  background: url(http://license.icopyright.net:80/rights/images/icopy-w.gif) no-repeat left center;
+  background: url(http://license.icopyright.net:80/rights/images/icopy-w.png) no-repeat left center;
 }
 
 .icopyright-interactive-notice a:hover {
   color: #E8B900;
-  background: url(http://license.icopyright.net:80/rights/images/icopy-g.gif) no-repeat left center;
+  background: url(http://license.icopyright.net:80/rights/images/icopy-g.png) no-repeat left center;
 }
 
 .icopyright-interactive-notice span {

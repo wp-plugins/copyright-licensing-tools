@@ -2,7 +2,7 @@
 //This file contains functions of icopyright plugin
 
 //function to dynamically create registration form!
-function create_icopyright_register_form($fname,$lname,$email,$email2,$password,$password2,$pname,$url,$line1,$line2,$line3,$city,$state,$postal,$country,$phone){
+function create_icopyright_register_form($fname,$lname,$email,$email2,$password,$password2,$pname,$url,$line1,$line2,$line3,$city,$state,$postal,$country,$phone,$description){
 
 //check whether form has been submitted with errors
 //if there is errors change display form to block
@@ -15,6 +15,19 @@ $display_form = 'style="display:block"';
 $display_form = 'style="display:none"';
 }
 
+//check if curl is loaded, if not display the following message, and hide registration form.
+//A PHP extension ( cURL extension ), which is needed for our Registration Form to work, is not installed by your Hosting Provider. You will need to request for a Publication Id here. (Click here to enter and save your Publication Id, if you already had one.)
+
+$loaded_extension = get_loaded_extensions();
+if(!in_array("curl",$loaded_extension)){
+echo "<div id='curl_notice' class='updated fade'><p>A PHP extension ( cURL extension ), which is needed for our Registration Form to work, is not installed by your Hosting Provider. You will need to request for a Publication Id <a href='http://info.icopyright.com/publishers-sign-in-sign-up' target='_blank'>here.</a><a href='#' onclick='document.getElementById(\"curl_notice\").style.display=\"none\";document.getElementById(\"icopyright_option\").style.display=\"block\";' style='font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;'>(Click here to enter and save your Publication Id, if you already had one.)</a></p></div>";
+	$initial_js ="<script type=\"text/javascript\">\n";
+	$initial_js .="document.getElementById('icopyright_option').style.display='none';";
+	$initial_js .="</script>\n";
+	echo $initial_js;
+	die();
+}
+
 //form fields and inputs
 $form = "<div class=\"icopyright_registration\" id=\"icopyright_registration_form\" $display_form>";
 
@@ -24,7 +37,7 @@ $form .="<div id='register_error_message' class='updated faded' style='display:n
 
 $form .='<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(Click here to enter and save your Publication Id, if you already had one.)</a></h3>';
 
-$form .='<strong><p>Complete the fields below to get a Publication ID number. Required fields indicated by *. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-plugin" target="_blank">help</a>.</p></strong>';
+$form .='<strong><p>Complete the fields below to activate iCopyright Article Tools. Required fields indicated by *. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-plugin" target="_blank">help</a>.</p></strong>';
 
 $form .='<table class="widefat">';
 
@@ -33,6 +46,16 @@ $form .="<tr><td width=\"400px\"><label>First Name of Site Admin:</label></td><t
 
 //lname
 $form .="<tr class=\"odd\"><td width=\"400px\"><label>Last Name of Site Admin:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"lname\" value=\"$lname\"/>*</td></tr>";
+
+//auto populate current user email
+//since version 1.1.4
+
+if(!isset($email)){ //check if email variable is not set, we use current user email
+global $current_user;
+get_currentuserinfo();
+$email = $current_user->user_email;
+$email2 = $email;
+}
 
 //email
 $form .="<tr><td width=\"400px\"><label>Email Address of Site Admin:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" id=\"email\" value=\"$email\"/>*</td></tr>";
@@ -46,8 +69,17 @@ $form .="<tr class=\"odd\"><td width=\"400px\"><label>Create Password for iCopyr
 //password retype
 $form .="<tr class=\"odd\"><td width=\"400px\"><label>Create Password for iCopyright Console (Retype):</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password2\" id=\"password2\" value=\"$password2\"/>*</td></tr>";
 
+
 //pname
 $form .="<tr><td width=\"400px\"><label>Site Title (the name of your blog or publication):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"pname\" value=\"$pname\"/>*</td></tr>";
+
+//auto populate using WordPress site url
+//since version 1.1.4
+
+if(!isset($url)){
+$url = get_bloginfo('url')."/";
+}
+
 
 //url
 $form .="<tr class=\"odd\"><td width=\"400px\"><label>WordPress Site Address (URL):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"url\" value=\"$url\"/>*</td></tr>";
@@ -575,8 +607,11 @@ $form.="</select>*</td></tr>";
 //phone
 $form .="<tr class=\"odd\"><td width=\"400px\"><label>Phone:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"phone\" value=\"$phone\"/>*</td></tr>";
 
+//General Description
+$form .="<tr><td width=\"400px\"><label>General Description:</label></td><td><input style=\"width:500px\" type=\"text\" name=\"description\" value=\"$description\"/>*</td></tr>";
+
 //TOU
-$form .="<tr><td width=\"400px\"><label>Terms of Use:</label></td><td>I agree with the<a href='";
+$form .="<tr class=\"odd\"><td width=\"400px\"><label>Terms of Use:</label></td><td>I agree with the<a href='";
 $form .= ICOPYRIGHT_URL."publisher/statichtml/CSA-Online-Plugin.pdf";
 $form .="' target='_blank'> terms of use.</a> <input id=\"tou\" name=\"tou\" type=\"checkbox\" value=\"true\" style='border:none;'";
 
@@ -604,36 +639,14 @@ echo $form;
 }
 
 
-//function to post data to API!
-function icopyright_post_data($postdata){
-		   
-		   
-		   $api_url = ICOPYRIGHT_API_URL;//ICOPYRIGHT_API_URL constant defined in icopyright.php
-		   
-		   $rs_ch = curl_init("$api_url");//initiate PHP CURL 
-		   curl_setopt($rs_ch, CURLOPT_POST, 1);//initiate http POST
-		   curl_setopt($rs_ch, CURLOPT_POSTFIELDS ,$postdata);//post data fields
-		   curl_setopt($rs_ch, CURLOPT_HEADER ,0);  // Do not return header
-		   curl_setopt($rs_ch, CURLOPT_RETURNTRANSFER ,1);  // Return content of the call
-		   $res = curl_exec($rs_ch);// execute response data
-		   curl_close($rs_ch);// close PHP CURL
-		   return $res;// return data to plugin to process 
-		   }
-
-function icopyright_post_update_feed_url($id,$postdata,$header){
-		   		   
-		   $api_url = ICOPYRIGHT_UPDATE_API_URL."/".$id;
-		   
-		   $rs_ch = curl_init("$api_url");//initiate PHP CURL 
-		   curl_setopt($rs_ch, CURLOPT_POST, 1);//initiate http POST
-		   curl_setopt($rs_ch, CURLOPT_POSTFIELDS ,$postdata);//post data fields
-		   curl_setopt($rs_ch, CURLOPT_HEADER ,0);  // Do not return header
-		   curl_setopt($rs_ch,CURLOPT_HTTPHEADER,$header);
-		   curl_setopt($rs_ch, CURLOPT_RETURNTRANSFER ,1);  // Return content of the call
-		   $res = curl_exec($rs_ch);// execute response data
-		   curl_close($rs_ch);// close PHP CURL
-		   return $res;// return data to plugin to process 
-		   }
+function icopyright_post_update_feed_url($id,$postdata,$headers){
+		   	//used function icopyright_post from icopyright-common.php
+		   	//since version 1.1.4	   
+		   $url = "/api/xml/publication/update/".$id;
+		   $useragent = ICOPYRIGHT_USERAGENT;
+		   $res = icopyright_post($url, $postdata, $useragent, $headers);
+		   return $res; 
+}
 		   
 //WordPress Shortcodes to generate tool bars for content
 //functions to generate tool bars, reuseable for auto inclusion or manual inclusion.
@@ -1139,11 +1152,6 @@ $pub_id_no = $admin_option['pub_id'];
 		$js = "\n<!--Javascript Variables Generated by Copyright and Licensing Tools Plugin-->\n";
 		$js .= "<script type='text/javascript'>\n";
 		$js .= "var icx_publication_id = '$pub_id_no';\n";
-		
-		//check for ez_excerpt status, if yes, output into javascript
-		if($ez_excerpt=='yes'){
-		$js .= "var icx_ez_excerpt = true;\n";	
-		}
 		
 		$js .= "</script>\n\n";
 		
