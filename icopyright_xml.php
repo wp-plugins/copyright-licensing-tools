@@ -44,6 +44,13 @@ $usertable = $wpdb->prefix."users";
 $response = $wpdb->get_results("SELECT * FROM $posttable JOIN $usertable on $posttable.post_author=$usertable.ID WHERE $posttable.ID = '$icopyright_post_id'");
 foreach ($response as $res){
 
+//check post status, if other then 'publish' we hide the feed.
+if($res->post_status!=='publish'){
+//stop script
+die();
+}
+
+
 header('Content-Type: ' . feed_content_type('rss-http') . '; charset=' . get_option('blog_charset'), true);
 $more = 1;
 

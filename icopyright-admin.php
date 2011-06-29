@@ -34,18 +34,18 @@ function icopyright_admin(){
 			 			 			 
 			 //check publication id
 			 if(empty($icopyright_pubid)){
-			 $error_message .= '<div id="message" class="updated fade"><p><strong>Empty Publication ID, Please key in Publication ID or sign up for one!</strong></p></div>';
+			 $error_message .= '<li>Empty Publication ID, Please key in Publication ID or sign up for one!</li>';
 			 }
 			 
 			 //check for numerical publication id when id is not empty
 			 if(!empty($icopyright_pubid)&&!is_numeric($icopyright_pubid)){
-			 $error_message .= '<div id="message" class="updated fade"><p><strong>Publication ID error, Please key in numerics only!</strong></p></div>';
+			 $error_message .= '<li>Publication ID error, Please key in numerics only!</li>';
 			 }
 			
 			//check conductor email
 			//since version 1.1.4
 			 if(empty($icopyright_conductor_email)){
-			 $error_message .= '<div id="message" class="updated fade"><p><strong>Empty Email Address, Please key in Conductor Login Email Address!</strong></p></div>';
+			 $error_message .= '<li>Empty Email Address, Please key in Conductor Login Email Address!</li>';
 			 }else{
 			 //update option
 			 update_option('icopyright_conductor_email',$icopyright_conductor_email);
@@ -55,7 +55,7 @@ function icopyright_admin(){
 			 //check conductor password
 			 //since version 1.1.4
 			 if(empty($icopyright_conductor_password)){
-			 $error_message .= '<div id="message" class="updated fade"><p><strong>Empty Password, Please key in Conductor Login Password!</strong></p></div>';
+			 $error_message .= '<li>Empty Password, Please key in Conductor Login Password!</li>';
 			 }else{
 			 //update option
 			 update_option('icopyright_conductor_password',$icopyright_conductor_password);
@@ -68,29 +68,52 @@ function icopyright_admin(){
 			 $conductor_email = get_option('icopyright_conductor_email');
 			 $user_agent = ICOPYRIGHT_USERAGENT;
 			 
-			 if($icopyright_ez_excerpt=='yes'){
+			 if($icopyright_ez_excerpt=='yes' && !empty($conductor_email) && !empty($conductor_password)){
 			 //user enabled ez excerpt
 			 $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
-			 //checked for response, but not sure why there is no response from API?
-			 //print_r($ez_res);			 
-			 }else{
+			 //checked for response from API
+			 $check_ez_res = icopyright_check_response($ez_res);
+			      if(!$check_ez_res == true){
+					$error_message .= "<li>Failed to update EZ Excerpt Setting!</li>";
+			      }		 
+			 }
+			 
+			 if($icopyright_ez_excerpt=='no' && !empty($conductor_email) && !empty($conductor_password)){
 			 //user disabled ez excerpt
 			 $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
-			 //print_r($ez_res);	
-			}
+			 //checked for response from API
+			 $check_ez_res = icopyright_check_response($ez_res);
+			      if(!$check_ez_res == true){
+					$error_message .= "<li>Failed to update EZ Excerpt Setting!</li>";
+			      }		 
+			 }			 
+			 
+			 
 			
 			//do syndication setting, variables same as ez excerpt setting, except api call.
 			//since version 1.1.4
-			if($icopyright_syndication=='yes'){
+			if($icopyright_syndication=='yes' && !empty($conductor_email) && !empty($conductor_password)){
 			 //user enabled syndication
 			 $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
-			 //checked for response, but not sure why there is no response from API?
-			 //print_r($syndicate_res);			 
-			 }else{
+			//checked for response from API
+			 $check_syndicate_res = icopyright_check_response($syndicate_res);
+			      if(!$check_syndicate_res == true){
+					$error_message .= "<li>Failed to update Syndication Setting!</li>";
+			      }	
+			 }
+			 
+			 
+			if($icopyright_syndication=='no' && !empty($conductor_email) && !empty($conductor_password)){
 			 //user disabled syndication
 			 $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
-			 //print_r($syndicate_res);		
-			}			 
+			//checked for response from API
+			 $check_syndicate_res = icopyright_check_response($syndicate_res);
+			      if(!$check_syndicate_res == true){
+					$error_message .= "<li>Failed to update Syndication Setting!</li>";
+			      }	
+			 }			 
+			 
+			  
 		 			 
 			 //assign value to icopyright admin settings array
 			 //for saving into options table as an array value.
@@ -111,7 +134,9 @@ function icopyright_admin(){
 			 
 			 //check error message, if there is any, show it to blogger		 
 		     if(!empty($error_message)){
-			 echo $error_message;
+		     echo "<div  id=\"message\" class=\"updated fade\"><p style='font-size:14px;margin:5px;'><strong>The following error(s) needs your attention!</strong></p>";
+			 echo "<ol>".$error_message."</ol>";
+			 echo "</div>";
 			 }else{
 			 //if no error, print success message to blogger
 			 echo "<div  id=\"message\" class=\"updated fade\"><p><strong>Options Updated!</strong></p></div>";
@@ -473,10 +498,18 @@ No option available.
 <br />
 <br />
 
-<input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> /> <?php _e('Yes ')?>
+<?php
+//used to check whether to disable radio buttons of ez excerpt and syndication
+//if there is no email address or password in database, we disable these buttons
+$check_email = get_option('icopyright_conductor_email');
+$check_password = get_option('icopyright_conductor_password');
+?>
 
 
-<input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?>/> <?php _e('No ')?>
+<input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Yes ')?>
+
+
+<input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('No ')?>
 <span style="font-size:10px">
 <br/>
 <br />
@@ -495,10 +528,10 @@ No option available.
 <br />
 <br />
 
-<input name="icopyright_syndication" type="radio" value="yes" <?php $icopyright_syndication = $icopyright_option['syndication']; if(empty($icopyright_syndication)||$icopyright_syndication=="yes"){echo "checked";}?> /> <?php _e('Yes ')?>
+<input name="icopyright_syndication" type="radio" value="yes" <?php $icopyright_syndication = $icopyright_option['syndication']; if(empty($icopyright_syndication)||$icopyright_syndication=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Yes ')?>
 
 
-<input name="icopyright_syndication" type="radio" value="no" <?php $icopyright_syndication2 = $icopyright_option['syndication']; if($icopyright_syndication2=="no"){echo "checked";}?>/> <?php _e('No ')?>
+<input name="icopyright_syndication" type="radio" value="no" <?php $icopyright_syndication2 = $icopyright_option['syndication']; if($icopyright_syndication2=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('No ')?>
 <span style="font-size:10px">
 <br/>
 <br />
@@ -524,15 +557,19 @@ echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced Us
 
 <br />
 
+<?php
+$icopyright_conductor_email = get_option('icopyright_conductor_email');
+$icopyright_conductor_password = get_option('icopyright_conductor_password');
+ 
+if(empty($icopyright_conductor_password) || empty($icopyright_conductor_email)){
+echo '<span style="font-style:italic;font-weight:bold;padding:5px;background-color: #FFFFE0;border: 1px #E6DB55;">To manage your Conductor account from this plugin, enter your email address and password here.</span><br/><br/>';
+}
+?>
+
 <!--Conductor email-->
 <p>
 <strong><?php _e('Email Address:')?></strong> 
-<input type="text" name="icopyright_conductor_email" style="width:200px;" value="<?php $icopyright_conductor_email = get_option('icopyright_conductor_email'); echo $icopyright_conductor_email; ?>"/> 
-<?php
-if(empty($icopyright_conductor_email)){
-echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Please enter your Conductor login Email address here.</span>';
-}
-?>
+<input type="text" name="icopyright_conductor_email" style="width:200px;" value="<?php echo $icopyright_conductor_email; ?>"/>
 </p>
 
 <br />
@@ -540,12 +577,7 @@ echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Please ente
 <!--Conductor password-->
 <p>
 <strong><?php _e('Password:')?></strong> 
-<input type="password" name="icopyright_conductor_password" style="width:200px;margin-left:30px;" value="<?php $icopyright_conductor_password = get_option('icopyright_conductor_password'); echo $icopyright_conductor_password; ?>"/> 
-<?php
-if(empty($icopyright_conductor_password)){
-echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Please enter your Conductor login Password here.</span>';
-}
-?>
+<input type="password" name="icopyright_conductor_password" style="width:200px;margin-left:30px;" value="<?php echo $icopyright_conductor_password; ?>"/> 
 </p>
 
 <br />
