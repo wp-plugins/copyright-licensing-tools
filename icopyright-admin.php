@@ -323,7 +323,7 @@ function icopyright_admin(){
 <div id="icopyright_option" <?php global $show_icopyright_register_form; if($show_icopyright_register_form=='true'){echo'style="display:none"';} ?> >
 
 <p>
-The following settings will determine how the iCopyright Article Tools and Interactive Copyright notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/FAQs" target="_blank">help</a>.
+The following settings will determine how the iCopyright Article Tools and Interactive Copyright notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress" target="_blank">help</a>.
 </p>
 
 <form name="icopyrightform" id="icopyrightform" method="post" action="">
@@ -562,17 +562,17 @@ $check_password = get_option('icopyright_conductor_password');
 jQuery(document).ready(function() {
 	jQuery("#toggle_advance_setting").toggle(function(){
 		jQuery("#advance_setting").slideDown();
-		jQuery("#toggle_advance_setting").val("Hide Advance Settings");
+		jQuery("#toggle_advance_setting").val("Hide Advanced Settings");
 },
 function() {
 jQuery("#advance_setting").slideUp();
-jQuery("#toggle_advance_setting").val("Show Advance Settings")
+jQuery("#toggle_advance_setting").val("Show Advanced Settings")
 }
 );
 });
 </script>
 
-<input type="button" id="toggle_advance_setting" value="Show Advance Settings" style="cursor:pointer"><?php
+<input type="button" id="toggle_advance_setting" value="Show Advanced Settings" style="cursor:pointer"><?php
 $icopyright_conductor_email = get_option('icopyright_conductor_email');
 $icopyright_conductor_password = get_option('icopyright_conductor_password');
 $icopyright_conductor_id = $icopyright_option['pub_id'];
