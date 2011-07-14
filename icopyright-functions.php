@@ -37,7 +37,7 @@ $form .="<div id='register_error_message' class='updated faded' style='display:n
 
 $form .='<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(Click here to enter and save your Publication Id, if you already had one.)</a></h3>';
 
-$form .='<strong><p>Complete the fields below to activate iCopyright Article Tools. Required fields indicated by *. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-plugin" target="_blank">help</a>.</p></strong>';
+$form .='<strong><p>Complete the fields below to activate iCopyright Article Tools. Required fields indicated by *. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress" target="_blank">help</a>.</p></strong>';
 
 $form .='<table class="widefat">';
 
@@ -627,6 +627,13 @@ $form.=">*</td></tr>";
 
 $form .='</table>';
 
+//If this is multisite we post in blog id for feed as hidden variable.
+if(is_multisite()){
+global $blog_id;
+$form.= "<input type='hidden' name='blog_id' value='$blog_id'/>";
+}
+
+
 $form .='<br/><input type="hidden" name="submitted2" value="yes-post-me"/>
 <input type="submit" name="submit" value="Submit" class="button-primary" />';
 
@@ -638,15 +645,6 @@ echo $form;
 
 }
 
-
-function icopyright_post_update_feed_url($id,$postdata,$headers){
-		   	//used function icopyright_post from icopyright-common.php
-		   	//since version 1.1.4	   
-		   $url = "/api/xml/publication/update/".$id;
-		   $useragent = ICOPYRIGHT_USERAGENT;
-		   $res = icopyright_post($url, $postdata, $useragent, $headers);
-		   return $res; 
-}
 		   
 //WordPress Shortcodes to generate tool bars for content
 //functions to generate tool bars, reuseable for auto inclusion or manual inclusion.

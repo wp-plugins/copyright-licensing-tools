@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: iCopyright
-Plugin URI: http://info.icopyright.com/wordpress-plugin
+Plugin URI: http://info.icopyright.com/wordpress
 Description: The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
@@ -95,7 +95,7 @@ add_filter('plugin_row_meta', 'icopyright_settings_link', 10, 2);
 function icopyright_settings_link($links, $file) {
     if ($file == plugin_basename(__FILE__)) {
         $settings_link = "<a href=\"options-general.php?page=icopyright.php\">Settings</a>";
-		$video_link = "<a href=\"http://info.icopyright.com/wordpress-plugin\" target=\"_blank\">View a video introduction to iCopyright</a>";//added version 1.1.2
+		$video_link = "<a href=\"http://info.icopyright.com/icopyright-video\" target=\"_blank\">View a video introduction to iCopyright</a>";//added version 1.1.2
         $links[] = $settings_link;
 		$links[] .= $video_link;//added version 1.1.2
     }

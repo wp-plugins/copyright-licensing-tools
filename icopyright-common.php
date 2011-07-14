@@ -10,7 +10,6 @@ define('ICOPYRIGHT_PORT', 80);
 define('ICOPYRIGHT_AUTH_USER', NULL);
 define('ICOPYRIGHT_AUTH_PASSWORD', NULL);
 
-
 /**
  * Return the iCopyright server and port that is handling the various services
  *
@@ -70,6 +69,31 @@ function icopyright_check_response($res) {
     $status = $xml->status['code'];
     return ($status == '200');
 }
+
+/**
+ * Updates a publication's feed URL. The URL must have one and only one asterisk.
+ *
+ * @param $pid
+ *      the publication ID
+ * @param $value
+ *      the feed URL
+ * @param $useragent
+ *      a user agent string
+ * @param  $email
+ *      the email address of the user
+ * @param  $password
+ *      the user's iCopyright password
+ * @return
+ *      the response from iCopyright's servers in XML format
+ */
+function icopyright_post_update_feed_url($pid, $value, $useragent, $email, $password)
+{
+  $url = "/api/xml/publication/update/$pid";
+  $postdata = 'feed_url=' . urlencode($value);
+  $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password));
+  return $res;
+}
+
 
 /**
  * Sets EZ-Excerpt on or off for the publication
@@ -153,12 +177,6 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
         curl_setopt($rs_ch, CURLOPT_USERPWD, $token);
         curl_setopt($rs_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
     }
-
-
-//delete this before commit, this line disables ssl verification!
-//it is here because MAMP for Mac does not have a working SSL cert.
-    curl_setopt($rs_ch, CURLOPT_SSL_VERIFYPEER, 0);
-
 
     curl_setopt($rs_ch, CURLOPT_POST, 1);
     curl_setopt($rs_ch, CURLOPT_POSTFIELDS, $postdata);

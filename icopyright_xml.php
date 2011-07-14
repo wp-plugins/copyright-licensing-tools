@@ -26,7 +26,8 @@ function format_date($date)
 }
 
 //get id http queried from icopyright conductor
-$icopyright_post_id = $_GET['id'];
+$icopyright_post_id = $_GET['id']; //requested post id
+$icopyright_blog_id = $_GET['blog_id']; //requested blog id
 
 //check whether user disable article tools for post, if yes, we hide feed too.
 $hide_toolbar = get_post_meta($icopyright_post_id, 'icopyright_hide_toolbar', true);
@@ -37,11 +38,30 @@ die();
 
 global $wpdb;
 
-$posttable = $wpdb->prefix."posts";
-
+//determine whether request is for multisite or single install
+//by checking the request blog id.
+if(!empty($icopyright_blog_id)){
+	//this is multisite request
+	if($icopyright_blog_id==1){
+	//this is main blog
+	$posttable = $wpdb->prefix."posts";
+	}else{
+	//this is sub blog
+	$posttable = $wpdb->prefix.$icopyright_blog_id."_posts";
+	}
+//user table remains the same for all blogs
 $usertable = $wpdb->prefix."users";
 
+}else{
+//this is single install.
+$posttable = $wpdb->prefix."posts";
+$usertable = $wpdb->prefix."users";
+}
+
+//do the database query.
 $response = $wpdb->get_results("SELECT * FROM $posttable JOIN $usertable on $posttable.post_author=$usertable.ID WHERE $posttable.ID = '$icopyright_post_id'");
+
+
 foreach ($response as $res){
 
 //check post status, if other then 'publish' we hide the feed.

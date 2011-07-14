@@ -178,6 +178,7 @@ function icopyright_admin(){
 		//post data to API using CURL and assigning response.
 		$useragent = ICOPYRIGHT_USERAGENT;
 		$response = icopyright_post_new_publisher($postdata, $useragent, $email, $password);
+		
 		$response = str_replace( 'ns0:' , '' , $response);
 		$response = str_replace( 'ns0:' , '' , $response);
 		
@@ -244,17 +245,35 @@ function icopyright_admin(){
 			//since version 1.1.4
 			update_option('icopyright_conductor_password',$password);
 			update_option('icopyright_conductor_email',$email);
+			
+			$blog_id = null; //declare blank variables
+			$plugin_feed_url = null;
+			
+			//assign blog id if form posted in value, in case of multi site form will
+			//generate a hidden blog id value to post in for creating feed.
+			//if there is no blog id value posted in, this will be normal single site.
+			$blog_id = $_POST['blog_id'];
+			
+			if(!empty($blog_id)){
+			//this is multisite, we use main blog url and sub blog id for feed.
+		
+			$plugin_feed_url .= get_site_url(1)."/wp-content/plugins/copyright-licensing-tools/icopyright_xml.php?blog_id=$blog_id&id=*";
+			}else{
+			//this is single site install, no need for blog id.
+			//post in old feed url structure.
 						 			
-			$plugin_feed_url = WP_PLUGIN_URL."/copyright-licensing-tools/icopyright_xml.php?id=*";
+			$plugin_feed_url .= WP_PLUGIN_URL."/copyright-licensing-tools/icopyright_xml.php?id=*";
+			
+			}
+			
 			
 			//create post data string
 			$id2 = $icopyright_pubid_array[0];
-		    $postdata2 = "feed_url=$plugin_feed_url";
-		    $header_encode = base64_encode("$email:$password");
-		    $header2 = array("Authorization: Basic $header_encode");
+			$useragent = ICOPYRIGHT_USERAGENT;
 
 		    //post data to API using CURL and assigning response.
-		    $response2 = icopyright_post_update_feed_url($id2,$postdata2,$header2);
+		    $response2 = icopyright_post_update_feed_url($id2, $plugin_feed_url, $useragent, $email, $password);
+		    
 		    $response2 = str_replace( 'ns0:' , '' , $response2);
 		    $response2 = str_replace( 'ns0:' , '' , $response2);
 
@@ -304,7 +323,7 @@ function icopyright_admin(){
 <div id="icopyright_option" <?php global $show_icopyright_register_form; if($show_icopyright_register_form=='true'){echo'style="display:none"';} ?> >
 
 <p>
-The following settings will determine how the iCopyright Article Tools and Interactive Copyright notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-plugin" target="_blank">help</a>.
+The following settings will determine how the iCopyright Article Tools and Interactive Copyright notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/FAQs" target="_blank">help</a>.
 </p>
 
 <form name="icopyrightform" id="icopyrightform" method="post" action="">
@@ -487,7 +506,6 @@ No option available.
 
 </div>
 
-
 <br clear="all"/>
 
 <!--Toggle EZ Excerpt Feature -->
@@ -506,19 +524,18 @@ $check_password = get_option('icopyright_conductor_password');
 ?>
 
 
-<input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Yes ')?>
+<input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
 
 
-<input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('No ')?>
+<input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
 <span style="font-size:10px">
 <br/>
 <br />
-(For EZ Excerpt to be enabled, the display option selected above must include iCopyright Article Tools. When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Obtain a License?".<br/> If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
+(For EZ Excerpt to be enabled, the display option selected above must include iCopyright Article Tools. When EZ Excerpt is activated, any reader who tries to copy/paste a portion of your article will be presented with a box asking "Obtain a License?". If reader selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting on the reader's own website.)
 </span>
 </p>
 
 <br/>
-
 
 <!--Syndication -->
 
@@ -528,19 +545,48 @@ $check_password = get_option('icopyright_conductor_password');
 <br />
 <br />
 
-<input name="icopyright_syndication" type="radio" value="yes" <?php $icopyright_syndication = $icopyright_option['syndication']; if(empty($icopyright_syndication)||$icopyright_syndication=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Yes ')?>
+<input name="icopyright_syndication" type="radio" value="yes" <?php $icopyright_syndication = $icopyright_option['syndication']; if(empty($icopyright_syndication)||$icopyright_syndication=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
 
 
-<input name="icopyright_syndication" type="radio" value="no" <?php $icopyright_syndication2 = $icopyright_option['syndication']; if($icopyright_syndication2=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('No ')?>
+<input name="icopyright_syndication" type="radio" value="no" <?php $icopyright_syndication2 = $icopyright_option['syndication']; if($icopyright_syndication2=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
 <span style="font-size:10px">
 <br/>
 <br />
-(The Syndication Feed service enables other websites to subscribe to a feed of your content and pay you based on the number of times your articles are viewed on their site at a CPM rate you specify.<br/> When you receive your Welcome email, click to go into Conductor and set the business terms you would like. Until you do that, default pricing and business terms will apply.)
+(The Syndication Feed service enables other websites to subscribe to a feed of your content and pay you based on the number of times your articles are viewed on their site at a CPM rate you specify. When you receive your Welcome email, click to go into Conductor and set the business terms you would like. Until you do that, default pricing and business terms will apply.)
 </span>
 </p>
 
 <br/>
 
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery("#toggle_advance_setting").toggle(function(){
+		jQuery("#advance_setting").slideDown();
+		jQuery("#toggle_advance_setting").val("Hide Advance Settings");
+},
+function() {
+jQuery("#advance_setting").slideUp();
+jQuery("#toggle_advance_setting").val("Show Advance Settings")
+}
+);
+});
+</script>
+
+<input type="button" id="toggle_advance_setting" value="Show Advance Settings" style="cursor:pointer"><?php
+$icopyright_conductor_email = get_option('icopyright_conductor_email');
+$icopyright_conductor_password = get_option('icopyright_conductor_password');
+$icopyright_conductor_id = $icopyright_option['pub_id'];
+
+if(!empty($icopyright_conductor_id)){
+//this is existing installation, we show email and password required message.
+//this will not show for new installation. 
+	if(empty($icopyright_conductor_password) || empty($icopyright_conductor_email)){
+	echo '<span style="font-style:italic;font-weight:bold;padding:5px;background-color: #FFFFE0;border: 1px #E6DB55;">To manage your Conductor account from this plugin, enter your email address and password here.</span><br/><br/>';
+	}
+}
+?>
+
+<div id='advance_setting' style="display:none">
 
 <!--Publication ID-->
 <p>
@@ -557,18 +603,9 @@ echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced Us
 
 <br />
 
-<?php
-$icopyright_conductor_email = get_option('icopyright_conductor_email');
-$icopyright_conductor_password = get_option('icopyright_conductor_password');
- 
-if(empty($icopyright_conductor_password) || empty($icopyright_conductor_email)){
-echo '<span style="font-style:italic;font-weight:bold;padding:5px;background-color: #FFFFE0;border: 1px #E6DB55;">To manage your Conductor account from this plugin, enter your email address and password here.</span><br/><br/>';
-}
-?>
-
 <!--Conductor email-->
 <p>
-<strong><?php _e('Email Address:')?></strong> 
+<strong><?php _e('Conductor Email Address:')?></strong> 
 <input type="text" name="icopyright_conductor_email" style="width:200px;" value="<?php echo $icopyright_conductor_email; ?>"/>
 </p>
 
@@ -576,12 +613,15 @@ echo '<span style="font-style:italic;font-weight:bold;padding:5px;background-col
 
 <!--Conductor password-->
 <p>
-<strong><?php _e('Password:')?></strong> 
+<strong><?php _e('Conductor Password:')?></strong> 
 <input type="password" name="icopyright_conductor_password" style="width:200px;margin-left:30px;" value="<?php echo $icopyright_conductor_password; ?>"/> 
 </p>
 
+</div><!--close div id="advance_settings"-->	
+
 <br />
-			
+<br />
+
 			
 <p>
 <input type="hidden" name="submitted" value="yes-update-me"/>
