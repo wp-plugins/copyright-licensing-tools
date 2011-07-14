@@ -3,7 +3,7 @@ Contributors: iCopyright, Inc.
 Tags: icopyright, copyright, prints, reprints, eprint, e-print, email, post, republish, share, article tools, monetize, monetization, distribute, distribution, piracy, infringement, syndication, reuse, re-use, advertisement, ads, license, licensing
 Requires at least: 2.9.2
 Tested up to: 3.1.3
-Stable tag: 1.1.2
+Stable tag: 1.1.4
 
 The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content.
 
@@ -86,3 +86,9 @@ EZ excerpt scripting files fixed
 = 1.1.3 =
 1. Added automatic update of publication feed url to iCopyright conductor.
 	
+= 1.1.4 =
+1. Add feature to turn syndication service on and off
+2. Simplify signup process
+3. Add advanced settings section for publication ID, Conductor email, and Conductor password
+4. Add support for multisite
+
