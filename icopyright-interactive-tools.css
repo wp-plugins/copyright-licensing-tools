@@ -19,7 +19,7 @@ that will appear on the blog content.
   line-height: 1.2em;
 }
 
-.icopyright-interactive-notice a {
+.icopyright-interactive-notice a:first-child {
   color: #336699;
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
