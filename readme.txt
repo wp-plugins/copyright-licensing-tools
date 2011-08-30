@@ -33,10 +33,7 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
 
-= 1.1.6 =
-1. Usability tweaks
-
-= 1.1.5 =
+= 1.2 = 
 1. Rework code to match coding standards
 2. Address security issue
 3. Minor tweaks to styles and forms
