@@ -5,7 +5,7 @@ Plugin URI: http://info.icopyright.com/wordpress
 Description: The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 1.2
+Version: 1.3
 */
 
 
@@ -16,12 +16,19 @@ define("ICOPYRIGHT_PLUGIN_NAME", "copyright-licensing-tools");
 define("ICOPYRIGHT_PLUGIN_DIR", WP_PLUGIN_DIR . "/" . ICOPYRIGHT_PLUGIN_NAME);
 define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 
+/*
+* @since version 1.3
+* default set to false, set to true for development purpose,
+* this will print_r response from API.
+*/
+define('ICOPYRIGHT_PRINTR_RESPONSE','false');
+
 //include icopyright common functions file, there is defined server settings.
 //since version 1.1.4
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.2");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.3");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php

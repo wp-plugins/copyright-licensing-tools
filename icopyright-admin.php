@@ -64,6 +64,17 @@ function icopyright_admin() {
     if ($icopyright_ez_excerpt == 'yes' && !empty($conductor_email) && !empty($conductor_password)) {
       //user enabled ez excerpt
       $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
+      
+     //Constant defined in icopyright.php
+     //if set to true will print_r API response, for development purpose.
+    if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
+    echo "Enable ez excerpt response";
+    echo "<pre>";
+    $xml = @simplexml_load_string($ez_res);
+    print_r($xml);
+    echo "</pre>";
+    }     
+      
       //checked for response from API
       $check_ez_res = icopyright_check_response($ez_res);
       if (!$check_ez_res == true) {
@@ -74,6 +85,20 @@ function icopyright_admin() {
     if ($icopyright_ez_excerpt == 'no' && !empty($conductor_email) && !empty($conductor_password)) {
       //user disabled ez excerpt
       $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
+
+      
+     //Constant defined in icopyright.php
+     //if set to true will print_r API response, for development purpose.
+	  if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
+	  echo "Disabled ez excerpt response";
+      echo "<pre>";
+      $xml = @simplexml_load_string($ez_res);
+      print_r($xml);
+      echo "</pre>";
+      }      
+            
+      
+      
       //checked for response from API
       $check_ez_res = icopyright_check_response($ez_res);
       if (!$check_ez_res == true) {
@@ -87,6 +112,19 @@ function icopyright_admin() {
     if ($icopyright_syndication == 'yes' && !empty($conductor_email) && !empty($conductor_password)) {
       //user enabled syndication
       $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
+     
+     
+     //Constant defined in icopyright.php
+     //if set to true will print_r API response, for development purpose.
+	  if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
+	  echo "Enabled Syndication Response";
+      echo "<pre>";
+      $xml = @simplexml_load_string($syndicate_res);
+      print_r($xml);
+      echo "</pre>";
+      }      
+            
+      
       //checked for response from API
       $check_syndicate_res = icopyright_check_response($syndicate_res);
       if (!$check_syndicate_res == true) {
@@ -98,6 +136,17 @@ function icopyright_admin() {
     if ($icopyright_syndication == 'no' && !empty($conductor_email) && !empty($conductor_password)) {
       //user disabled syndication
       $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
+      
+     //Constant defined in icopyright.php
+     //if set to true will print_r API response, for development purpose.
+	  if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
+	  echo "Disable Syndication Response";
+      echo "<pre>";
+      $xml = @simplexml_load_string($syndicate_res);
+      print_r($xml);
+      echo "</pre>";
+      }        
+      
       //checked for response from API
       $check_syndicate_res = icopyright_check_response($syndicate_res);
       if (!$check_syndicate_res == true) {
@@ -168,6 +217,15 @@ function icopyright_admin() {
     $response = str_replace('ns0:', '', $response);
 
     $xml = @simplexml_load_string($response);
+    
+     //Constant defined in icopyright.php
+     //if set to true will print_r API response, for development purpose.
+    if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
+    echo "Registration Response";
+    echo "<pre>";
+    print_r($xml);
+    echo "</pre>";
+    }
 
     //check if response is empty or not xml, echo out service not available notice to blogger!
     if (empty($xml)) {
@@ -255,7 +313,18 @@ function icopyright_admin() {
       $response2 = str_replace('ns0:', '', $response2);
       $response2 = str_replace('ns0:', '', $response2);
       $xml2 = @simplexml_load_string($response2);
-
+ 
+      
+     //Constant defined in icopyright.php
+     //if set to true will print_r API response, for development purpose.
+	  if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
+	  echo "Update Feed Url response";
+      echo "<pre>";
+      print_r($xml2);
+      echo "</pre>";
+      }      
+      
+      
       $icopyright_feed_status = $xml2->status['code'];
 
       if ($icopyright_feed_status == '200') {

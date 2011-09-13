@@ -4,7 +4,7 @@
  * Common functions for communicating with the iCopyright servers
  *
  */
-
+ 
 define('ICOPYRIGHT_SERVER', 'license.icopyright.net');
 define('ICOPYRIGHT_PORT', 80);
 define('ICOPYRIGHT_AUTH_USER', NULL);
@@ -172,12 +172,16 @@ function icopyright_make_header($email, $password) {
 function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
   $rs_ch = curl_init(icopyright_get_server(TRUE) . $url);
 
+//to comment out after development
+//curl_setopt($rs_ch, CURLOPT_SSL_VERIFYPEER, false);
+
   // If the server is locked down (for testing, for example) use auth tokens
   if ((ICOPYRIGHT_AUTH_USER != NULL) && (ICOPYRIGHT_AUTH_PASSWORD != NULL)) {
     $token = ICOPYRIGHT_AUTH_USER . ':' . ICOPYRIGHT_AUTH_PASSWORD;
     curl_setopt($rs_ch, CURLOPT_USERPWD, $token);
     curl_setopt($rs_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
   }
+  
   curl_setopt($rs_ch, CURLOPT_POST, 1);
   curl_setopt($rs_ch, CURLOPT_POSTFIELDS, $postdata);
   curl_setopt($rs_ch, CURLOPT_FOLLOWLOCATION, 1);

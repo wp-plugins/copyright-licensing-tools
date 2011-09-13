@@ -37,7 +37,7 @@ function create_icopyright_register_form($fname, $lname, $email, $email2, $passw
 
   $form .= '<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(Click here to enter and save your Publication Id, if you already had one.)</a></h3>';
 
-  $form .= '<strong><p>Complete the fields below to activate iCopyright Article Tools. Required fields indicated by *. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress" target="_blank">help</a>.</p></strong>';
+  $form .= '<strong><p>Complete the fields below to activate iCopyright Article Tools. Required fields indicated by *. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-setup" target="_blank">help</a>.</p></strong>';
 
   $form .= '<table class="widefat">';
 
