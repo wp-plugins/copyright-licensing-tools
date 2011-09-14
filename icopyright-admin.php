@@ -236,6 +236,32 @@ function icopyright_admin() {
 
     //echo $xml->status['code'];
     $icopyright_form_status = $xml->status['code'];
+    
+    
+        //check status code for 401
+    if ($icopyright_form_status == '401') {
+      echo "<div id=\"message\" class=\"updated fade\">";
+      echo "<strong><p>The following fields needs your attention</p></strong>";
+      echo '<ol>';
+      //error
+      foreach ($xml->status->messages->message as $error_message) {
+        echo '<li>' . $error_message . '</li>';
+      }
+      echo '</ol>';
+      echo "</div>";
+
+      //check terms of agreement box, since the blogger had already checked and posted the form.
+      global $icopyright_tou_checked;
+      $icopyright_tou_checked = 'true';
+
+      global $show_icopyright_register_form;
+      $show_icopyright_register_form = 'true';
+    }
+    //end if ($icopyright_form_status=='401')
+    
+    
+    
+    
 
     //check status code for 400
     if ($icopyright_form_status == '400') {
