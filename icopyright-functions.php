@@ -673,6 +673,9 @@ function icopyright_horizontal_toolbar() {
   //get post id
   global $post;
   $post_id = $post->ID;
+  if(!icopyright_post_passes_category_filter($post_id)) {
+    return;
+  }
 
   //content id
   $toolbar = "\n<!-- iCopyright Horizontal Article Toolbar -->\n";
@@ -720,6 +723,9 @@ function icopyright_vertical_toolbar() {
   //get post id
   global $post;
   $post_id = $post->ID;
+  if(!icopyright_post_passes_category_filter($post)) {
+    return;
+  }
 
   //content id
   $toolbar = "\n<!-- iCopyright Vertical Article Toolbar -->\n";
@@ -765,6 +771,9 @@ function icopyright_interactive_notice() {
   //get post id
   global $post;
   $post_id = $post->ID;
+  if(!icopyright_post_passes_category_filter($post_id)) {
+    return;
+  }
 
   //post permalink
   //$permalink = get_permalink($post_id);
@@ -1091,15 +1100,8 @@ function icopyright_inner_custom_box() {
   echo '<input type="hidden" name="icopyright_noncename" id="icopyright_noncename" value="' .
        wp_create_nonce('icopyright_admin_nonce') . '" />';
 
-  //use WordPress global post object
-  //determine post type, so as to get correct post id object.
-  //for future compatibility if there is a change in page or post object.
   global $post;
-  if ($post->post_type == 'page') {
-    $content .= $post->ID;
-  } elseif ($post->post_type == 'post') {
-    $content .= $post->ID;
-  }
+  $content = $post->ID;
 
   //retrieve custom field data
   $data = get_post_meta($content, 'icopyright_hide_toolbar', true);
@@ -1161,6 +1163,41 @@ function icopyright_current_page_url() {
     $pageURL .= $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
   }
   return $pageURL;
+}
+
+/**
+ * Returns an array of categories that the tools should be placed on. Can be empty but will never be null.
+ * @return
+ */
+function icopyright_selected_categories() {
+  $setting = get_option('icopyright_admin');
+  $categories = $setting['categories'];
+  if(strlen($categories) > 0) {
+    return explode(',', $categories);
+  } else {
+    return array();
+  }
+}
+
+/**
+ * Returns true if either (a) no categories are selected; or (b) categories are selected, but the post
+ * is in one or more of those categories. Returns false otherwise.
+ *
+ * @param $post_id the post ID
+ * @return true if the post passes
+ */
+function icopyright_post_passes_category_filter($post_id) {
+  $icopyright_categories = icopyright_selected_categories();
+  if(count($icopyright_categories) == 0)
+    return TRUE;
+
+  // There are categories, so check these
+  $post_categories = wp_get_post_categories($post_id);
+  foreach($post_categories as $cat ) {
+    if(in_array($cat, $icopyright_categories))
+      return TRUE;
+  }
+  return FALSE;
 }
 
 ?>

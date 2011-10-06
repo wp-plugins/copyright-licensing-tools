@@ -35,6 +35,11 @@ if ($hide_toolbar == 'yes') {
   die();
 }
 
+// Does this pass the category filter?
+if(!icopyright_post_passes_category_filter($icopyright_post_id)) {
+  die();
+}
+
 global $wpdb;
 
 //determine whether request is for multisite or single install
@@ -71,25 +76,20 @@ foreach ($response as $res) {
     die();
   }
 
-
   header('Content-Type: ' . feed_content_type('rss-http') . '; charset=' . get_option('blog_charset'), true);
   $more = 1;
 
   echo '<?xml version="1.0" encoding="UTF-8"?>';
 
-
   // prepare some variable for the XML feed
   $icx_author = $res->display_name;
 
-
   // get the User Role
   $user = new WP_User($res->post_author);
-
   if (!empty($user->roles) && is_array($user->roles)) {
     foreach ($user->roles as $role)
       $icx_byline = $role;
   }
-
 
   // get copyrights
   $publish_date = $res->post_date;

@@ -129,7 +129,8 @@ function icopyright_default_settings() {
                               'show' => 'both',
                               'show_multiple' => 'both',
                               'ez_excerpt' => 'yes',
-                              'syndication' => 'yes'
+                              'syndication' => 'yes',
+                              'categories' => ''
     );
 
     update_option('icopyright_admin', $icopyright_admin);

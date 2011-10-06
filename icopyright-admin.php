@@ -64,17 +64,17 @@ function icopyright_admin() {
     if ($icopyright_ez_excerpt == 'yes' && !empty($conductor_email) && !empty($conductor_password)) {
       //user enabled ez excerpt
       $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
-      
-     //Constant defined in icopyright.php
-     //if set to true will print_r API response, for development purpose.
-    if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
-    echo "Enable ez excerpt response";
-    echo "<pre>";
-    $xml = @simplexml_load_string($ez_res);
-    print_r($xml);
-    echo "</pre>";
-    }     
-      
+
+      //Constant defined in icopyright.php
+      //if set to true will print_r API response, for development purpose.
+      if (ICOPYRIGHT_PRINTR_RESPONSE == 'true') {
+        echo "Enable ez excerpt response";
+        echo "<pre>";
+        $xml = @simplexml_load_string($ez_res);
+        print_r($xml);
+        echo "</pre>";
+      }
+
       //checked for response from API
       $check_ez_res = icopyright_check_response($ez_res);
       if (!$check_ez_res == true) {
@@ -86,19 +86,16 @@ function icopyright_admin() {
       //user disabled ez excerpt
       $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
 
-      
      //Constant defined in icopyright.php
      //if set to true will print_r API response, for development purpose.
-	  if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
-	  echo "Disabled ez excerpt response";
-      echo "<pre>";
-      $xml = @simplexml_load_string($ez_res);
-      print_r($xml);
-      echo "</pre>";
-      }      
-            
-      
-      
+      if (ICOPYRIGHT_PRINTR_RESPONSE == 'true') {
+        echo "Disabled ez excerpt response";
+        echo "<pre>";
+        $xml = @simplexml_load_string($ez_res);
+        print_r($xml);
+        echo "</pre>";
+      }
+
       //checked for response from API
       $check_ez_res = icopyright_check_response($ez_res);
       if (!$check_ez_res == true) {
@@ -112,19 +109,17 @@ function icopyright_admin() {
     if ($icopyright_syndication == 'yes' && !empty($conductor_email) && !empty($conductor_password)) {
       //user enabled syndication
       $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
-     
-     
-     //Constant defined in icopyright.php
-     //if set to true will print_r API response, for development purpose.
-	  if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
-	  echo "Enabled Syndication Response";
-      echo "<pre>";
-      $xml = @simplexml_load_string($syndicate_res);
-      print_r($xml);
-      echo "</pre>";
-      }      
-            
-      
+
+      //Constant defined in icopyright.php
+      //if set to true will print_r API response, for development purpose.
+      if (ICOPYRIGHT_PRINTR_RESPONSE == 'true') {
+        echo "Enabled Syndication Response";
+        echo "<pre>";
+        $xml = @simplexml_load_string($syndicate_res);
+        print_r($xml);
+        echo "</pre>";
+      }
+
       //checked for response from API
       $check_syndicate_res = icopyright_check_response($syndicate_res);
       if (!$check_syndicate_res == true) {
@@ -132,26 +127,32 @@ function icopyright_admin() {
       }
     }
 
-
     if ($icopyright_syndication == 'no' && !empty($conductor_email) && !empty($conductor_password)) {
       //user disabled syndication
       $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
-      
-     //Constant defined in icopyright.php
-     //if set to true will print_r API response, for development purpose.
-	  if(ICOPYRIGHT_PRINTR_RESPONSE == 'true'){
-	  echo "Disable Syndication Response";
-      echo "<pre>";
-      $xml = @simplexml_load_string($syndicate_res);
-      print_r($xml);
-      echo "</pre>";
-      }        
-      
+
+      //Constant defined in icopyright.php
+      //if set to true will print_r API response, for development purpose.
+      if (ICOPYRIGHT_PRINTR_RESPONSE == 'true') {
+        echo "Disable Syndication Response";
+        echo "<pre>";
+        $xml = @simplexml_load_string($syndicate_res);
+        print_r($xml);
+        echo "</pre>";
+      }
+
       //checked for response from API
       $check_syndicate_res = icopyright_check_response($syndicate_res);
       if (!$check_syndicate_res == true) {
         $error_message .= "<li>Failed to update Syndication Setting</li>";
       }
+    }
+
+    // Check selected categories input for sensibility
+    $selectedCategories = array();
+    $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : '';
+    foreach($selectedCat as $catid) {
+      if(is_numeric($catid)) $selectedCategories[] = $catid;
     }
 
     //assign value to icopyright admin settings array
@@ -164,6 +165,7 @@ function icopyright_admin() {
                               'show_multiple' => $icopyright_show_multiple,
                               'ez_excerpt' => $icopyright_ez_excerpt,
                               'syndication' => $icopyright_syndication,
+                              'categories' => implode(',', $selectedCategories)
     );
     //check if no error, then update admin setting
     if (empty($error_message)) {
@@ -302,7 +304,8 @@ function icopyright_admin() {
                                         'show' => 'both',
                                         'show_multiple' => 'both',
                                         'ez_excerpt' => 'yes',
-                                        'syndication' => 'yes'
+                                        'syndication' => 'yes',
+                                        'categories' => ''
       );
       //update array value $icopyright_pubid_new into WordPress Database Options table
       update_option('icopyright_admin', $icopyright_admin_default);
@@ -620,6 +623,23 @@ $check_password = get_option('icopyright_conductor_password');
 (The Syndication Feed service enables other websites to subscribe to a feed of your content and pay you based on the number of times your articles are viewed on their site at a CPM rate you specify. When you receive your Welcome email, click to go into Conductor and set the business terms you would like. Until you do that, default pricing and business terms will apply.)
 </span>
 </p>
+
+<br/>
+
+<?php
+  $systemCategories = get_categories();
+  if(count($systemCategories) > 1) {
+    echo '<strong>Categories:</strong>';
+    echo '<span style="font-size:10px"><p>Select categories on which to display the Article Tools. Select no categories to display on stories regardless of category.</p>';
+    $selectedCategories = icopyright_selected_categories();
+    echo '<ul>';
+    foreach($systemCategories as $cat) {
+      $checked = (in_array($cat->term_id, $selectedCategories) ? 'checked' : '');
+      echo '<li><input id="'.$cat->term_id.'" type="checkbox" name="selectedCat[]" value="'.$cat->term_id.'" '.$checked.' /><label style="margin-left: 5px;" for="'.$cat->term_id.'">'.$cat->name.'</label></li>';
+    }
+    echo '</ul></span>';
+  }
+?>
 
 <br/>
 
