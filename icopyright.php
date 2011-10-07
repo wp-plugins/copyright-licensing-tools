@@ -130,7 +130,8 @@ function icopyright_default_settings() {
                               'show_multiple' => 'both',
                               'ez_excerpt' => 'yes',
                               'syndication' => 'yes',
-                              'categories' => ''
+                              'categories' => '',
+                              'use_category_filter' => 'no',
     );
 
     update_option('icopyright_admin', $icopyright_admin);

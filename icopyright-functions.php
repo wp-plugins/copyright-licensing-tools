@@ -1181,12 +1181,17 @@ function icopyright_selected_categories() {
 
 /**
  * Returns true if either (a) no categories are selected; or (b) categories are selected, but the post
- * is in one or more of those categories. Returns false otherwise.
+ * is in one or more of those categories; or (c) the admin has specifically said no categories. Returns false otherwise.
  *
  * @param $post_id the post ID
  * @return true if the post passes
  */
 function icopyright_post_passes_category_filter($post_id) {
+  // If the filter itself is not being used, then we always pass
+  $setting = get_option('icopyright_admin');
+  $use_filter = $setting['use_category_filter'];
+  if($use_filter != 'yes') return TRUE;
+
   $icopyright_categories = icopyright_selected_categories();
   if(count($icopyright_categories) == 0)
     return TRUE;
@@ -1197,6 +1202,8 @@ function icopyright_post_passes_category_filter($post_id) {
     if(in_array($cat, $icopyright_categories))
       return TRUE;
   }
+
+  // Got this far? Then we fail the filter
   return FALSE;
 }
 

@@ -24,6 +24,7 @@ function icopyright_admin() {
     $icopyright_show_multiple = stripslashes($_POST['icopyright_show_multiple']);
     $icopyright_ez_excerpt = stripslashes($_POST['icopyright_ez_excerpt']);
     $icopyright_syndication = stripslashes($_POST['icopyright_syndication']);
+    $icopyright_use_copyright_filter = stripslashes($_POST['icopyright_use_category_filter']);
     $icopyright_conductor_email = stripslashes($_POST['icopyright_conductor_email']);
     $icopyright_conductor_password = stripslashes($_POST['icopyright_conductor_password']);
 
@@ -165,7 +166,8 @@ function icopyright_admin() {
                               'show_multiple' => $icopyright_show_multiple,
                               'ez_excerpt' => $icopyright_ez_excerpt,
                               'syndication' => $icopyright_syndication,
-                              'categories' => implode(',', $selectedCategories)
+                              'categories' => implode(',', $selectedCategories),
+                              'use_category_filter' => $icopyright_use_copyright_filter,
     );
     //check if no error, then update admin setting
     if (empty($error_message)) {
@@ -305,7 +307,8 @@ function icopyright_admin() {
                                         'show_multiple' => 'both',
                                         'ez_excerpt' => 'yes',
                                         'syndication' => 'yes',
-                                        'categories' => ''
+                                        'categories' => '',
+                                        'use_category_filter' => 'no',
       );
       //update array value $icopyright_pubid_new into WordPress Database Options table
       update_option('icopyright_admin', $icopyright_admin_default);
@@ -628,17 +631,24 @@ $check_password = get_option('icopyright_conductor_password');
 
 <?php
   $systemCategories = get_categories();
-  if(count($systemCategories) > 1) {
-    echo '<strong>Categories:</strong>';
-    echo '<span style="font-size:10px"><p>Select categories on which to display the Article Tools. Select no categories to display on stories regardless of category.</p>';
+  $use_filter = $icopyright_option['use_category_filter'];
+?>
+<strong><?php _e('Categories: ')?></strong><br/>
+<input class="category-radio" name="icopyright_use_category_filter" type="radio" value="no" <?php if($use_filter!="yes"){echo "checked";}?> /> <?php _e('Apply toolbar to all posts')?>
+<br />
+<input class="category-radio" name="icopyright_use_category_filter" type="radio" value="yes" <?php if($use_filter=="yes"){echo "checked";}?> /> <?php _e('Apply toolbar only to selected categories')?>
+<br />
+<?php
+    echo '<div id="icopyright-category-list" style="';
+    if($use_filter != "yes") { echo 'display: none; '; }
+    echo 'font-size:10px;"><p>Select categories on which to display the Article Tools.</p>';
     $selectedCategories = icopyright_selected_categories();
     echo '<ul>';
     foreach($systemCategories as $cat) {
       $checked = (in_array($cat->term_id, $selectedCategories) ? 'checked' : '');
       echo '<li><input id="'.$cat->term_id.'" type="checkbox" name="selectedCat[]" value="'.$cat->term_id.'" '.$checked.' /><label style="margin-left: 5px;" for="'.$cat->term_id.'">'.$cat->name.'</label></li>';
     }
-    echo '</ul></span>';
-  }
+    echo '</ul></div>';
 ?>
 
 <br/>
@@ -648,12 +658,19 @@ jQuery(document).ready(function() {
 	jQuery("#toggle_advance_setting").toggle(function(){
 		jQuery("#advance_setting").slideDown();
 		jQuery("#toggle_advance_setting").val("Hide Advanced Settings");
-},
-function() {
-jQuery("#advance_setting").slideUp();
-jQuery("#toggle_advance_setting").val("Show Advanced Settings")
-}
-);
+  },
+  function() {
+  jQuery("#advance_setting").slideUp();
+    jQuery("#toggle_advance_setting").val("Show Advanced Settings")
+  }
+  );
+  jQuery("input.category-radio").change(function() {
+    if(jQuery("input.category-radio:checked").val() == "yes") {
+      jQuery("#icopyright-category-list").slideDown();
+    } else {
+      jQuery("#icopyright-category-list").slideUp();
+    }
+  });
 });
 </script>
 

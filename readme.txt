@@ -33,6 +33,10 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
 
+= 1.3 =
+1. Category filter so article tools appear only on specific categories of posts
+2. Render publication ID with article tools javascript to allow interoperability with iCopyright-syndicated content
+
 = 1.2 = 
 1. Rework code to match coding standards
 2. Address security issue
