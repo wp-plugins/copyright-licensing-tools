@@ -36,6 +36,7 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 = 1.3 =
 1. Category filter so article tools appear only on specific categories of posts
 2. Render publication ID with article tools javascript to allow interoperability with iCopyright-syndicated content
+3. Minor bug fixes and tweaks
 
 = 1.2 = 
 1. Rework code to match coding standards
