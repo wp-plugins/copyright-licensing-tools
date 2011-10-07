@@ -151,7 +151,7 @@ function icopyright_admin() {
 
     // Check selected categories input for sensibility
     $selectedCategories = array();
-    $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : '';
+    $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : array();
     foreach($selectedCat as $catid) {
       if(is_numeric($catid)) $selectedCategories[] = $catid;
     }
