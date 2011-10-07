@@ -15,12 +15,10 @@ function create_icopyright_register_form($fname, $lname, $email, $email2, $passw
     $display_form = 'style="display:none"';
   }
 
-  //check if curl is loaded, if not display the following message, and hide registration form.
-  //A PHP extension ( cURL extension ), which is needed for our Registration Form to work, is not installed by your Hosting Provider. You will need to request for a Publication Id here. (Click here to enter and save your Publication Id, if you already had one.)
-
+  //check if curl is loaded, if not display message and hide registration form.
   $loaded_extension = get_loaded_extensions();
   if (!in_array("curl", $loaded_extension)) {
-    echo "<div id='curl_notice' class='updated fade'><p>A PHP extension ( cURL extension ), which is needed for our Registration Form to work, is not installed by your Hosting Provider. You will need to request for a Publication Id <a href='http://info.icopyright.com/publishers-sign-in-sign-up' target='_blank'>here.</a><a href='#' onclick='document.getElementById(\"curl_notice\").style.display=\"none\";document.getElementById(\"icopyright_option\").style.display=\"block\";' style='font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;'>(Click here to enter and save your Publication Id, if you already had one.)</a></p></div>";
+    echo "<div id='curl_notice' class='updated fade'><p>A PHP extension ( cURL extension ), which is needed for our Registration Form to work, is not installed by your Hosting Provider. You will need to request for a Publication Id <a href='http://info.icopyright.com/publishers-sign-in-sign-up' target='_blank'>here.</a><a href='#' onclick='document.getElementById(\"curl_notice\").style.display=\"none\";document.getElementById(\"icopyright_option\").style.display=\"block\";' style='font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;'>(If you already have a publication ID, click here to enter and save it under Show Advanced Settings.)</a></p></div>";
     $initial_js = "<script type=\"text/javascript\">\n";
     $initial_js .= "document.getElementById('icopyright_option').style.display='none';";
     $initial_js .= "</script>\n";
@@ -35,7 +33,7 @@ function create_icopyright_register_form($fname, $lname, $email, $email2, $passw
 
   $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
 
-  $form .= '<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(Click here to enter and save your Publication Id, if you already had one.)</a></h3>';
+  $form .= '<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(If you already have a publication ID, click here to enter and save it under Show Advanced Settings.)</a></h3>';
 
   $form .= '<strong><p>Complete the fields below to activate iCopyright Article Tools. Required fields indicated by *. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-setup" target="_blank">help</a>.</p></strong>';
 
