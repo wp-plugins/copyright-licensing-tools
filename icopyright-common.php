@@ -184,7 +184,6 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
   
   curl_setopt($rs_ch, CURLOPT_POST, 1);
   curl_setopt($rs_ch, CURLOPT_POSTFIELDS, $postdata);
-  curl_setopt($rs_ch, CURLOPT_FOLLOWLOCATION, 1);
   curl_setopt($rs_ch, CURLOPT_HEADER, 0);
   if ($headers != NULL) {
     curl_setopt($rs_ch, CURLOPT_HTTPHEADER, $headers);
