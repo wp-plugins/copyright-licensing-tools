@@ -28,7 +28,7 @@ define('ICOPYRIGHT_PRINTR_RESPONSE','false');
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.3");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.4");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php
