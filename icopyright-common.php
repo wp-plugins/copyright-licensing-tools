@@ -1,22 +1,23 @@
 <?php
 /**
- * @file
- * Common functions for communicating with the iCopyright servers
- *
- */
- 
+* iCopyright Article Tools
+*
+**/
+
+// Which iCopyright server should we talk to via REST? The standard is license.icopyright.net, port 80,
+// but you can target alternate infrastructures (normally for debugging purposes) by changing these variables.
+// auth_user and auth_password are for servers that are locked down with HTTP basic authentication.
 define('ICOPYRIGHT_SERVER', 'license.icopyright.net');
 define('ICOPYRIGHT_PORT', 80);
-define('ICOPYRIGHT_AUTH_USER', NULL);
-define('ICOPYRIGHT_AUTH_PASSWORD', NULL);
+define('ICOPYRIGHT_AUTH_USER', '');
+define('ICOPYRIGHT_AUTH_PASSWORD', '');
 
 /**
  * Return the iCopyright server and port that is handling the various services
  *
- * @param $secure
+ * @param bool $secure 
  *      should we go over https?
- * @return
- *      the full server specification
+ * @return the full server specification
  */
 function icopyright_get_server($secure = FALSE) {
   $server = ($secure ? 'https' : 'http') . '://' . ICOPYRIGHT_SERVER;
@@ -60,8 +61,7 @@ function icopyright_post_new_publisher($postdata, $useragent, $email, $password)
  *
  * @param  $res
  *      The response from a post
- * @return
- *      TRUE if all is OK
+ * @return TRUE if all is OK
  */
 function icopyright_check_response($res) {
   $xml = @simplexml_load_string($res);
@@ -82,8 +82,7 @@ function icopyright_check_response($res) {
  *      the email address of the user
  * @param  $password
  *      the user's iCopyright password
- * @return
- *      the response from iCopyright's servers in XML format
+ * @return the response from iCopyright's servers in XML format
  */
 function icopyright_post_update_feed_url($pid, $value, $useragent, $email, $password) {
   $url = "/api/xml/publication/update/$pid";
@@ -105,8 +104,7 @@ function icopyright_post_update_feed_url($pid, $value, $useragent, $email, $pass
  *      the email address of the user
  * @param  $password
  *      the user's iCopyright password
- * @return
- *      the response from iCopyright's servers in XML format
+ * @return the response from iCopyright's servers in XML format
  */
 function icopyright_post_ez_excerpt($pid, $value, $useragent, $email, $password) {
   $url = "/api/xml/publication/toolbar/$pid";
@@ -129,8 +127,7 @@ function icopyright_post_ez_excerpt($pid, $value, $useragent, $email, $password)
  *      the email address of the user
  * @param  $password
  *      the user's iCopyright password
- * @return
- *      the response from iCopyright's servers in XML format
+ * @return the response from iCopyright's servers in XML format
  */
 function icopyright_post_syndication_service($pid, $value, $useragent, $email, $password) {
   $url = "/api/xml/service/offer/101";
@@ -144,12 +141,12 @@ function icopyright_post_syndication_service($pid, $value, $useragent, $email, $
 /**
  * Given an email address and a password, create the appropriate headers for authentication to change
  * Conductor settings
+ *
  * @param  $email
  *      the email address of the user
  * @param  $password
  *      the user's iCopyright password
- * @return
- *      headers to use
+ * @return headers to use
  */
 function icopyright_make_header($email, $password) {
   $header_encode = base64_encode("$email:$password");
@@ -158,6 +155,7 @@ function icopyright_make_header($email, $password) {
 
 /**
  * General helper function to post RESTfully to iCopyright
+ *
  * @param $url
  *      the URL to post to
  * @param $postdata
@@ -166,31 +164,30 @@ function icopyright_make_header($email, $password) {
  *      the user agent doing the requesting -- should be the plugin and version number
  * @param $headers
  *      headers to include for authentication, if any
- * @return
- *      the results of the post in XML format
+ * @return the results of the post in XML format
  */
 function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
   $rs_ch = curl_init(icopyright_get_server(TRUE) . $url);
-
-//to comment out after development
-//curl_setopt($rs_ch, CURLOPT_SSL_VERIFYPEER, false);
-
+  curl_setopt($rs_ch, CURLOPT_SSL_VERIFYPEER, false);
+  
   // If the server is locked down (for testing, for example) use auth tokens
   if ((ICOPYRIGHT_AUTH_USER != NULL) && (ICOPYRIGHT_AUTH_PASSWORD != NULL)) {
     $token = ICOPYRIGHT_AUTH_USER . ':' . ICOPYRIGHT_AUTH_PASSWORD;
     curl_setopt($rs_ch, CURLOPT_USERPWD, $token);
     curl_setopt($rs_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
   }
-  
   curl_setopt($rs_ch, CURLOPT_POST, 1);
   curl_setopt($rs_ch, CURLOPT_POSTFIELDS, $postdata);
+  curl_setopt($rs_ch, CURLOPT_FOLLOWLOCATION, 1);
   curl_setopt($rs_ch, CURLOPT_HEADER, 0);
   if ($headers != NULL) {
     curl_setopt($rs_ch, CURLOPT_HTTPHEADER, $headers);
   }
   curl_setopt($rs_ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($rs_ch, CURLOPT_TIMEOUT, 20);
-  curl_setopt($rs_ch, CURLOPT_USERAGENT, $useragent);
+  curl_setopt($rs_ch, CURLOPT_TIMEOUT, 60);
+  if ($useragent != NULL) {
+    curl_setopt($rs_ch, CURLOPT_USERAGENT, $useragent);
+  }
   $res = curl_exec($rs_ch);
   curl_close($rs_ch);
   return str_replace('ns0:', '', $res);
