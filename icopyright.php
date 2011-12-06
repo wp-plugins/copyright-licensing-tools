@@ -5,7 +5,7 @@ Plugin URI: http://info.icopyright.com/wordpress
 Description: The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 1.3
+Version: 1.4
 */
 
 
@@ -77,7 +77,7 @@ function load_icopyright_alignment_css() {
 <style type="text/css">
 .icx-toolbar{
 float:right !important;
-margin:0px 0px 10px 10px;
+margin:0 0 10px 10px;
 }
 </style>\n
 CSS;
