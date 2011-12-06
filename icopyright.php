@@ -113,6 +113,8 @@ function icopyright_settings_link($links, $file) {
 //function to delete option during uninstallation
 function icopyright_remove_settings() {
   delete_option('icopyright_admin');
+  delete_option('icopyright_conductor_password');
+  delete_option('icopyright_conductor_email');
 }
 
 register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
