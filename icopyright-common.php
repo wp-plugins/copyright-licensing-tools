@@ -43,7 +43,7 @@ function icopyright_get_server($secure = FALSE) {
  */
 function icopyright_post_new_publisher($postdata, $useragent, $email, $password) {
   // Create the new publisher
-  $res = icopyright_post('/api/xml/publisher/add', $postdata, $useragent);
+  $res = icopyright_post('/api/xml/publisher/addbrief', $postdata, $useragent);
 
   // If that worked, enable syndication right away
   $xml = @simplexml_load_string($res);

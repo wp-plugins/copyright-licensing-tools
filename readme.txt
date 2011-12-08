@@ -33,6 +33,10 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
 
+= 1.4 =
+1. Use brief signin form to ease registration
+2. Tweaks to the commons communications library
+
 = 1.3 =
 1. Category filter so article tools appear only on specific categories of posts
 2. Render publication ID with article tools javascript to allow interoperability with iCopyright-syndicated content

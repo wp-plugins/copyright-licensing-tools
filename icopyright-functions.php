@@ -2,7 +2,7 @@
 //This file contains functions of icopyright plugin
 
 //function to dynamically create registration form!
-function create_icopyright_register_form($fname, $lname, $email, $email2, $password, $password2, $pname, $url, $line1, $line2, $line3, $city, $state, $postal, $country, $phone, $description) {
+function create_icopyright_register_form($fname, $lname, $email, $password, $pname, $url) {
 
   //check whether form has been submitted with errors
   //if there is errors change display form to block
@@ -18,7 +18,7 @@ function create_icopyright_register_form($fname, $lname, $email, $email2, $passw
   //check if curl is loaded, if not display message and hide registration form.
   $loaded_extension = get_loaded_extensions();
   if (!in_array("curl", $loaded_extension)) {
-    echo "<div id='curl_notice' class='updated fade'><p>A PHP extension ( cURL extension ), which is needed for our Registration Form to work, is not installed by your Hosting Provider. You will need to request for a Publication Id <a href='http://info.icopyright.com/publishers-sign-in-sign-up' target='_blank'>here.</a><a href='#' onclick='document.getElementById(\"curl_notice\").style.display=\"none\";document.getElementById(\"icopyright_option\").style.display=\"block\";' style='font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;'>(If you already have a publication ID, click here to enter and save it under Show Advanced Settings.)</a></p></div>";
+    echo "<div id='curl_notice' class='updated fade'><p>A PHP extension ( cURL extension ), which is needed for our Registration Form to work, is not installed by your Hosting Provider. You will need to request for a Publication Id <a href='http://info.icopyright.com/publishers-sign-in-sign-up' target='_blank'>here.</a><a href='#' onclick='document.getElementById(\"curl_notice\").style.display=\"none\";document.getElementById(\"icopyright_option\").style.display=\"block\";' style='font-size:12px;text-decoration:none;'>(If you already have a publication ID, click here to enter and save it under Show Advanced Settings.)</a></p></div>";
     $initial_js = "<script type=\"text/javascript\">\n";
     $initial_js .= "document.getElementById('icopyright_option').style.display='none';";
     $initial_js .= "</script>\n";
@@ -33,17 +33,18 @@ function create_icopyright_register_form($fname, $lname, $email, $email2, $passw
 
   $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
 
-  $form .= '<h3><u>Publication ID Registration Form</u><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0px 0px 0px 10px;text-decoration:none;">(If you already have a publication ID, click here to enter and save it under Show Advanced Settings.)</a></h3>';
+  $form .= '<h3>Registration Form</h3><p><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0 0 0 10px;text-decoration:none;">(If you already have a publication ID, click here to enter it under Show Advanced Settings.)</a></p>';
 
-  $form .= '<strong><p>Complete the fields below to activate iCopyright Article Tools. Required fields indicated by *. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-setup" target="_blank">help</a>.</p></strong>';
+  $form .= '<p>If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-setup" target="_blank">help</a>.</p>';
 
   $form .= '<table class="widefat">';
 
   //fname
-  $form .= "<tr><td width=\"400px\"><label>First Name of Site Admin:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"fname\" id=\"fname\" value=\"$fname\"/>*</td></tr>";
+  $form .= "<tr><td colspan=\"2\"><h2>About You</h2></td></tr>";
+  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>First Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"fname\" id=\"fname\" value=\"$fname\"/></td></tr>";
 
   //lname
-  $form .= "<tr class=\"odd\"><td width=\"400px\"><label>Last Name of Site Admin:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"lname\" value=\"$lname\"/>*</td></tr>";
+  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Last Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"lname\" value=\"$lname\"/></td></tr>";
 
   //auto populate current user email
   //since version 1.1.4
@@ -52,566 +53,31 @@ function create_icopyright_register_form($fname, $lname, $email, $email2, $passw
     global $current_user;
     get_currentuserinfo();
     $email = $current_user->user_email;
-    $email2 = $email;
   }
 
   //email
-  $form .= "<tr><td width=\"400px\"><label>Email Address of Site Admin:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" id=\"email\" value=\"$email\"/>*</td></tr>";
-
-  //email
-  $form .= "<tr><td width=\"400px\"><label>Email Address of Site Admin (Retype):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email2\" id=\"email2\" value=\"$email2\"/>*</td></tr>";
+  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Email Address:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" id=\"email\" value=\"$email\"/></td></tr>";
 
   //password
-  $form .= "<tr class=\"odd\"><td width=\"400px\"><label>Create Password for iCopyright Console <br/>(must be at least 6 characters):</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password\" id=\"password\" value=\"$password\"/>*</td></tr>";
-
-  //password retype
-  $form .= "<tr class=\"odd\"><td width=\"400px\"><label>Create Password for iCopyright Console (Retype):</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password2\" id=\"password2\" value=\"$password2\"/>*</td></tr>";
-
+  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Password:</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password\" id=\"password\" value=\"$password\"/></td></tr>";
 
   //pname
-  $form .= "<tr><td width=\"400px\"><label>Publication Name (the name of your blog or publication):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"pname\" value=\"$pname\"/>*</td></tr>";
+  $form .= "<tr><td colspan=\"2\"><h2>About This Site</h2></td></tr>";
 
-  //General Description
-  $form .= "<tr class=\"odd\"><td width=\"400px\"><label>Description (a general description of your site):</label></td><td><input style=\"width:500px\" type=\"text\" name=\"description\" value=\"$description\"/>*</td></tr>";
+  if (!isset($pname)) {
+    $pname = get_bloginfo('name');
+  }
+  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Site Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"pname\" value=\"$pname\"/></td></tr>";
 
   //auto populate using WordPress site url
   //since version 1.1.4
-
   if (!isset($url)) {
     $url = get_bloginfo('url') . "/";
   }
-
-
   //url
-  $form .= "<tr><td width=\"400px\"><label>WordPress Site Address (URL):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"url\" value=\"$url\"/>*</td></tr>";
+  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Site Address (URL):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"url\" value=\"$url\"/></td></tr>";
 
-  //line1
-  $form .= "<tr class=\"odd\" height=\"40px\"><td width=\"400px\"><label>Street Address 1<br />
- (this is needed to send payments for licensing sales):
-</label></td><td><input style=\"width:500px;margin:10px 0px\" type=\"text\" name=\"line1\" value=\"$line1\"/>*</td></tr>";
-
-  //line2
-  $form .= "<tr><td width=\"400px\"><label>Street Address 2:</label></td><td><input style=\"width:500px\" type=\"text\" name=\"line2\" value=\"$line2\"/></td></tr>";
-
-  //line3
-  $form .= "<tr class=\"odd\"><td width=\"400px\"><label>Street Address 3:</label></td><td><input style=\"width:500px\" type=\"text\" name=\"line3\" value=\"$line3\"/></td></tr>";
-
-  //city
-  $form .= "<tr><td width=\"400px\"><label>City:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"city\" value=\"$city\"/>*</td></tr>";
-
-  //state
-  $form .= "<tr class=\"odd\"><td width=\"400px\"><label>State/Province:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"state\" value=\"$state\"/>*</td></tr>";
-
-  //postal
-  $form .= "<tr><td width=\"400px\"><label>Postal Code:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"postal\" value=\"$postal\"/>*</td></tr>";
-
-  $two_digit_country_description = array(
-    'AF--Afghanistan',
-    'AL--Albania',
-    'DZ--Algeria',
-    'AS--American Samoa',
-    'AD--Andorra',
-    'AO--Angola',
-    'AI--Anguilla',
-    'AQ--Antarctica',
-    'AG--Antigua And Barbuda',
-    'AR--Argentina',
-    'AM--Armenia',
-    'AW--Aruba',
-    'AU--Australia',
-    'AT--Austria',
-    'AZ--Azerbaijan',
-    'BS--Bahamas',
-    'BH--Bahrain',
-    'BD--Bangladesh',
-    'BB--Barbados',
-    'BY--Belarus',
-    'BE--Belgium',
-    'BZ--Belize',
-    'BJ--Benin',
-    'BM--Bermuda',
-    'BT--Bhutan',
-    'BO--Bolivia',
-    'BA--Bosnia And Herzegovina',
-    'BW--Botswana',
-    'BV--Bouvet Island',
-    'BR--Brazil',
-    'IO--British Indian Ocean Territory',
-    'BN--Brunei',
-    'BG--Bulgaria',
-    'BF--Burkina Faso',
-    'BI--Burundi',
-    'KH--Cambodia',
-    'CM--Cameroon',
-    'CA--Canada',
-    'CV--Cape Verde',
-    'KY--Cayman Islands',
-    'CF--Central African Republic',
-    'TD--Chad',
-    'CL--Chile',
-    'CN--China',
-    'CX--Christmas Island',
-    'CC--Cocos (Keeling) Islands',
-    'CO--Columbia',
-    'KM--Comoros',
-    'CG--Congo',
-    'CK--Cook Islands',
-    'CR--Costa Rica',
-    'CI--Cote D\'Ivorie (Ivory Coast)',
-    'HR--Croatia (Hrvatska)',
-    'CU--Cuba',
-    'CY--Cyprus',
-    'CZ--Czech Republic',
-    'CD--Democratic Republic Of Congo (Zaire)',
-    'DK--Denmark',
-    'DJ--Djibouti',
-    'DM--Dominica',
-    'DO--Dominican Republic',
-    'TP--East Timor',
-    'EC--Ecuador',
-    'EG--Egypt',
-    'SV--El Salvador',
-    'GQ--Equatorial Guinea',
-    'ER--Eritrea',
-    'EE--Estonia',
-    'ET--Ethiopia',
-    'FK--Falkland Islands (Malvinas)',
-    'FO--Faroe Islands',
-    'FJ--Fiji',
-    'FI--Finland',
-    'FR--France',
-    'FX--France, Metropolitan',
-    'GF--French Guinea',
-    'PF--French Polynesia',
-    'TF--French Southern Territories',
-    'GA--Gabon',
-    'GM--Gambia',
-    'GE--Georgia',
-    'DE--Germany',
-    'GH--Ghana',
-    'GI--Gibraltar',
-    'GR--Greece',
-    'GL--Greenland',
-    'GD--Grenada',
-    'GP--Guadeloupe',
-    'GU--Guam',
-    'GT--Guatemala',
-    'GN--Guinea',
-    'GW--Guinea-Bissau',
-    'GY--Guyana',
-    'HT--Haiti',
-    'HM--Heard And McDonald Islands',
-    'HN--Honduras',
-    'HK--Hong Kong',
-    'HU--Hungary',
-    'IS--Iceland',
-    'IN--India',
-    'ID--Indonesia',
-    'IR--Iran',
-    'IQ--Iraq',
-    'IE--Ireland',
-    'IL--Israel',
-    'IT--Italy',
-    'JM--Jamaica',
-    'JP--Japan',
-    'JO--Jordan',
-    'KZ--Kazakhstan',
-    'KE--Kenya',
-    'KI--Kiribati',
-    'KW--Kuwait',
-    'KG--Kyrgyzstan',
-    'LA--Laos',
-    'LV--Latvia',
-    'LB--Lebanon',
-    'LS--Lesotho',
-    'LR--Liberia',
-    'LY--Libya',
-    'LI--Liechtenstein',
-    'LT--Lithuania',
-    'LU--Luxembourg',
-    'MO--Macau',
-    'MK--Macedonia',
-    'MG--Madagascar',
-    'MW--Malawi',
-    'MY--Malaysia',
-    'MV--Maldives',
-    'ML--Mali',
-    'MT--Malta',
-    'MH--Marshall Islands',
-    'MQ--Martinique',
-    'MR--Mauritania',
-    'MU--Mauritius',
-    'YT--Mayotte',
-    'MX--Mexico',
-    'FM--Micronesia',
-    'MD--Moldova',
-    'MC--Monaco',
-    'MN--Mongolia',
-    'MS--Montserrat',
-    'MA--Morocco',
-    'MZ--Mozambique',
-    'MM--Myanmar (Burma)',
-    'NA--Namibia',
-    'NR--Nauru',
-    'NP--Nepal',
-    'NL--Netherlands',
-    'AN--Netherlands Antilles',
-    'NC--New Caledonia',
-    'NZ--New Zealand',
-    'NI--Nicaragua',
-    'NE--Niger',
-    'NG--Nigeria',
-    'NU--Niue',
-    'NF--Norfolk Island',
-    'KP--North Korea',
-    'MP--Northern Mariana Islands',
-    'NO--Norway',
-    'OM--Oman',
-    'PK--Pakistan',
-    'PW--Palau',
-    'PA--Panama',
-    'PG--Papua New Guinea',
-    'PY--Paraguay',
-    'PE--Peru',
-    'PH--Philippines',
-    'PN--Pitcairn',
-    'PL--Poland',
-    'PT--Portugal',
-    'PR--Puerto Rico',
-    'QA--Qatar',
-    'RE--Reunion',
-    'RO--Romania',
-    'RU--Russia',
-    'RW--Rwanda',
-    'SH--Saint Helena',
-    'KN--Saint Kitts And Nevis',
-    'LC--Saint Lucia',
-    'PM--Saint Pierre And Miquelon',
-    'VC--Saint Vincent And The Grenadines',
-    'SM--San Marino',
-    'ST--Sao Tome And Principe',
-    'SA--Saudi Arabia',
-    'SN--Senegal',
-    'SC--Seychelles',
-    'SL--Sierra Leone',
-    'SG--Singapore',
-    'SK--Slovak Republic',
-    'SI--Slovenia',
-    'SB--Solomon Islands',
-    'SO--Somalia',
-    'ZA--South Africa',
-    'GS--South Georgia And South Sandwich Islands',
-    'KR--South Korea',
-    'ES--Spain',
-    'LK--Sri Lanka',
-    'SD--Sudan',
-    'SR--Suriname',
-    'SJ--Svalbard And Jan Mayen',
-    'SZ--Swaziland',
-    'SE--Sweden',
-    'CH--Switzerland',
-    'SY--Syria',
-    'TW--Taiwan',
-    'TJ--Tajikistan',
-    'TZ--Tanzania',
-    'TH--Thailand',
-    'TG--Togo',
-    'TK--Tokelau',
-    'TO--Tonga',
-    'TT--Trinidad And Tobago',
-    'TN--Tunisia',
-    'TR--Turkey',
-    'TM--Turkmenistan',
-    'TC--Turks And Caicos Islands',
-    'TV--Tuvalu',
-    'UG--Uganda',
-    'UA--Ukraine',
-    'AE--United Arab Emirates',
-    'UK--United Kingdom',
-    'US--United States',
-    'UM--United States Minor Outlying Islands',
-    'UY--Uruguay',
-    'UZ--Uzbekistan',
-    'VU--Vanuatu',
-    'VA--Vatican City (Holy See)',
-    'VE--Venezuela',
-    'VN--Vietnam',
-    'VG--Virgin Islands (British)',
-    'VI--Virgin Islands (US)',
-    'WF--Wallis And Futuna Islands',
-    'EH--Western Sahara',
-    'WS--Western Samoa',
-    'YE--Yemen',
-    'YU--Yugoslavia',
-    'ZM--Zambia',
-    'ZW--Zimbabwe'
-  );
-
-  $two_digit_country_code = array(
-    'AF',
-    'AL',
-    'DZ',
-    'AS',
-    'AD',
-    'AO',
-    'AI',
-    'AQ',
-    'AG',
-    'AR',
-    'AM',
-    'AW',
-    'AU',
-    'AT',
-    'AZ',
-    'BS',
-    'BH',
-    'BD',
-    'BB',
-    'BY',
-    'BE',
-    'BZ',
-    'BJ',
-    'BM',
-    'BT',
-    'BO',
-    'BA',
-    'BW',
-    'BV',
-    'BR',
-    'IO',
-    'BN',
-    'BG',
-    'BF',
-    'BI',
-    'KH',
-    'CM',
-    'CA',
-    'CV',
-    'KY',
-    'CF',
-    'TD',
-    'CL',
-    'CN',
-    'CX',
-    'CC',
-    'CO',
-    'KM',
-    'CG',
-    'CK',
-    'CR',
-    'CI',
-    'HR',
-    'CU',
-    'CY',
-    'CZ',
-    'CD',
-    'DK',
-    'DJ',
-    'DM',
-    'DO',
-    'TP',
-    'EC',
-    'EG',
-    'SV',
-    'GQ',
-    'ER',
-    'EE',
-    'ET',
-    'FK',
-    'FO',
-    'FJ',
-    'FI',
-    'FR',
-    'FX',
-    'GF',
-    'PF',
-    'TF',
-    'GA',
-    'GM',
-    'GE',
-    'DE',
-    'GH',
-    'GI',
-    'GR',
-    'GL',
-    'GD',
-    'GP',
-    'GU',
-    'GT',
-    'GN',
-    'GW',
-    'GY',
-    'HT',
-    'HM',
-    'HN',
-    'HK',
-    'HU',
-    'IS',
-    'IN',
-    'ID',
-    'IR',
-    'IQ',
-    'IE',
-    'IL',
-    'IT',
-    'JM',
-    'JP',
-    'JO',
-    'KZ',
-    'KE',
-    'KI',
-    'KW',
-    'KG',
-    'LA',
-    'LV',
-    'LB',
-    'LS',
-    'LR',
-    'LY',
-    'LI',
-    'LT',
-    'LU',
-    'MO',
-    'MK',
-    'MG',
-    'MW',
-    'MY',
-    'MV',
-    'ML',
-    'MT',
-    'MH',
-    'MQ',
-    'MR',
-    'MU',
-    'YT',
-    'MX',
-    'FM',
-    'MD',
-    'MC',
-    'MN',
-    'MS',
-    'MA',
-    'MZ',
-    'MM',
-    'NA',
-    'NR',
-    'NP',
-    'NL',
-    'AN',
-    'NC',
-    'NZ',
-    'NI',
-    'NE',
-    'NG',
-    'NU',
-    'NF',
-    'KP',
-    'MP',
-    'NO',
-    'OM',
-    'PK',
-    'PW',
-    'PA',
-    'PG',
-    'PY',
-    'PE',
-    'PH',
-    'PN',
-    'PL',
-    'PT',
-    'PR',
-    'QA',
-    'RE',
-    'RO',
-    'RU',
-    'RW',
-    'SH',
-    'KN',
-    'LC',
-    'PM',
-    'VC',
-    'SM',
-    'ST',
-    'SA',
-    'SN',
-    'SC',
-    'SL',
-    'SG',
-    'SK',
-    'SI',
-    'SB',
-    'SO',
-    'ZA',
-    'GS',
-    'KR',
-    'ES',
-    'LK',
-    'SD',
-    'SR',
-    'SJ',
-    'SZ',
-    'SE',
-    'CH',
-    'SY',
-    'TW',
-    'TJ',
-    'TZ',
-    'TH',
-    'TG',
-    'TK',
-    'TO',
-    'TT',
-    'TN',
-    'TR',
-    'TM',
-    'TC',
-    'TV',
-    'UG',
-    'UA',
-    'AE',
-    'UK',
-    'US',
-    'UM',
-    'UY',
-    'UZ',
-    'VU',
-    'VA',
-    'VE',
-    'VN',
-    'VG',
-    'VI',
-    'WF',
-    'EH',
-    'WS',
-    'YE',
-    'YU',
-    'ZM',
-    'ZW'
-  );
-
-  //country
-  $form .= "<tr class=\"odd\"><td width=\"400px\"><label>Country:</label></td><td>";
-  $form .= "<select name=\"country\"/><option value=''>Please Select One</option>";
-
-  //create country option value using $two_digit_country_description and $two_digit_country_code arrays.
-  for ($i = 0; $i < 239; $i++) {
-    $form .= "<option value='$two_digit_country_code[$i]'";
-
-    if ($two_digit_country_code[$i] == $country) {
-      $form .= 'selected="selected"';
-    }
-
-    $form .= ">$two_digit_country_description[$i]</option>";
-  }
-
-
-  $form .= "</select>*</td></tr>";
-
-  //phone
-  $form .= "<tr><td width=\"400px\"><label>Phone:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"phone\" value=\"$phone\"/>*</td></tr>";
-
-  //TOU
-  $form .= "<tr class=\"odd\"><td width=\"400px\"><label>Terms of Use:</label></td><td>I agree with the<a href='";
+  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Terms of Use:</label></td><td>I agree with the<a href='";
   $form .= ICOPYRIGHT_URL . "publisher/statichtml/CSA-Online-Plugin.pdf";
   $form .= "' target='_blank'> terms of use.</a> <input id=\"tou\" name=\"tou\" type=\"checkbox\" value=\"true\" style='border:none;'";
 
@@ -620,9 +86,9 @@ function create_icopyright_register_form($fname, $lname, $email, $email2, $passw
   //global variable set in icopyright-admin.php line 103
   global $icopyright_tou_checked;
   if ($icopyright_tou_checked == 'true') {
-    $form .= "checked=yes>*</td></tr>";
+    $form .= "checked=yes></td></tr>";
   } else {
-    $form .= ">*</td></tr>";
+    $form .= "></td></tr>";
   }
 
   $form .= '</table>';

@@ -194,25 +194,12 @@ function icopyright_admin() {
     $fname = $_POST['fname'];
     $lname = $_POST['lname'];
     $email = $_POST['email'];
-    $email2 = $_POST['email2']; // not posted to API but required to re-populate form
     $password = $_POST['password'];
-    $password2 = $_POST['password2']; // not posted to API but required to re-populate form
     $pname = $_POST['pname'];
     $url = $_POST['url'];
-    $line1 = $_POST['line1'];
-    $line2 = $_POST['line2'];
-    $line3 = $_POST['line3'];
-    $city = $_POST['city'];
-    $state = $_POST['state'];
-    $postal = $_POST['postal'];
-    $country = $_POST['country'];
-    $phone = $_POST['phone'];
-    $description = $_POST['description'];
 
     //create post data string
     $postdata = "fname=$fname&lname=$lname&email=$email&password=$password&pname=$pname&url=$url";
-    $postdata .= "&line1=$line1&line2=$line2&line3=$line3&city=$city&state=$state&postal=$postal&country=$country";
-    $postdata .= "&phone=$phone&description=$description";
 
     //post data to API using CURL and assigning response.
     $useragent = ICOPYRIGHT_USERAGENT;
@@ -698,7 +685,7 @@ if(!empty($icopyright_conductor_id)){
 if(empty($icopyright_pubid)){
 echo 'or <a href="#" onclick="show_icopyright_form()">click here to register</a>';
 }else{
-echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced User Only.</span>';
+echo '<br/><span style="font-style:italic;margin:0 0 0 105px;">Advanced User Only.</span>';
 }
 ?>
 </p>
@@ -749,7 +736,7 @@ echo '<br/><span style="font-style:italic;margin:0px 0px 0px 105px;">Advanced Us
 
 <?php
 if($icopyright_form_status!='200'){
-create_icopyright_register_form($fname,$lname,$email,$email2,$password,$password2,$pname,$url,$line1,$line2,$line3,$city,$state,$postal,$country,$phone,$description);
+create_icopyright_register_form($fname, $lname, $email,$password,$pname,$url);
 }
 ?>
 
@@ -799,18 +786,6 @@ var error_message = '';
 
 if(!document.getElementById('tou').checked){
 error_message+='<li>Terms of Use: You need to agree to the Terms of Use, before submitting for registration. You may view the terms <a href=\"$icopyright_pdf_url\" target=\"_blank\">here.</a></li>';
-}
-
-var email1 = document.getElementById('email').value;
-var email2 = document.getElementById('email2').value;
-if(email1!==email2){
-error_message+='<li>Email Address of Site Admin: Retype email address is different. Both email address needs to be the same.</li>';
-}
-
-var password1 = document.getElementById('password').value;
-var password2 = document.getElementById('password2').value;
-if(password1!==password2){
-error_message+='<li>Create Password for iCopyright Console: Retype password is different. Both password needs to be the same.</li>';
 }
 
 if(error_message!=''){
