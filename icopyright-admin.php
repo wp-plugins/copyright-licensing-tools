@@ -592,8 +592,8 @@ $check_password = get_option('icopyright_conductor_password');
 <p>
 <strong><?php _e('Share services: ')?></strong>
 <br /><br />
-<input name="icopyright_share" type="radio" value="yes" <?php if(empty($icopyright_share)||$icopyright_share=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
-<input name="icopyright_share" type="radio" value="no" <?php if($icopyright_share=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
+<input name="icopyright_share" type="radio" value="yes" <?php if($icopyright_share=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
+<input name="icopyright_share" type="radio" value="no" <?php if(empty($icopyright_share)||$icopyright_share=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
 <span style="font-size:10px">
 <br/>
 <br />
