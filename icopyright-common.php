@@ -130,7 +130,49 @@ function icopyright_post_ez_excerpt($pid, $value, $useragent, $email, $password)
  * @return the response from iCopyright's servers in XML format
  */
 function icopyright_post_syndication_service($pid, $value, $useragent, $email, $password) {
-  $url = "/api/xml/service/offer/101";
+  return icopyright_post_service(101, $pid, $value, $useragent, $email, $password);
+}
+
+/**
+ * Enables or disables the share service for the publisher
+ *
+ * @param  $pid
+ *      the publication ID
+ * @param  $value
+ *      whether share should be on (true) or off (false)
+ * @param  $useragent
+ *      the type and version of the plugin doing the posting, for example
+ *      "iCopyright Drupal Plugin v6.x-1.0"
+ * @param  $email
+ *      the email address of the user
+ * @param  $password
+ *      the user's iCopyright password
+ * @return the response from iCopyright's servers in XML format
+ */
+function icopyright_post_share_service($pid, $value, $useragent, $email, $password) {
+  return icopyright_post_service(200, $pid, $value, $useragent, $email, $password);
+}
+
+/**
+ * Enables or disables a service by ID for the publisher
+ *
+ * @param  $sid
+ *      the service ID
+ * @param  $pid
+ *      the publication ID
+ * @param  $value
+ *      whether share should be on (true) or off (false)
+ * @param  $useragent
+ *      the type and version of the plugin doing the posting, for example
+ *      "iCopyright Drupal Plugin v6.x-1.0"
+ * @param  $email
+ *      the email address of the user
+ * @param  $password
+ *      the user's iCopyright password
+ * @return the response from iCopyright's servers in XML format
+ */
+function icopyright_post_service($sid, $pid, $value, $useragent, $email, $password) {
+  $url = "/api/xml/service/offer/$sid";
   $queryargs = array();
   array_push($queryargs, "publication=$pid");
   array_push($queryargs, 'enable=' . ($value == 0 ? 'false' : 'true'));
