@@ -306,6 +306,7 @@ function icopyright_admin() {
                                         'show_multiple' => 'both',
                                         'ez_excerpt' => 'yes',
                                         'syndication' => 'yes',
+                                        'share' => 'yes',
                                         'categories' => '',
                                         'use_category_filter' => 'no',
       );
