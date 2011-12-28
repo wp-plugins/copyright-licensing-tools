@@ -24,6 +24,7 @@ function icopyright_admin() {
     $icopyright_show_multiple = stripslashes($_POST['icopyright_show_multiple']);
     $icopyright_ez_excerpt = stripslashes($_POST['icopyright_ez_excerpt']);
     $icopyright_syndication = stripslashes($_POST['icopyright_syndication']);
+    $icopyright_share = stripslashes($_POST['icopyright_share']);
     $icopyright_use_copyright_filter = stripslashes($_POST['icopyright_use_category_filter']);
     $icopyright_conductor_email = stripslashes($_POST['icopyright_conductor_email']);
     $icopyright_conductor_password = stripslashes($_POST['icopyright_conductor_password']);
@@ -149,6 +150,16 @@ function icopyright_admin() {
       }
     }
 
+    // Turn on and off sharing
+    if (!empty($conductor_email) && !empty($conductor_password)) {
+      $val = ($icopyright_share == 'yes' ? 1 : 0);
+      $share_res = icopyright_post_share_service($icopyright_pubid, $val, $user_agent, $conductor_email, $conductor_password);
+      $check_share_res = icopyright_check_response($share_res);
+      if (!$check_share_res == true) {
+        $error_message .= "<li>Failed to update Share Setting</li>";
+      }
+    }
+
     // Check selected categories input for sensibility
     $selectedCategories = array();
     $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : array();
@@ -166,6 +177,7 @@ function icopyright_admin() {
                               'show_multiple' => $icopyright_show_multiple,
                               'ez_excerpt' => $icopyright_ez_excerpt,
                               'syndication' => $icopyright_syndication,
+                              'share' => $icopyright_share,
                               'categories' => implode(',', $selectedCategories),
                               'use_category_filter' => $icopyright_use_copyright_filter,
     );
@@ -415,17 +427,18 @@ The following settings will determine how the iCopyright Article Tools and Inter
 </p>
 
 <!--Interactive Tools Selection -->
-<div id="A1" style="float:left;margin:0 50px 0 0;height:700px;<?php $display = $icopyright_option['display']; if($display=="manual"){echo "display:none;";}?>">
+<?php $icopyright_share = $icopyright_option['share']; ?>
+<div id="A1" style="float:left;margin:0 50px 0 0;<?php $display = $icopyright_option['display']; if($display=="manual"){echo "display:none;";}?>">
 <p>
 <strong><?php _e('iCopyright Article Tools: ')?></strong>
 <br /><br />
-<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/horizontal-toolbar.jpg" alt="horizontal-toolbar" align="absbottom"/>
+<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/<?php echo ($icopyright_share == 'yes' ? 'horizontal-toolbar-share.png' : 'horizontal-toolbar.png') ?>" alt="horizontal-toolbar" align="absbottom"/>
 <br /><br />
 
 
 <input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_option['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> /> <?php _e('Horizontal Toolbar ')?><br /><br />
 
-<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/vertical-toolbar.jpg" alt="vertical-toolbar" align="absbottom"/>
+<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/<?php echo ($icopyright_share == 'yes' ? 'vertical-toolbar-share.png' : 'vertical-toolbar.png') ?>" alt="vertical-toolbar" align="absbottom"/>
 <br /><br />
 
 
@@ -444,6 +457,7 @@ The following settings will determine how the iCopyright Article Tools and Inter
 </p>
 
 <br />
+
 
 <!--single post display option-->
 <p>
@@ -528,7 +542,7 @@ No option available.
 
 </div>
 
-<div id="M2" style="float:left;margin:0 50px 0 0;display:none;height:300px;<?php $display4 = $icopyright_option['display']; if($display4=="manual"){echo "display:block;";}?>">
+<div id="M2" style="float:left;margin:0 50px 0 0;display:none;<?php $display4 = $icopyright_option['display']; if($display4=="manual"){echo "display:block;";}?>">
 <p>
 <strong><?php _e('Interactive Copyright Notice WordPress Shortcode: ')?></strong>
 <br /><br />
@@ -540,7 +554,7 @@ No option available.
 
 </div>
 
-<div id="M3" style="float:left;margin:0 50px 0 0;display:none;height:160px;<?php $display5 = $icopyright_option['display']; if($display5=="manual"){echo "display:block;";}?>">
+<div id="M3" style="float:left;margin:0 50px 0 0;display:none;<?php $display5 = $icopyright_option['display']; if($display5=="manual"){echo "display:block;";}?>">
 <p>
 <strong><?php _e('Available WordPress Shortcode Attributes: ')?></strong>
 </p>
@@ -564,16 +578,9 @@ No option available.
 
 </div>
 
-<br clear="all"/>
+<br clear="all"/><br/>
 
-<!--Toggle EZ Excerpt Feature -->
-
-<p>
-<strong><?php _e('Enable EZ Excerpt feature: ')?></strong>
-
-<br />
-<br />
-
+<!--Share tools -->
 <?php
 //used to check whether to disable radio buttons of ez excerpt and syndication
 //if there is no email address or password in database, we disable these buttons
@@ -581,6 +588,25 @@ $check_email = get_option('icopyright_conductor_email');
 $check_password = get_option('icopyright_conductor_password');
 ?>
 
+<p>
+<strong><?php _e('Share services: ')?></strong>
+<br /><br />
+<input name="icopyright_share" type="radio" value="yes" <?php if(empty($icopyright_share)||$icopyright_share=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
+<input name="icopyright_share" type="radio" value="no" <?php if($icopyright_share=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
+<span style="font-size:10px">
+<br/>
+<br />
+(Share services make it easy for readers to share links to your articles using Facebook, LinkedIn, Twitter, and Google+.)
+</span>
+</p>
+<br/>
+<!--Toggle EZ Excerpt Feature -->
+
+<p>
+<strong><?php _e('Enable EZ Excerpt feature: ')?></strong>
+
+<br />
+<br />
 
 <input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
 

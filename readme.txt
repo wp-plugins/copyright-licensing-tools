@@ -33,6 +33,10 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
 
+= 1.4.1 =
+1. Enable turning on and off share tools from settings
+2. Up to date snapshots of the article tools for admin pages
+
 = 1.4 =
 1. Use brief signin form to ease registration
 2. Tweaks to the commons communications library
