@@ -475,7 +475,6 @@ The following settings will determine how the iCopyright Article Tools and Inter
 
 <!--Interactive Tools Selection -->
 <?php $icopyright_share = $icopyright_option['share']; ?>
-<div id="A1" style="float:left;">
 
 <p>
 <strong><?php _e('iCopyright Toolbar Appearance:')?></strong>
@@ -541,55 +540,67 @@ The following settings will determine how the iCopyright Article Tools and Inter
 
 <br />
 
-
-<!--single post display option-->
+<!-- Post display options -->
 <p>
-<strong><?php _e('Single Post Display Option:')?></strong>
-<br />
-<br />
-<input name="icopyright_show" type="radio" value="both" <?php $icopyright_show = $icopyright_option['show']; if(empty($icopyright_show)||$icopyright_show=="both"){echo "checked";}?> /> <?php _e('Show both iCopyright Article Tools and Interactive Copyright Notice ')?>
-<br />
-
-
-
-<input name="icopyright_show" type="radio" value="tools" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="tools"){echo "checked";}?> /> <?php _e('Show only iCopyright Article Tools ')?>
-<br />
-
-
-
-<input name="icopyright_show" type="radio" value="notice" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="notice"){echo "checked";}?> /> <?php _e('Show only Interactive Copyright Notice ')?>
-</p>
-
-
-<br />
-
-
-<!--Multiple Post display option added in Version 1.0.8-->
-<p>
-<strong><?php _e('Multiple Post Display Option:')?></strong>
-<br />
-<br />
-
-<input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = $icopyright_option['show_multiple']; if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> /> <?php _e('Show both iCopyright Article Tools and Interactive Copyright Notice ')?>
-<br />
-
-
-
-<input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="tools"){echo "checked";}?> /> <?php _e('Show only iCopyright Article Tools ')?>
-<br />
-
-
-
-<input name="icopyright_show_multiple" type="radio" value="notice" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="notice"){echo "checked";}?> /> <?php _e('Show only Interactive Copyright Notice ')?>
-<br />
-
-
-
-<input name="icopyright_show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="nothing"){echo "checked";}?> /> <?php _e('Show nothing ')?>
-</p>
-
+<strong><?php _e('Tools Displayed on Pages With:')?></strong>
+<br/>
+<div style="float: left">
+  <table>
+    <thead>
+      <tr>
+        <th width="15%">Single&nbsp;Post</th>
+        <th width="20%">Multiple&nbsp; Posts</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="show-both">
+        <td style="text-align: center;">
+          <input name="icopyright_show" type="radio" value="both" <?php $icopyright_show = $icopyright_option['show']; if(empty($icopyright_show)||$icopyright_show=="both"){echo "checked";}?> />
+        </td>
+        <td style="text-align: center;">
+          <input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = $icopyright_option['show_multiple']; if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> />
+        </td>
+        <td>
+          Show both iCopyright Article Toolbar and Interactive Copyright Notice
+        </td>
+      </tr>
+      <tr class="show-toolbar">
+        <td style="text-align: center;">
+          <input name="icopyright_show" type="radio" value="tools" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="tools"){echo "checked";}?> />
+        </td>
+        <td style="text-align: center;">
+          <input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="tools"){echo "checked";}?> />
+        </td>
+        <td>
+          Show only iCopyright Article Toolbar
+        </td>
+      </tr>
+      <tr class="show-icn">
+        <td style="text-align: center;">
+          <input name="icopyright_show" type="radio" value="notice" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="notice"){echo "checked";}?> />
+        </td>
+        <td style="text-align: center;">
+          <input name="icopyright_show_multiple" type="radio" value="notice" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="notice"){echo "checked";}?> />
+        </td>
+        <td>
+          Show only Interactive Copyright Notice
+        </td>
+      </tr>
+      <tr class="show-nothing">
+        <td>
+          &nbsp;
+        </td>
+        <td style="text-align: center;">
+          <input name="icopyright_show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="nothing"){echo "checked";}?> />
+        </td>
+        <td>
+          Show nothing
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-
 <br clear="all"/><br/>
 
 <!--Share tools -->
@@ -883,8 +894,8 @@ $js.="function hide_manual_option(){jQuery('#M3').hide();}";
 $js .="</script>\n";
 
 echo $js;
-
 }
+
 //function to generate icopyright admin footer scripts
 //to control display of register form or settings form
 function icopyright_admin_footer_script() {
@@ -916,4 +927,3 @@ $icopyright_pubid = $icopyright_option['pub_id'];
 
 	}
 }
-?>
