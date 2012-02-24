@@ -239,37 +239,37 @@ function icopyright_interactive_notice() {
     return;
   }
 
-  //post permalink
-  //$permalink = get_permalink($post_id);
-
   //construct copyright notice
   $publish_date = $post->post_date;
   $date = explode('-', $publish_date);
   $icx_copyright = "Copyright " . $date['0'] . " " . get_bloginfo();
 
-  //construct link href
-  $link_href = $icopyright_url . "3." . $pub_id_no . "?icx_id=" . $post_id;
+  $server = icopyright_get_server();
 
   //construct icopyright interactive copyright notice
-  //All CSS style codes in icopyright-interactive-tools.css
-  //use php heredox syntax to return string $icn
 
   $icn = <<<NOTICE
-
-<!-- iCopyright Interactive Notice -->
-<div class="icopyright-interactive-notice">
-<a href="$link_href" target="_blank" title="Main menu of all reuse options" onclick="openLicenseWindow(this.getAttribute('href'));return false;">Click here for reuse options!</a>
-<p><span class="icopyright-note">$icx_copyright</span></p>
-</div>
-<!-- end iCopyright Interactive Notice -->
-
+<!-- iCopyright Interactive Copyright Notice -->
+<script type="text/javascript">
+    var icx_publication_id = $pub_id_no;
+    var icx_copyright_notice = '$icx_copyright';
+    var icx_content_id = '$post_id';
+</script>
+<script type="text/javascript"
+        src="$server/rights/js/copyright-notice.js"></script>
+<noscript>
+    <a style="color: #336699; font-family: Arial, Helvetica, sans-serif; font-size: 12px;"
+       href="$server/3.$pub_id_no?icx_id=$post_id"
+       target="_blank" title="Main menu of all reuse options">
+      <img height="25" width="27" border="0" align="bottom"
+           alt="[Reuse options]"
+           src="$server/images/icopy-w.png"/>Click here for reuse options!</a>
+</noscript>
+<!-- iCopyright Interactive Copyright Notice -->
 NOTICE;
-
 
   // check for icopyright custom field from post editor
   //get post id
-  global $post;
-  $post_id = $post->ID;
   $icopyright_hide_toolbar = get_post_meta($post_id, 'icopyright_hide_toolbar', $single = true);
   // if blogger choose to hide particular post, we will not display it, if not display as normal
   if ($icopyright_hide_toolbar !== 'yes') {

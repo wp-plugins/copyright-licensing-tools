@@ -28,7 +28,7 @@ define('ICOPYRIGHT_PRINTR_RESPONSE','false');
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.4.1");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.5.0");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php
@@ -41,20 +41,6 @@ include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-admin.php');
 
 //include plugin functions
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-functions.php');
-
-//hook in icopyright-interactive-tools.css into theme template <head>
-function load_icopyright_script() {
-  //register script
-  wp_register_script('icopyright-notice-js', ICOPYRIGHT_PLUGIN_URL . '/icopyright-interactive-tools.js', '', '1.0');
-  wp_register_style('icopyright_notice', ICOPYRIGHT_PLUGIN_URL . '/icopyright-interactive-tools.css', $deps, '1.0', 'screen');
-  //load script
-  wp_enqueue_script('icopyright-notice-js', ICOPYRIGHT_PLUGIN_URL . '/icopyright-interactive-tools.js', '', '1.0');
-  wp_enqueue_style('icopyright_notice', ICOPYRIGHT_PLUGIN_URL . '/icopyright-interactive-tools.css', $deps, '1.0', 'screen');
-}
-
-//add script to theme <head>
-add_action('init', 'load_icopyright_script');
-
 
 //hook for icopyright toolbar float
 function icopyright_toolbar_float() {

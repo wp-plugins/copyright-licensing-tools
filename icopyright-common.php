@@ -1,8 +1,8 @@
 <?php
 /**
-* iCopyright Article Tools
-*
-**/
+ * @file
+ * Common functions for communicating with the iCopyright servers
+ */
 
 // Which iCopyright server should we talk to via REST? The standard is license.icopyright.net, port 80,
 // but you can target alternate infrastructures (normally for debugging purposes) by changing these variables.
@@ -111,6 +111,51 @@ function icopyright_post_ez_excerpt($pid, $value, $useragent, $email, $password)
   $postdata = 'ez_excerpt_enabled=' . ($value == 0 ? 'false' : 'true');
   $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password));
   return $res;
+}
+
+/**
+ * Changes the toolbar theme.
+ *
+ * @param $pid the publication ID
+ * @param $theme the new theme: default, green, etc.
+ * @param $background the new background theme
+ * @param $useragent a user agent string identifying the plugin version
+ * @param $email the email address of the user
+ * @param $password the user's iCopyright password
+ * @return the response from iCopyright's servers in XML format
+ */
+function icopyright_post_toolbar_theme($pid, $theme, $background, $useragent, $email, $password) {
+  $url = "/api/xml/publication/toolbar/$pid";
+  $postdata = "theme=$theme&background=$background";
+  $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password));
+  return $res;
+}
+
+/**
+ * Returns an associative array of valid themes
+ * @return an array of themes
+ */
+function icopyright_theme_options() {
+  return array(
+    'CLASSIC' => 'Classic',
+    'CADET' => 'Cadet',
+    'EARTH' => 'Earth',
+    'OCEAN' => 'Ocean',
+    'FOREST' => 'Forest',
+    'AMARANTH' => 'Amaranth',
+    'BLIZZARD' => 'Blizzard'
+  );
+}
+
+/**
+ * Returns an associative array of valid theme backgrounds
+ * @return an array of backgrounds
+ */
+function icopyright_theme_backgrounds() {
+  return array(
+    'OPAQUE' => 'Opaque',
+    'TRANSPARENT' => 'Transparent'
+  );
 }
 
 /**

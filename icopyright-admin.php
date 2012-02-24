@@ -28,6 +28,8 @@ function icopyright_admin() {
     $icopyright_use_copyright_filter = stripslashes($_POST['icopyright_use_category_filter']);
     $icopyright_conductor_email = stripslashes($_POST['icopyright_conductor_email']);
     $icopyright_conductor_password = stripslashes($_POST['icopyright_conductor_password']);
+    $icopyright_theme = stripslashes($_POST['icopyright_article_tools_theme']);
+    $icopyright_background = stripslashes($_POST['icopyright_background']);
 
     //check publication id
     if (empty($icopyright_pubid)) {
@@ -160,6 +162,14 @@ function icopyright_admin() {
       }
     }
 
+    // Set the toolbar theme and background and so on
+    if (!empty($conductor_email) && !empty($conductor_password)) {
+      $t_res = icopyright_post_toolbar_theme($icopyright_pubid, $icopyright_theme, $icopyright_background, $user_agent, $conductor_email, $conductor_password);
+      if (icopyright_check_response($t_res) != true) {
+        $error_message .= "<li>Failed to update Toolbar Settings</li>";
+      }
+    }
+
     // Check selected categories input for sensibility
     $selectedCategories = array();
     $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : array();
@@ -173,6 +183,8 @@ function icopyright_admin() {
                               'display' => $icopyright_display,
                               'tools' => $icopyright_tools,
                               'align' => $icopyright_align,
+                              'background' => $icopyright_background,
+                              'theme' => $icopyright_theme,
                               'show' => $icopyright_show,
                               'show_multiple' => $icopyright_show_multiple,
                               'ez_excerpt' => $icopyright_ez_excerpt,
@@ -302,6 +314,8 @@ function icopyright_admin() {
                                         'display' => 'auto',
                                         'tools' => 'horizontal',
                                         'align' => 'left',
+                                        'theme' => 'CLASSIC',
+                                        'background' => 'OPAQUE',
                                         'show' => 'both',
                                         'show_multiple' => 'both',
                                         'ez_excerpt' => 'yes',
@@ -427,34 +441,102 @@ The following settings will determine how the iCopyright Article Tools and Inter
 </span>
 </p>
 
+<!--WordPress shortcodes -->
+<div id="M3" style="float:left;margin:0 50px 0 0;display:none;<?php $display5 = $icopyright_option['display']; if($display5=="manual"){echo "display:block;";}?>">
+<p>
+<strong><?php _e('Available WordPress Shortcodes: ')?></strong>
+</p>
+  <ul>
+    <li>[icopyright horizontal toolbar]</li>
+    <li>[icopyright vertical toolbar]</li>
+    <li>[interactive copyright notice]</li>
+  </ul>
+<p>
+<strong><?php _e('Available WordPress Shortcode Attributes: ')?></strong>
+</p>
+  <table class="widefat">
+    <thead>
+      <tr>
+        <th>Purpose</th><th>Attribute</th><th>Variations</th><th>Example Usage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Default</td><td>--</td><td>--</td>
+        <td>[icopyright horizontal toolbar]</td>
+      </tr>
+      <tr>
+        <td>For alignment</td><td>float="right"</td><td>float="left"<br />float="right"</td>
+        <td>[icopyright horizontal toolbar float="right"]</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <!--Interactive Tools Selection -->
 <?php $icopyright_share = $icopyright_option['share']; ?>
-<div id="A1" style="float:left;margin:0 50px 0 0;<?php $display = $icopyright_option['display']; if($display=="manual"){echo "display:none;";}?>">
-<p>
-<strong><?php _e('iCopyright Article Tools: ')?></strong>
-<br /><br />
-<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/<?php echo ($icopyright_share == 'yes' ? 'horizontal-toolbar-share.png' : 'horizontal-toolbar.png') ?>" alt="horizontal-toolbar" align="absbottom"/>
-<br /><br />
-
-
-<input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_option['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> /> <?php _e('Horizontal Toolbar ')?><br /><br />
-
-<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/<?php echo ($icopyright_share == 'yes' ? 'vertical-toolbar-share.png' : 'vertical-toolbar.png') ?>" alt="vertical-toolbar" align="absbottom"/>
-<br /><br />
-
-
-<input name="icopyright_tools" type="radio" value="vertical" <?php $icopyright_tools2 = $icopyright_option['tools']; if($icopyright_tools2=="vertical"){echo "checked";}?> /> <?php _e('Vertical Toolbar ')?>
-</p>
-
-<br />
+<div id="A1" style="float:left;">
 
 <p>
-<strong><?php _e('iCopyright Article Tools Alignment:')?></strong>
-<br />
-<br />
-<input name="icopyright_align" type="radio" value="left" <?php $icopyright_align = $icopyright_option['align']; if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> /> <?php _e('Left ')?>
-
-<input name="icopyright_align" type="radio" value="right" <?php $icopyright_align = $icopyright_option['align'];if($icopyright_align=="right"){echo "checked";}?> /> <?php _e('Right ')?>
+<strong><?php _e('iCopyright Toolbar Appearance:')?></strong>
+<br/>
+<div style="float: left">
+  <table width="350" style="padding-top: 25px;">
+    <tr id="alignment">
+      <td class="type" width="30%">Alignment</td>
+      <td class="ui-one" width="35%">
+        <input name="icopyright_align" type="radio" value="left" <?php $icopyright_align = $icopyright_option['align']; if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> /> <?php _e('Left')?>
+      </td>
+      <td class="ui-two" width="35%">
+        <input name="icopyright_align" type="radio" value="right" <?php $icopyright_align = $icopyright_option['align'];if($icopyright_align=="right"){echo "checked";}?> /> <?php _e('Right')?>
+      </td>
+    </tr>
+    <tr id="orientation">
+      <td class="type">Orientation</td>
+      <td class="ui-one">
+        <input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_option['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> /> <?php _e('Horizontal')?>
+      </td>
+      <td class="ui-two">
+        <input name="icopyright_tools" type="radio" value="vertical" <?php if($icopyright_tools=="vertical"){echo "checked";}?> /> <?php _e('Vertical')?>
+      </td>
+    </tr>
+    <tr id="theme">
+      <td class="type">Theme</td>
+      <td class="ui-one">
+        <select name="icopyright_article_tools_theme" class="form-select" id="icopyright_article_tools_theme" >
+          <?php
+            $themes = icopyright_theme_options();
+            $icopyright_theme = $icopyright_option['theme']; if(empty($icopyright_theme)) $icopyright_theme = 'CLASSIC';
+            foreach($themes as $option => $name) {
+              print "<option value=\"$option\"";
+              if($option == $icopyright_theme) print ' selected="selected"';
+              print ">$name</option>";
+            }
+          ?>
+        </select>
+      </td>
+      <td class="ui-two"></td>
+    </tr>
+    <tr id="background">
+      <td class="type">Background</td>
+      <td class="ui-one">
+        <input name="icopyright_background" type="radio" value="OPAQUE" <?php $icopyright_background = $icopyright_option['background']; if(empty($icopyright_background)||$icopyright_background=="OPAQUE"){echo "checked";}?> /> <?php _e('Opaque')?>
+      </td>
+      <td class="ui-two">
+        <input name="icopyright_background" type="radio" value="TRANSPARENT" <?php if($icopyright_background=="TRANSPARENT"){echo "checked";}?> /> <?php _e('Transparent')?>
+      </td>
+    </tr>
+  </table>
+</div>
+<div style="float: left;">
+  <p>Preview of Toolbar</p>
+  <iframe id="article-tools-preview" style="border: 0;" scrolling="no" ></iframe>
+</div>
+<div style="float: left; padding-left: 20px;">
+  <p>Interactive Copyright Notice</p>
+  <iframe id="copyright-notice-preview" style="border: 0;" height="50" scrolling="no" ></iframe>
+</div>
+<div style="clear: both;"></div>
 </p>
 
 <br />
@@ -505,77 +587,6 @@ The following settings will determine how the iCopyright Article Tools and Inter
 
 <input name="icopyright_show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="nothing"){echo "checked";}?> /> <?php _e('Show nothing ')?>
 </p>
-
-</div>
-
-<div id="A2" style="float:left;margin:0 50px 0 0;height:360px;<?php $display2 = $icopyright_option['display']; if($display2=="manual"){echo "display:none;";}?>">
-<p>
-<strong><?php _e('Interactive Copyright Notice: ')?></strong>
-<br /><br />
-<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/interactive_copyright_notice.jpg" alt="Copyright Notice" align="absbottom"/>
-<br />
-<br />
-No option available.
-</p>
-
-</div>
-
-<!--WordPress shortcodes -->
-<div id="M1" style="float:left;margin:0 50px 0 0;display:none;height:300px;<?php $display3 = $icopyright_option['display']; if($display3=="manual"){echo "display:block;";}?>">
-<p>
-<strong><?php _e('iCopyright Article Tools WordPress Shortcode: ')?></strong>
-<br /><br />
-<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/horizontal-toolbar.jpg" alt="horizontal-toolbar" align="absbottom"/>
-<br />
-<br />
-
-[icopyright horizontal toolbar]
-<br />
-<br />
-
-
-<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/vertical-toolbar.jpg" alt="vertical-toolbar" align="absbottom"/>
-<br />
-<br />
-
-[icopyright vertical toolbar]
-</p>
-
-</div>
-
-<div id="M2" style="float:left;margin:0 50px 0 0;display:none;<?php $display4 = $icopyright_option['display']; if($display4=="manual"){echo "display:block;";}?>">
-<p>
-<strong><?php _e('Interactive Copyright Notice WordPress Shortcode: ')?></strong>
-<br /><br />
-<img src="<?php echo ICOPYRIGHT_PLUGIN_URL?>/images/interactive_copyright_notice.jpg" alt="Copyright Notice" align="absbottom"/>
-<br />
-<br />
-[interactive copyright notice]
-</p>
-
-</div>
-
-<div id="M3" style="float:left;margin:0 50px 0 0;display:none;<?php $display5 = $icopyright_option['display']; if($display5=="manual"){echo "display:block;";}?>">
-<p>
-<strong><?php _e('Available WordPress Shortcode Attributes: ')?></strong>
-</p>
-<table class="widefat">
-<thead>
-<tr>
-<th>Purpose</th><th>Attribute</th><th>Variations</th><th>Example Usage</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Default</td><td>--</td><td>--</td>
-<td>[icopyright horizontal toolbar]</td>
-</tr>
-<tr>
-<td>For alignment</td><td>float="right"</td><td>float="left"<br />float="right"</td>
-<td>[icopyright horizontal toolbar float="right"]</td>
-</tr>
-</tbody>
-</table>
 
 </div>
 
@@ -668,6 +679,30 @@ $check_password = get_option('icopyright_conductor_password');
 <br/>
 
 <script type="text/javascript">
+// Function to update the previews with what the toolbars will look like with these settings
+function toolbarTouch() {
+    var orient = (jQuery('input:radio[name=icopyright_tools]:checked').val() == 'horizontal' ? 'horz' : 'vert');
+    var theme = jQuery('#icopyright_article_tools_theme').val();
+    var background = jQuery('input:radio[name=icopyright_background]:checked').val();
+    var publication = <?php print $icopyright_option['pub_id']; ?>;
+    var url = '<?php print icopyright_get_server() ?>/publisher/TouchToolbar.act?' +
+        jQuery.param({
+                theme: theme,
+                background: background,
+                orientation: orient,
+                publication: publication});
+    jQuery('#article-tools-preview').attr('src', url);
+    jQuery('#article-tools-preview').attr('height', (orient == 'horz' ? 53 : 130));
+    jQuery('#article-tools-preview').attr('width', (orient == 'horz' ? 300 : 100));
+    var noticeUrl = '<?php print icopyright_get_server() ?>/publisher/copyright-preview.jsp?' +
+        jQuery.param({
+                themeName: theme,
+                background: background,
+                publicationId: publication,
+                publicationName: '<?php print get_bloginfo() ?>'});
+    jQuery('#copyright-notice-preview').attr('src', noticeUrl);
+}
+
 jQuery(document).ready(function() {
 	jQuery("#toggle_advance_setting").toggle(function(){
 		jQuery("#advance_setting").slideDown();
@@ -685,7 +720,19 @@ jQuery(document).ready(function() {
       jQuery("#icopyright-category-list").slideUp();
     }
   });
+
+  toolbarTouch();
+  jQuery('#icopyright_article_tools_theme').change(function () {
+      toolbarTouch();
+  });
+  jQuery('input:radio[name=icopyright_background]').change(function () {
+      toolbarTouch();
+  });
+  jQuery('input:radio[name=icopyright_tools]').change(function () {
+      toolbarTouch();
+  });
 });
+
 </script>
 
 <input type="button" id="toggle_advance_setting" value="Show Advanced Settings" style="cursor:pointer"><?php
@@ -831,11 +878,8 @@ document.getElementById('icopyright_option').style.display='none';document.getEl
 $js .="function hide_icopyright_form(){document.getElementById('icopyright_registration_form').style.display='none';
 document.getElementById('icopyright_option').style.display='block';}\n";
 
-$js.="function show_manual_option(){document.getElementById('M1').style.display='block';document.getElementById('M2').style.display='block';
-document.getElementById('M3').style.display='block';document.getElementById('A1').style.display='none';document.getElementById('A2').style.display='none';}\n";
-
-$js.="function hide_manual_option(){document.getElementById('A1').style.display='block';document.getElementById('A2').style.display='block';
-document.getElementById('M1').style.display='none';document.getElementById('M2').style.display='none';document.getElementById('M3').style.display='none';}\n";
+$js.="function show_manual_option(){jQuery('#M3').show();}";
+$js.="function hide_manual_option(){jQuery('#M3').hide();}";
 $js .="</script>\n";
 
 echo $js;
