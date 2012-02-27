@@ -428,7 +428,7 @@ The following settings will determine how the iCopyright Article Tools and Inter
 <input name="icopyright_display" type="radio" value="auto"  onclick="hide_manual_option()" <?php $icopyright_display = $icopyright_option['display']; if(empty($icopyright_display)||$icopyright_display=="auto"){echo "checked";}?> />
 <?php _e('Automatic ')?>
 <span style="font-size:10px">
-(<?php _e('iCopyright Article Toolbar and Interactive Copyright Notice will be automatically added into Content of Blog Post')?>)
+(<?php _e('iCopyright Article Toolbar and Interactive Copyright Notice will be automatically added into content of blog post')?>)
 </span>
 
 <br />
@@ -437,7 +437,7 @@ The following settings will determine how the iCopyright Article Tools and Inter
 <input name="icopyright_display" type="radio" value="manual" onclick="show_manual_option()" <?php $icopyright_display2 = $icopyright_option['display']; if($icopyright_display2=="manual"){echo "checked";}?>/>
 <?php _e('Manual ')?>
 <span style="font-size:10px">
-(<?php _e('Deploy iCopyright Article Toolbar and Interactive Copyright Notice into Content of Blog Post, using WordPress Shortcode')?>)
+(<?php _e('Deploy iCopyright Article Toolbar and Interactive Copyright Notice into content of blog post, using WordPress shortcode')?>)
 </span>
 </p>
 
