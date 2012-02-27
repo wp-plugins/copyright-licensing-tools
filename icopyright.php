@@ -111,15 +111,18 @@ function icopyright_default_settings() {
 
   if (empty($check_admin_setting)) {
     $icopyright_admin = array('pub_id' => '',
-                              'display' => 'auto',
-                              'tools' => 'horizontal',
-                              'align' => 'left',
-                              'show' => 'both',
-                              'show_multiple' => 'both',
-                              'ez_excerpt' => 'yes',
-                              'syndication' => 'yes',
-                              'categories' => '',
-                              'use_category_filter' => 'no',
+                                        'display' => 'auto',
+                                        'tools' => 'horizontal',
+                                        'align' => 'right',
+                                        'theme' => 'CLASSIC',
+                                        'background' => 'OPAQUE',
+                                        'show' => 'both',
+                                        'show_multiple' => 'notice',
+                                        'ez_excerpt' => 'yes',
+                                        'syndication' => 'yes',
+                                        'share' => 'yes',
+                                        'categories' => '',
+                                        'use_category_filter' => 'no',
     );
 
     update_option('icopyright_admin', $icopyright_admin);
