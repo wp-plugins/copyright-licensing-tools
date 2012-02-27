@@ -101,15 +101,15 @@ function icopyright_remove_settings() {
   delete_option('icopyright_admin');
   delete_option('icopyright_conductor_password');
   delete_option('icopyright_conductor_email');
+  delete_option('icopryight_redirect_on_first_activation');
 }
 
 register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
 
-function icopyright_default_settings() {
-
+function icopyright_activate() {
   $check_admin_setting = get_option('icopyright_admin');
-
   if (empty($check_admin_setting)) {
+    // First time being activated, so set up with appropriate defaults
     $icopyright_admin = array('pub_id' => '',
                                         'display' => 'auto',
                                         'tools' => 'horizontal',
@@ -124,53 +124,46 @@ function icopyright_default_settings() {
                                         'categories' => '',
                                         'use_category_filter' => 'no',
     );
-
     update_option('icopyright_admin', $icopyright_admin);
-    //prepare blank option to save conductor password into option to use for ez excerpt setting.
-    //since version 1.1.4
     update_option('icopyright_conductor_password', '');
     update_option('icopyright_conductor_email', '');
+    update_option('icopryight_redirect_on_first_activation', 'true');
   }
-
 }
 
-register_activation_hook(__FILE__, 'icopyright_default_settings');
+/**
+ * On first activation, send the user to the plugin settings page
+ */
+function icopyright_redirect_on_activation() {
+  if (get_option('icopryight_redirect_on_first_activation') == 'true') {
+    update_option('icopryight_redirect_on_first_activation', 'false');
+    $icopyright_settings_url = admin_url() . "options-general.php?page=icopyright.php";
+    wp_redirect($icopyright_settings_url);
+  }
+}
+
+register_activation_hook(__FILE__, 'icopyright_activate');
+add_action('init', 'icopyright_redirect_on_activation');
 
 //admin warnings notice if empty publication id
 function icopyright_admin_warning() {
-
-  /***since version 1.1.2***/
-
   //setup admin url to icopyright settings page
   $icopyright_settings_url = admin_url() . "options-general.php?page=icopyright.php";
-
-  //setup current url
   $current_page_url = icopyright_current_page_url();
 
-  //compare current url with constructed settings url
-  // to determine if we are on settings page
-  if ($current_page_url == $icopyright_settings_url) {
-    $show_warning_message = false; // Yes we are, do not show message!
-  } else {
-    $show_warning_message = true; // else not on settings page, show message!
-  }
-  /**end of version 1.1.2 addition*****/
-
+  //compare current url with constructed settings url to determine if we are on settings page
+  $show_warning_message = ($current_page_url != $icopyright_settings_url);
   $check_admin_setting = get_option('icopyright_admin');
 
-  //condition check to show admin warning,
-  //if publication id is empty and is not on settings page.
+  //condition check to show admin warning, if publication id is empty and is not on settings page.
   if ((empty($check_admin_setting['pub_id'])) && ($show_warning_message == true)) {
-
     function icopyright_warning() {
       echo "
 			<div id='icopyright-warning' class='updated fade'><p><strong>" . __('Copyright and Licensing Tools is almost ready.') . "</strong> " . sprintf(__('You must register or enter your Publication Id for it to work. <a href="%1$s">Please click to visit iCopyright Settings Page.</a>'), "options-general.php?page=icopyright.php") . "</p></div>
 			";
     }
-
     add_action('admin_notices', 'icopyright_warning');
   }
-
 }
 
 add_action('init', 'icopyright_admin_warning');
