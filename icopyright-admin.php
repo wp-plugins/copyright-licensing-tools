@@ -549,7 +549,7 @@ The following settings will determine how the iCopyright Article Tools and Inter
     <thead>
       <tr>
         <th width="15%">Single&nbsp;Post</th>
-        <th width="20%">Multiple&nbsp; Posts</th>
+        <th width="20%">Multiple&nbsp;Posts</th>
         <th></th>
       </tr>
     </thead>
