@@ -187,7 +187,7 @@ function icopyright_vertical_toolbar() {
   //get post id
   global $post;
   $post_id = $post->ID;
-  if(!icopyright_post_passes_category_filter($post)) {
+  if(!icopyright_post_passes_category_filter($post_id)) {
     return;
   }
 
@@ -340,7 +340,12 @@ function auto_add_icopyright_toolbars($content) {
 
   //get settings from icopyright_admin option array
   $setting = get_option('icopyright_admin');
+
+  // Do nothing if it isn't appropriate for us to add the content anyway
   $display_status = $setting['display']; //deployment
+  if(($display_status != 'auto') || is_feed() || is_attachment()) {
+    return $content;
+  }
   $selected_toolbar = $setting['tools']; //toolbar selected
 
   //Single Post Display Option
@@ -358,120 +363,25 @@ function auto_add_icopyright_toolbars($content) {
   //nothing - means hide all article tools and interactive notice.
   $multiple_display_option = $setting['show_multiple'];
 
-  //if automatic deployment of toolbars are selected in the admin
-  //or empty option, which is new installation
-  //we will auto add toolbars and copyright notice into post content
-
-  //condition check
-  //display with options only in full page and full post
-  //excluding feeds, and attachment such as images.
-  if (($display_status == "auto" && !is_feed() && !is_attachment()) && (is_page() || is_single())) {
-
-    if ($single_display_option == "both") { //show both top and bottom tools
-      //check toolbar selection for horizontal or vertical toolbar
-      if ($selected_toolbar == "horizontal") {
-        $top_bar = icopyright_horizontal_toolbar();
-        $bottom_bar = icopyright_interactive_notice();
-        return $top_bar . $content . $bottom_bar;
-      }
-      //end if
-
-      if ($selected_toolbar == "vertical") {
-        $top_bar = icopyright_vertical_toolbar();
-        $bottom_bar = icopyright_interactive_notice();
-        return $top_bar . $content . $bottom_bar;
-      }
-      //end if
-    }
-    //end if single_display_option equal to both
-
-
-    if ($single_display_option == "tools") { //show only top article toolbars
-      //check toolbar selection for horizontal or vertical toolbar
-      if ($selected_toolbar == "horizontal") {
-        $top_bar = icopyright_horizontal_toolbar();
-        return $top_bar . $content;
-      }
-      //end if
-
-      if ($selected_toolbar == "vertical") {
-        $top_bar = icopyright_vertical_toolbar();
-        return $top_bar . $content;
-      }
-      //end if
-    }
-    // end if single_display_option equals to tools
-
-
-    if ($single_display_option == "notice") { //show only bottom interactive notice
-      $bottom_bar = icopyright_interactive_notice();
-      return $content . $bottom_bar;
-    }
-    // end if single_display_option equals to notice
-
-
-    //condition check
-    //display with options other than in full page or full post
-    //this applies to home page, categories, archives, and tags.
-    //excluding feeds, and attachment such as images.
-  } elseif ($display_status == "auto" && !is_feed() && !is_attachment()) {
-
-    if ($multiple_display_option == "both") { //show both top and bottom tools
-      //check toolbar selection for horizontal or vertical toolbar
-      if ($selected_toolbar == "horizontal") {
-        $top_bar = icopyright_horizontal_toolbar();
-        $bottom_bar = icopyright_interactive_notice();
-        return $top_bar . $content . $bottom_bar;
-      }
-      //end if
-
-      if ($selected_toolbar == "vertical") {
-        $top_bar = icopyright_vertical_toolbar();
-        $bottom_bar = icopyright_interactive_notice();
-        return $top_bar . $content . $bottom_bar;
-      }
-      //end if
-    }
-    //end if multiple_display_option equal to both
-
-
-    if ($multiple_display_option == "tools") { //show only top article toolbars
-      //check toolbar selection for horizontal or vertical toolbar
-      if ($selected_toolbar == "horizontal") {
-        $top_bar = icopyright_horizontal_toolbar();
-        return $top_bar . $content;
-      }
-      //end if
-
-      if ($selected_toolbar == "vertical") {
-        $top_bar = icopyright_vertical_toolbar();
-        return $top_bar . $content;
-      }
-      //end if
-    }
-    // end if multiple_display_option equals to tools
-
-
-    if ($multiple_display_option == "notice") { //show only bottom interactive notice
-      $bottom_bar = icopyright_interactive_notice();
-      return $content . $bottom_bar;
-    }
-    // end if multiple_display_option equals to notice
-
-    if ($multiple_display_option == "nothing") { //hide all article tools and interactive notice.
-      //return content without tools or notice
-      return $content;
-    }
-    // end if multiple_display_option equals to nothing
-
-
+  // What modes are we paying attention to?
+  if(is_single()) {
+    $show_toolbar = ($single_display_option == 'both') || ($single_display_option == 'tools');
+    $show_icn = ($single_display_option == 'both') || ($single_display_option == 'notice');
   } else {
-    //if display setting is manual, we will return content only
-    return $content;
-
+    $show_toolbar = ($multiple_display_option == 'both') || ($multiple_display_option == 'tools');
+    $show_icn = ($multiple_display_option == 'both') || ($multiple_display_option == 'notice');
   }
-  //end if(($display_status=="auto"&&!is_feed()&&!is_attachment())&&(is_page()||is_single())){
 
+  // Build the toolbar and ICN if we need to display them
+  if($show_toolbar) {
+    $pre = ($selected_toolbar == 'horizontal' ? icopyright_horizontal_toolbar() : icopyright_vertical_toolbar());
+  }
+  if($show_icn) {
+    $post = icopyright_interactive_notice();
+  }
+
+  // Regardless, return what we have
+  return $pre . $content . $post;
 }
 
 //end function auto_add_icopyright_toolbars($content)
