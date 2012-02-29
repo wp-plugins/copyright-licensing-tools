@@ -692,10 +692,11 @@ $check_password = get_option('icopyright_conductor_password');
 <script type="text/javascript">
 // Function to update the previews with what the toolbars will look like with these settings
 function toolbarTouch() {
+    if('<?php print $icopyright_option['pub_id']; ?>' == '') return;
     var orient = (jQuery('input:radio[name=icopyright_tools]:checked').val() == 'horizontal' ? 'horz' : 'vert');
     var theme = jQuery('#icopyright_article_tools_theme').val();
     var background = jQuery('input:radio[name=icopyright_background]:checked').val();
-    var publication = <?php print $icopyright_option['pub_id']; ?>;
+    var publication = '<?php print $icopyright_option['pub_id']; ?>';
     var url = '<?php print icopyright_get_server() ?>/publisher/TouchToolbar.act?' +
         jQuery.param({
                 theme: theme,
