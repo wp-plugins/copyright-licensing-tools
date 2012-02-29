@@ -118,21 +118,12 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
 
 //Generate Horizontal Toolbar from hosted script or directy
 function icopyright_horizontal_toolbar() {
-
-  //script hosted on license.icopyright.net
-
-  //get publication id and ez_excerpt setting from options table from icopyright_admin array
+  //get publication id from options table from icopyright_admin array
   $admin_option = get_option('icopyright_admin');
   $pub_id_no = $admin_option['pub_id'];
-
-  //check publication id is not empty and all numerics
-  //if not return nothing to content filter by just simply let return;
   if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
     return;
   }
-
-  //assign ICOPYRIGHT_URL constant
-  $icopyright_url = ICOPYRIGHT_URL;
 
   //get post id
   global $post;
@@ -140,49 +131,41 @@ function icopyright_horizontal_toolbar() {
   if(!icopyright_post_passes_category_filter($post_id)) {
     return;
   }
+  // if blogger choose to hide particular post, we will not display it
+  $icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
+  if ($icopyright_hide_toolbar == 'yes') {
+    return;
+  }
 
-  //content id
+  // Build up the toolbar piece by piece
   $toolbar = "\n<!-- iCopyright Horizontal Article Toolbar -->\n";
   $toolbar .= "<script type=\"text/javascript\">\n";
   $toolbar .= "var icx_publication_id = $pub_id_no;\n";
   $toolbar .= "var icx_content_id = '$post_id';\n";
   $toolbar .= "</script>\n";
-
   $toolbar_script_url = ICOPYRIGHT_URL . 'rights/js/horz-toolbar.js'; //ICOPYRIGHT_URL constant defined in icopyright.php
-
   $toolbar .= "<script type=\"text/javascript\" src=\"$toolbar_script_url\"></script>\n";
-  //extra css to control float from admin
-  $toolbar .= icopyright_toolbar_float();
   $toolbar .= "<!--End of iCopyright Horizontal Article Toolbar -->\n";
 
-
-  // check for icopyright custom field from post editor
-  $icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
-  // if blogger choose to hide particular post, we will not display it, if not display as normal
-  if ($icopyright_hide_toolbar !== 'yes') {
-    return $toolbar;
+  // Wrap the toolbar with some styles
+  $css = '.icx-toolbar-closure{clear: both;}';
+  if($admin_option['align'] == 'right') {
+    $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
+    $css .= '.icx-toolbar-align-right{float: right;}';
   }
-
-
+  $toolbar .= '<div class="icx-toolbar-closure"></div>';
+  $toolbar .= '<style type="text/css">' . $css . '</style>';
+  return $toolbar;
 }
 
 //Generate Vertical Toolbar from hosted script
 function icopyright_vertical_toolbar() {
-
-  //script hosted on license.icopyright.net
-
-  //get publication id and ez_excerpt setting from options table from icopyright_admin array
+    //get publication id from options table from icopyright_admin array
   $admin_option = get_option('icopyright_admin');
   $pub_id_no = $admin_option['pub_id'];
-
-  //check publication id is not empty and all numerics
-  //if not return nothing to content filter by just simply let return;
   if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
     return;
   }
-
-  //assign ICOPYRIGHT_URL constant
-  $icopyright_url = ICOPYRIGHT_URL;
 
   //get post id
   global $post;
@@ -190,29 +173,30 @@ function icopyright_vertical_toolbar() {
   if(!icopyright_post_passes_category_filter($post_id)) {
     return;
   }
+  // if blogger choose to hide particular post, we will not display it
+  $icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
+  if ($icopyright_hide_toolbar == 'yes') {
+    return;
+  }
 
-  //content id
+  // Build up the toolbar piece by piece
   $toolbar = "\n<!-- iCopyright Vertical Article Toolbar -->\n";
   $toolbar .= "<script type=\"text/javascript\">\n";
   $toolbar .= "var icx_publication_id = $pub_id_no;\n";
   $toolbar .= "var icx_content_id = '$post_id';\n";
   $toolbar .= "</script>\n";
-
   $toolbar_script_url = ICOPYRIGHT_URL . 'rights/js/vert-toolbar.js'; //ICOPYRIGHT_URL constant defined in icopyright.php
-
   $toolbar .= "<script type=\"text/javascript\" src=\"$toolbar_script_url\"></script>\n";
-  //extra css to control float from admin
-  $toolbar .= icopyright_toolbar_float();
   $toolbar .= "<!--End of iCopyright Vertical Article Toolbar -->\n";
 
-
-  // check for icopyright custom field from post editor
-  $icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
-  // if blogger choose to hide particular post, we will not display it, if not display as normal
-  if ($icopyright_hide_toolbar !== 'yes') {
-    return $toolbar;
+  // Wrap the toolbar with some styles
+  $css = $admin_option['align'] == 'right' ? '.icx-toolbar{padding: 0 0 0 5px;}' : '.icx-toolbar{padding: 0 5px 0 0;}';
+  if($admin_option['align'] == 'right') {
+    $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
+    $css .= '.icx-toolbar-align-right{float: right;}';
   }
-
+  $toolbar .= '<style type="text/css">' . $css . '</style>';
+  return $toolbar;
 }
 
 
@@ -280,53 +264,22 @@ NOTICE;
 
 //WordPress Shortcode [icopyright horizontal toolbar]
 function icopyright_horizontal_toolbar_shortcode($atts) {
-  extract(shortcode_atts(array(
-                              'float' => '',
-                         ), $atts));
-
-  if (!empty($float)) {
-    $style = "style='float:" . $float . "'";
-  } else {
-    $style = "";
-  }
-
   $h_toolbar = icopyright_horizontal_toolbar();
-  return "<div " . $style . "><!--horizontal toolbar wrapper -->" . $h_toolbar . "</div><!--end of wrapper -->";
+  return "<!--horizontal toolbar wrapper -->" . $h_toolbar . "<!--end of wrapper -->";
 }
-
 add_shortcode('icopyright horizontal toolbar', 'icopyright_horizontal_toolbar_shortcode');
 
 //WordPress Shortcode [icopyright vertical toolbar]
 function icopyright_vertical_toolbar_shortcode($atts) {
-  extract(shortcode_atts(array(
-                              'float' => '',
-                         ), $atts));
-
-  if (!empty($float)) {
-    $style = "style='float:" . $float . "'";
-  } else {
-    $style = "";
-  }
-
   $v_toolbar = icopyright_vertical_toolbar();
-  return "<div " . $style . "><!--vertical toolbar wrapper -->" . $v_toolbar . "</div><!--end of wrapper -->";
+  return "<!--vertical toolbar wrapper -->" . $v_toolbar . "<!--end of wrapper -->";
 }
-
 add_shortcode('icopyright vertical toolbar', 'icopyright_vertical_toolbar_shortcode');
 
 //WordPress Shortcode [interactive copyright notice]
 function icopyright_interactive_copyright_notice_shortcode($atts) {
-  extract(shortcode_atts(array(
-                              'float' => '',
-                         ), $atts));
-
-  if (!empty($float)) {
-    $style = "style='float:" . $float . "'";
-  } else {
-    $style = "";
-  }
   $icn = icopyright_interactive_notice();
-  return "<div " . $style . "><!--icopyright interactive notice wrapper -->" . $icn . "</div><!--end of wrapper -->";
+  return "<!--icopyright interactive notice wrapper -->" . $icn . "<!--end of wrapper -->";
 }
 
 add_shortcode('interactive copyright notice', 'icopyright_interactive_copyright_notice_shortcode');

@@ -42,41 +42,6 @@ include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-admin.php');
 //include plugin functions
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-functions.php');
 
-//hook for icopyright toolbar float
-function icopyright_toolbar_float() {
-  do_action('icopyright_toolbar_float');
-}
-
-//hook in css if blogger selected icopyright article tools alignment in WordPress Admin
-//use this css to add on to class="icopyright-horizontal-interactive-toolbar" and class="icopyright-vertical-interactive-toolbar"
-function load_icopyright_alignment_css() {
-
-  $css = get_option('icopyright_admin');
-  $toolbar_alignment = $css['align'];
-
-  if ($toolbar_alignment == "right") {
-
-    //use heredox syntax
-    $str = <<<CSS
-\n
-<!--icopyright embedded css -->
-<style type="text/css">
-.icx-toolbar{
-float:right !important;
-margin:0 0 10px 10px;
-}
-</style>\n
-CSS;
-    echo $str;
-
-  }
-  //end if
-
-}
-
-add_action('icopyright_toolbar_float', 'load_icopyright_alignment_css');
-
-
 //The following filters seems to work only on default plugin page.
 //Therefore need to code it here.
 
