@@ -101,7 +101,7 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
 
 
   $form .= '<br/><input type="hidden" name="submitted2" value="yes-post-me"/>
-<input type="submit" name="submit" value="Submit" class="button-primary" />';
+<input type="submit" name="submit" value="Submit" class="button-primary" id="registersubmit"/>';
 
   $form .= "</form>";
 
@@ -516,12 +516,13 @@ function icopyright_selected_categories() {
 function icopyright_post_passes_category_filter($post_id) {
   // If the filter itself is not being used, then we always pass
   $setting = get_option('icopyright_admin');
+
   $use_filter = $setting['use_category_filter'];
   if($use_filter != 'yes') return TRUE;
 
   $icopyright_categories = icopyright_selected_categories();
   if(count($icopyright_categories) == 0)
-    return TRUE;
+    return FALSE;
 
   // There are categories, so check these
   $post_categories = wp_get_post_categories($post_id);

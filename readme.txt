@@ -1,11 +1,11 @@
-=== iCopyright(R) Article Tools ===
+=== iCopyright Toolbar ===
 Contributors: iCopyright, Inc.  
 Tags: icopyright, copyright, prints, reprints, eprint, e-print, email, post, republish, share, article tools, monetize, monetization, distribute, distribution, piracy, infringement, syndication, reuse, re-use, advertisement, ads, license, licensing
 Requires at least: 2.9.2
 Tested up to: 3.2.1
 Stable tag: 1.5.1
 
-The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content.
+iCopyright adds article tools and an interactive copyright notice to enable sharing, licensing, syndication, tracking and monetization of content.
 
 == Description ==
 
@@ -32,6 +32,11 @@ The iCopyright plugin adds article tools (print, email, post, and republish) and
 Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
+
+= 1.5.2 =
+1. Fix bug in application of tools by category
+2. Rework administrative pages for consistent look and feel
+3. General code cleanup
 
 = 1.5.1 =
 1. Fix bug in admin page where there's no publication ID
