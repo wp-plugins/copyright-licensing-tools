@@ -3,13 +3,14 @@ Contributors: iCopyright, Inc.
 Tags: icopyright, copyright, prints, reprints, eprint, e-print, email, post, republish, share, article tools, monetize, monetization, distribute, distribution, piracy, infringement, syndication, reuse, re-use, advertisement, ads, license, licensing
 Requires at least: 2.9.2
 Tested up to: 3.2.1
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 
 iCopyright adds article tools and an interactive copyright notice to enable sharing, licensing, syndication, tracking and monetization of content.
 
 == Description ==
 
-The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. Use the same solution many of the world's leading publishers use to protect and monetize their content. By iCopyright, Inc.
+The iCopyright plugin adds article tools (print, email, share, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. Use the same solution many of the world's leading publishers use to protect and monetize their content. By iCopyright, Inc.
+
 
 == Installation ==
 
@@ -32,6 +33,9 @@ The iCopyright plugin adds article tools (print, email, post, and republish) and
 Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
+
+= 1.5.3 =
+1. Minor documentation fix
 
 = 1.5.2 =
 1. Fix bug in application of tools by category
