@@ -337,7 +337,7 @@ function icopyright_admin() {
 		<div id="icopyright_option" <?php global $show_icopyright_register_form; if($show_icopyright_register_form=='true'){echo'style="display:none"';} ?> >
 
 			<p>
-			The following settings will determine how the iCopyright Article Tools and Interactive Copyright notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress" target="_blank">help</a>.
+			The following settings will determine how the iCopyright Toolbar and Interactive Copyright Notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress" target="_blank">help</a>.
 			</p>
 
 			<form name="icopyrightform" id="icopyrightform" method="post" action="">
@@ -347,8 +347,8 @@ function icopyright_admin() {
 
 			<?php $icopyright_option = get_option('icopyright_admin'); ?>
 			<br/>
-			<!--Deployment of iCopyright Article Tools Section Begin -->
-			<h3><?php _e('Deployment of iCopyright Article Tools and Interactive Copyright Notice: ')?></h3>
+			<!--Deployment of iCopyright Toolbar Section Begin -->
+			<h3><?php _e('Deployment of iCopyright Toolbar and Interactive Copyright Notice: ')?></h3>
 
 			<table class="form-table">
 				<tbody>
@@ -359,7 +359,7 @@ function icopyright_admin() {
 									<input name="icopyright_display" type="radio" value="auto"  onclick="hide_manual_option()" <?php $icopyright_display = $icopyright_option['display']; if(empty($icopyright_display)||$icopyright_display=="auto"){echo "checked";}?> />
 								<?php _e('Automatic ')?><br/>
 								<span class="description">
-									<?php _e('iCopyright Article Toolbar and Interactive Copyright Notice will be automatically added into content of blog post')?>
+									<?php _e('iCopyright Toolbar and Interactive Copyright Notice will be automatically added into content of post')?>
 								</span>
 
 								<br />
@@ -367,7 +367,7 @@ function icopyright_admin() {
 								<input name="icopyright_display" type="radio" value="manual" onclick="show_manual_option()" <?php $icopyright_display2 = $icopyright_option['display']; if($icopyright_display2=="manual"){echo "checked";}?>/>
 								<?php _e('Manual ')?><br/>
 								<span class="description">
-									<?php _e('Deploy iCopyright Article Toolbar and Interactive Copyright Notice into content of blog post, using WordPress shortcode')?>
+									<?php _e('Deploy iCopyright Toolbar and Interactive Copyright Notice into content of post, using WordPress shortcode')?>
 								</span>
 
 							</fieldset>
@@ -506,7 +506,7 @@ function icopyright_admin() {
 											  <input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = $icopyright_option['show_multiple']; if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> />
 											</td>
 											<td>
-											  Show both iCopyright Article Toolbar and Interactive Copyright Notice
+											  Show both iCopyright Toolbar and Interactive Copyright Notice
 											</td>
 										  </tr>
 										  <tr class="show-toolbar">
@@ -517,7 +517,7 @@ function icopyright_admin() {
 											  <input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="tools"){echo "checked";}?> />
 											</td>
 											<td>
-											  Show only iCopyright Article Toolbar
+											  Show only iCopyright Toolbar
 											</td>
 										  </tr>
 										  <tr class="show-icn">
@@ -556,9 +556,9 @@ function icopyright_admin() {
 						<th scope="row">Categories</th>
 						<td>
 							<fieldset>
-								<input class="category-radio" name="icopyright_use_category_filter" type="radio" value="no" <?php if($use_filter!="yes"){echo "checked";}?> /> <?php _e('Apply toolbar to all posts')?>
+								<input class="category-radio" name="icopyright_use_category_filter" type="radio" value="no" <?php if($use_filter!="yes"){echo "checked";}?> /> <?php _e('Apply tools to all posts')?>
 								<br />
-								<input class="category-radio" name="icopyright_use_category_filter" type="radio" value="yes" <?php if($use_filter=="yes"){echo "checked";}?> /> <?php _e('Apply toolbar only to selected categories')?>
+								<input class="category-radio" name="icopyright_use_category_filter" type="radio" value="yes" <?php if($use_filter=="yes"){echo "checked";}?> /> <?php _e('Apply tools only to selected categories')?>
 								<br/>
 
 								<?php
@@ -618,10 +618,10 @@ function icopyright_admin() {
               <input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
             </fieldset>
             <span class="description">When EZ Excerpt is activated, any reader who tries to copy/paste
-              a portion of your article will be presented with a box asking "Obtain a License?". If reader
+              a portion of your article will be presented with a box asking "Obtain a License?" If reader
               selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting
               on the reader's own website. For EZ Excerpt to be enabled, the display option selected above must
-              include the iCopyright Article Toolbar. </span>
+              include the iCopyright Toolbar.</span>
           </td>
         </tr>
         <tr align="top">
@@ -634,7 +634,7 @@ function icopyright_admin() {
             </fieldset>
             <span class="description">The Syndication Feed service enables other websites to subscribe to a feed
               of your content and pay you based on the number of times your articles are viewed on their site at
-              a CPM rate you specify. When you receive your Welcome email, click to go into Conductor and set the
+              a CPM rate you specify. When you receive your welcome email, click to go into Conductor and set the
               business terms you would like. Until you do that, default pricing and business terms will apply.</span>
           </td>
         </tr>

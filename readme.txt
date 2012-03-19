@@ -5,11 +5,11 @@ Requires at least: 2.9.2
 Tested up to: 3.2.1
 Stable tag: 1.5.3
 
-iCopyright adds article tools and an interactive copyright notice to enable sharing, licensing, syndication, tracking and monetization of content.
+iCopyright adds article tools and an Interactive Copyright Notice to enable sharing, licensing, syndication, tracking and monetization of content.
 
 == Description ==
 
-The iCopyright plugin adds article tools (print, email, share, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. Use the same solution many of the world's leading publishers use to protect and monetize their content. By iCopyright, Inc.
+The iCopyright Toolbar plugin adds article tools (print, email, share, and republish) and an Interactive Copyright Notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. Use the same solution many of the world's leading publishers use to protect and monetize their content. By iCopyright, Inc.
 
 
 == Installation ==
