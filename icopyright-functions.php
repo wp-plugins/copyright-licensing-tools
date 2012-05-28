@@ -118,24 +118,13 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
 
 //Generate Horizontal Toolbar from hosted script or directy
 function icopyright_horizontal_toolbar() {
-  //get publication id from options table from icopyright_admin array
-  $admin_option = get_option('icopyright_admin');
-  $pub_id_no = $admin_option['pub_id'];
-  if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
-    return;
-  }
-
-  //get post id
   global $post;
   $post_id = $post->ID;
-  if(!icopyright_post_passes_category_filter($post_id)) {
+  if(!icopyright_post_passes_filters($post_id))
     return;
-  }
-  // if blogger choose to hide particular post, we will not display it
-  $icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
-  if ($icopyright_hide_toolbar == 'yes') {
-    return;
-  }
+
+  $admin_option = get_option('icopyright_admin');
+  $pub_id_no = $admin_option['pub_id'];
 
   // Build up the toolbar piece by piece
   $toolbar = "\n<!-- iCopyright Horizontal Article Toolbar -->\n";
@@ -160,24 +149,13 @@ function icopyright_horizontal_toolbar() {
 
 //Generate Vertical Toolbar from hosted script
 function icopyright_vertical_toolbar() {
-    //get publication id from options table from icopyright_admin array
-  $admin_option = get_option('icopyright_admin');
-  $pub_id_no = $admin_option['pub_id'];
-  if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
-    return;
-  }
-
-  //get post id
   global $post;
   $post_id = $post->ID;
-  if(!icopyright_post_passes_category_filter($post_id)) {
+  if(!icopyright_post_passes_filters($post_id))
     return;
-  }
-  // if blogger choose to hide particular post, we will not display it
-  $icopyright_hide_toolbar = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = true);
-  if ($icopyright_hide_toolbar == 'yes') {
-    return;
-  }
+
+  $admin_option = get_option('icopyright_admin');
+  $pub_id_no = $admin_option['pub_id'];
 
   // Build up the toolbar piece by piece
   $toolbar = "\n<!-- iCopyright Vertical Article Toolbar -->\n";
@@ -202,23 +180,13 @@ function icopyright_vertical_toolbar() {
 
 //Generate iCopyright interactive notice
 function icopyright_interactive_notice() {
-
-  //get publication id from options table from icopyright_admin array
-  $pub_id = get_option('icopyright_admin');
-  $pub_id_no = $pub_id['pub_id'];
-
-  //check publication id is not empty and all numerics
-  //if not return nothing to content filter by just simply let return;
-  if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
-    return;
-  }
-
-  //get post id
   global $post;
   $post_id = $post->ID;
-  if(!icopyright_post_passes_category_filter($post_id)) {
+  if(!icopyright_post_passes_filters($post_id))
     return;
-  }
+
+  $admin_option = get_option('icopyright_admin');
+  $pub_id_no = $admin_option['pub_id'];
 
   //construct copyright notice
   $publish_date = $post->post_date;
@@ -249,13 +217,7 @@ function icopyright_interactive_notice() {
 <!-- iCopyright Interactive Copyright Notice -->
 NOTICE;
 
-  // check for icopyright custom field from post editor
-  //get post id
-  $icopyright_hide_toolbar = get_post_meta($post_id, 'icopyright_hide_toolbar', $single = true);
-  // if blogger choose to hide particular post, we will not display it, if not display as normal
-  if ($icopyright_hide_toolbar !== 'yes') {
-    return $icn;
-  }
+  return $icn;
 }
 
 
@@ -314,7 +276,7 @@ function auto_add_icopyright_toolbars($content) {
   $multiple_display_option = $setting['show_multiple'];
 
   // What modes are we paying attention to?
-  if(is_single()) {
+  if(is_single() || is_page()) {
     $show_toolbar = ($single_display_option == 'both') || ($single_display_option == 'tools');
     $show_icn = ($single_display_option == 'both') || ($single_display_option == 'notice');
   } else {
@@ -504,11 +466,43 @@ function icopyright_selected_categories() {
 }
 
 /**
+ * Returns true if the post passes all the various filters and the article tools are eligible to be placed here.
+ * The filters include such things as (a) the user not explicitly turning them off for a post; (b) the category
+ *
+ * @param $post_id integer the post ID
+ * @return bool true if the post passes
+ */
+function icopyright_post_passes_filters($post_id) {
+  // Is there even a configured publication ID? If not, no point in continuing
+  $admin_option = get_option('icopyright_admin');
+  $pub_id_no = $admin_option['pub_id'];
+  if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
+    return FALSE;
+  }
+  // Has the site admin chosen to hide this particular post? If so then return false
+  $icopyright_hide_toolbar = get_post_meta($post_id, 'icopyright_hide_toolbar', $single = true);
+  if ($icopyright_hide_toolbar == 'yes') {
+    return FALSE;
+  }
+  // If this is a page, check to see if we're supposed to be on pages
+  if(is_page()) {
+    if($admin_option['display_on_pages'] != 'yes')
+      return FALSE;
+  }
+  // Does the post pass all the category filters? If not, then return false
+  if(!icopyright_post_passes_category_filter($post_id)) {
+    return FALSE;
+  }
+  // Got this far? Then it passed all the filters
+  return TRUE;
+}
+
+/**
  * Returns true if either (a) no categories are selected; or (b) categories are selected, but the post
  * is in one or more of those categories; or (c) the admin has specifically said no categories. Returns false otherwise.
  *
- * @param $post_id the post ID
- * @return true if the post passes
+ * @param $post_id integer the post ID
+ * @return bool true if the post passes
  */
 function icopyright_post_passes_category_filter($post_id) {
   // If the filter itself is not being used, then we always pass
