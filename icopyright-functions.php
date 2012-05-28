@@ -213,9 +213,6 @@ function icopyright_interactive_notice() {
     return;
   }
 
-  //assign ICOPYRIGHT_URL constant
-  $icopyright_url = ICOPYRIGHT_URL;
-
   //get post id
   global $post;
   $post_id = $post->ID;
