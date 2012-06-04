@@ -118,11 +118,11 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
 
 //Generate Horizontal Toolbar from hosted script or directy
 function icopyright_horizontal_toolbar() {
-  global $post;
-  $post_id = $post->ID;
-  if(!icopyright_post_passes_filters($post_id))
+  if(!icopyright_post_passes_filters())
     return;
 
+  global $post;
+  $post_id = $post->ID;
   $admin_option = get_option('icopyright_admin');
   $pub_id_no = $admin_option['pub_id'];
 
@@ -149,11 +149,11 @@ function icopyright_horizontal_toolbar() {
 
 //Generate Vertical Toolbar from hosted script
 function icopyright_vertical_toolbar() {
-  global $post;
-  $post_id = $post->ID;
-  if(!icopyright_post_passes_filters($post_id))
+  if(!icopyright_post_passes_filters())
     return;
 
+  global $post;
+  $post_id = $post->ID;
   $admin_option = get_option('icopyright_admin');
   $pub_id_no = $admin_option['pub_id'];
 
@@ -180,11 +180,11 @@ function icopyright_vertical_toolbar() {
 
 //Generate iCopyright interactive notice
 function icopyright_interactive_notice() {
-  global $post;
-  $post_id = $post->ID;
-  if(!icopyright_post_passes_filters($post_id))
+  if(!icopyright_post_passes_filters())
     return;
 
+  global $post;
+  $post_id = $post->ID;
   $admin_option = get_option('icopyright_admin');
   $pub_id_no = $admin_option['pub_id'];
 
@@ -469,10 +469,12 @@ function icopyright_selected_categories() {
  * Returns true if the post passes all the various filters and the article tools are eligible to be placed here.
  * The filters include such things as (a) the user not explicitly turning them off for a post; (b) the category
  *
- * @param $post_id integer the post ID
  * @return bool true if the post passes
  */
-function icopyright_post_passes_filters($post_id) {
+function icopyright_post_passes_filters() {
+  global $post;
+  $post_id = $post->ID;
+
   // Is there even a configured publication ID? If not, no point in continuing
   $admin_option = get_option('icopyright_admin');
   $pub_id_no = $admin_option['pub_id'];
@@ -488,10 +490,11 @@ function icopyright_post_passes_filters($post_id) {
   if(is_page()) {
     if($admin_option['display_on_pages'] != 'yes')
       return FALSE;
-  }
-  // Does the post pass all the category filters? If not, then return false
-  if(!icopyright_post_passes_category_filter($post_id)) {
-    return FALSE;
+  } else {
+    // Does the post pass all the category filters? If not, then return false
+    if(!icopyright_post_passes_category_filter($post_id)) {
+      return FALSE;
+    }
   }
   // Got this far? Then it passed all the filters
   return TRUE;
