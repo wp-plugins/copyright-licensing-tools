@@ -318,7 +318,14 @@ function icopyright_admin() {
       $icopyright_conductor_url = ICOPYRIGHT_URL . "publisher/";
       ?>
     <div id="message" class="updated fade">
-      <strong><h3>Congratulations, your website is now live with iCopyright! Please review the default settings below and make any changes you wish. You may find it helpful to view the video <a href='http://info.icopyright.com/icopyright-video' target='_blank'>"Introduction to iCopyright"</a>. Feel free to visit your new <a href='<?php echo $icopyright_conductor_url; ?>' target='_blank'>Conductor</a> account to explore your new capabilities. A welcome email has been sent to you with some helpful hints. <?php echo $update_feed_error; ?></h3></strong>
+      <iframe src="http://info.icopyright.com/welcome-wp.php?pid=<?php print $id2 ?>" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>
+      <p>
+        Please review the default settings below and make any changes you wish. You may find it helpful to view the
+        video <a href='http://info.icopyright.com/icopyright-video' target='_blank'>"Introduction to iCopyright"</a>.
+        Feel free to visit your new <a href='<?php echo $icopyright_conductor_url; ?>' target='_blank'>Conductor</a>
+        account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.
+      </p>
+      <?php echo $update_feed_error; ?>
     </div>
 
     <script type='text/javascript'>
