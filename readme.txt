@@ -3,7 +3,7 @@ Contributors: iCopyright, Inc.
 Tags: icopyright, copyright, prints, reprints, eprint, e-print, email, post, republish, share, article tools, monetize, monetization, distribute, distribution, piracy, infringement, syndication, reuse, re-use, advertisement, ads, license, licensing
 Requires at least: 2.9.2
 Tested up to: 3.2.1
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 
 iCopyright adds article tools and an Interactive Copyright Notice to enable sharing, licensing, syndication, tracking and monetization of content.
 
