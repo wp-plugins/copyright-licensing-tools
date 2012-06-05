@@ -34,6 +34,10 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
 
+= 1.5.4 =
+1. Minor code cleanups, standardize spelling, etc.
+2. Add switch for applying to pages vs. posts
+
 = 1.5.3 =
 1. Minor documentation fix
 
