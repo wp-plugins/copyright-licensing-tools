@@ -254,7 +254,7 @@ function icopyright_admin() {
         'display' => 'auto',
         'tools' => 'horizontal',
         'align' => 'right',
-        'display_on_pages' => 'no',
+        'display_on_pages' => 'yes',
         'theme' => 'CLASSIC',
         'background' => 'OPAQUE',
         'show' => 'both',
