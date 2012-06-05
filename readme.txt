@@ -32,7 +32,17 @@ The iCopyright Toolbar plugin adds article tools (print, email, share, and repub
 
 Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
+== Screenshots ==
+
+1. A portion of the administrative settings page
+2. The article tools automatically placed on a post
+3. An example of the print services dialog
+
 == Changelog ==
+
+= 1.5.5 =
+1. Default display on page to true
+2. Add screenshots to package
 
 = 1.5.4 =
 1. Minor code cleanups, standardize spelling, etc.
