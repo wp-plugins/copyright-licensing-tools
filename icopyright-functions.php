@@ -90,7 +90,6 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
   } else {
     $form .= "></td></tr>";
   }
-
   $form .= '</table>';
 
   //If this is multisite we post in blog id for feed as hidden variable.
@@ -99,17 +98,14 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
     $form .= "<input type='hidden' name='blog_id' value='$blog_id'/>";
   }
 
-
   $form .= '<br/><input type="hidden" name="submitted2" value="yes-post-me"/>
 <input type="submit" name="submit" value="Submit" class="button-primary" id="registersubmit"/>';
-
   $form .= "</form>";
-
   $form .= "</div>";
-
   echo $form;
-
 }
+
+
 
 
 //WordPress Shortcodes to generate tool bars for content
@@ -527,6 +523,53 @@ function icopyright_post_passes_category_filter($post_id) {
 
   // Got this far? Then we fail the filter
   return FALSE;
+}
+
+//auto update admin setting with response publication id,
+//and other default values.
+function icopyright_admin_defaults() {
+  return array(
+    'display' => 'auto',
+    'tools' => 'horizontal',
+    'align' => 'right',
+    'display_on_pages' => 'yes',
+    'theme' => 'CLASSIC',
+    'background' => 'OPAQUE',
+    'show' => 'both',
+    'show_multiple' => 'notice',
+    'ez_excerpt' => 'yes',
+    'syndication' => 'yes',
+    'share' => 'yes',
+    'categories' => '',
+    'use_category_filter' => 'no',
+    );
+}
+
+/**
+ * After a new publication has been created, set up all the various fields
+ * @param $pid
+ * @param $email
+ * @param $password
+ */
+function icopyright_set_up_new_publication($pid, $email, $password) {
+  $icopyright_admin_default = icopyright_admin_defaults();
+  $icopyright_admin_default['pub_id'] = $pid;
+  update_option('icopyright_admin', $icopyright_admin_default);
+  update_option('icopyright_conductor_password', $password);
+  update_option('icopyright_conductor_email', $email);
+
+  $plugin_feed_url = null;
+  $blog_id = $_POST['blog_id'];
+  if (!empty($blog_id)) {
+    //this is multisite, we use main blog url and sub blog id for feed.
+    $plugin_feed_url .= get_site_url(1) . "/wp-content/plugins/copyright-licensing-tools/icopyright_xml.php?blog_id=$blog_id&id=*";
+  } else {
+    //this is single site install, no need for blog id.
+    //post in old feed url structure.
+    $plugin_feed_url .= WP_PLUGIN_URL . "/copyright-licensing-tools/icopyright_xml.php?id=*";
+  }
+  //post data to API using CURL and assigning response.
+  icopyright_post_update_feed_url($pid, $plugin_feed_url, ICOPYRIGHT_USERAGENT, $email, $password);
 }
 
 ?>

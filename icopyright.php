@@ -20,7 +20,7 @@ define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.5.5");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.5.6");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php
@@ -63,37 +63,45 @@ function icopyright_remove_settings() {
 
 register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
 
+/**
+ * Called on activation. The first time the module is activated, try to register for a new publication
+ * record, guessing some reasonable values for registration. We then send the user to the general options page,
+ * which takes it from there.
+ */
 function icopyright_activate() {
+  update_option('icopyright_in_activation_hook', 'true');
   $check_admin_setting = get_option('icopyright_admin');
   if (empty($check_admin_setting)) {
     // First time being activated, so set up with appropriate defaults
-    $icopyright_admin = array('pub_id' => '',
-                                        'display' => 'auto',
-                                        'tools' => 'horizontal',
-                                        'align' => 'right',
-                                        'theme' => 'CLASSIC',
-                                        'background' => 'OPAQUE',
-                                        'show' => 'both',
-                                        'show_multiple' => 'notice',
-                                        'ez_excerpt' => 'yes',
-                                        'syndication' => 'yes',
-                                        'share' => 'yes',
-                                        'categories' => '',
-                                        'use_category_filter' => 'no',
-    );
-    update_option('icopyright_admin', $icopyright_admin);
-    update_option('icopyright_conductor_password', '');
-    update_option('icopyright_conductor_email', '');
-    update_option('icopryight_redirect_on_first_activation', 'true');
+    // Make some reasonable guesses about what to use; the user can change them later
+    global $current_user;
+    get_currentuserinfo();
+    $email = $current_user->user_email;
+    $fname = $current_user->user_firstname;
+    if(empty($fname)) $fname = 'Anonymous';
+    $lname = $current_user->user_lastname;
+    if(empty($lname)) $lname = 'User';
+    $pname = get_bloginfo('name');
+    $url = get_bloginfo('url') . "/";
+    $password = wp_generate_password(12, FALSE, FALSE);
+    $postdata = "fname=$fname&lname=$lname&email=$email&password=$password&pname=$pname&url=$url";
+    $useragent = ICOPYRIGHT_USERAGENT;
+    $rv = icopyright_post_new_publisher($postdata, $useragent, $email, $password);
+
+    $xml = @simplexml_load_string($rv->response);
+    if (icopyright_check_response($rv)) {
+      // Success: store the publication ID that got sent as a variable
+      $pid = (string)$xml->publication_id;
+      icopyright_set_up_new_publication($pid, $email, $password);
+    }
+    // Failure? That's OK, user will be sent to the registration page shortly
+    update_option('icopyright_redirect_on_first_activation', 'true');
   }
 }
 
-/**
- * On first activation, send the user to the plugin settings page
- */
 function icopyright_redirect_on_activation() {
-  if (get_option('icopryight_redirect_on_first_activation') == 'true') {
-    update_option('icopryight_redirect_on_first_activation', 'false');
+  if (get_option('icopyright_redirect_on_first_activation') == 'true') {
+    update_option('icopyright_redirect_on_first_activation', 'false');
     $icopyright_settings_url = admin_url() . "options-general.php?page=icopyright.php";
     wp_redirect($icopyright_settings_url);
   }

@@ -247,78 +247,12 @@ function icopyright_admin() {
 
       //cast xml publication id object into array for updating into options table
       $icopyright_pubid_array = (array)$icopyright_pubid_res;
-
-      //auto update admin setting with response publication id,
-      //and other default values.
-      $icopyright_admin_default = array('pub_id' => $icopyright_pubid_array[0],
-        'display' => 'auto',
-        'tools' => 'horizontal',
-        'align' => 'right',
-        'display_on_pages' => 'yes',
-        'theme' => 'CLASSIC',
-        'background' => 'OPAQUE',
-        'show' => 'both',
-        'show_multiple' => 'notice',
-        'ez_excerpt' => 'yes',
-        'syndication' => 'yes',
-        'share' => 'yes',
-        'categories' => '',
-        'use_category_filter' => 'no',
-      );
-      //update array value $icopyright_pubid_new into WordPress Database Options table
-      update_option('icopyright_admin', $icopyright_admin_default);
-
-      //update conductor password and email into option for ez excerpt use.
-      //since version 1.1.4
-      update_option('icopyright_conductor_password', $password);
-      update_option('icopyright_conductor_email', $email);
-
-      $blog_id = null; //declare blank variables
-      $plugin_feed_url = null;
-
-      //assign blog id if form posted in value, in case of multi site form will
-      //generate a hidden blog id value to post in for creating feed.
-      //if there is no blog id value posted in, this will be normal single site.
-      $blog_id = $_POST['blog_id'];
-
-      if (!empty($blog_id)) {
-        //this is multisite, we use main blog url and sub blog id for feed.
-        $plugin_feed_url .= get_site_url(1) . "/wp-content/plugins/copyright-licensing-tools/icopyright_xml.php?blog_id=$blog_id&id=*";
-      } else {
-        //this is single site install, no need for blog id.
-        //post in old feed url structure.
-        $plugin_feed_url .= WP_PLUGIN_URL . "/copyright-licensing-tools/icopyright_xml.php?id=*";
-      }
-
-      //create post data string
-      $id2 = $icopyright_pubid_array[0];
-      $useragent = ICOPYRIGHT_USERAGENT;
-
-      //post data to API using CURL and assigning response.
-      $response2 = icopyright_post_update_feed_url($id2, $plugin_feed_url, $useragent, $email, $password);
-      $response2 = str_replace('ns0:', '', $response2);
-      $response2 = str_replace('ns0:', '', $response2);
-      $xml2 = @simplexml_load_string($response2);
-
-      $icopyright_feed_status = $xml2->status['code'];
-
-      if ($icopyright_feed_status == '200') {
-        //successful feed url update, we show no additional message
-
-        $update_feed_error = "";
-      } elseif ($icopyright_feed_status == '400') {
-        //update unsuccessful, we show additional instruction
-        $update_feed_error = "There is an error in updating your feed url. You may need to login to iCopyright Conductor to update your feed url, if there is a problem using your plugin.";
-      } else {
-        //if no status code or wrong status code, could be server down
-        //we show server down message
-        $update_feed_error = "However, our API server is experiencing some problems. You may need to login to iCopyright Conductor to update your feed url, if there is a problem using your plugin.";
-      }
-
+      $pid = $icopyright_pubid_array[0];
+      icopyright_set_up_new_publication($pid, $password, $email);
       $icopyright_conductor_url = ICOPYRIGHT_URL . "publisher/";
       ?>
     <div id="message" class="updated fade">
-      <iframe src="http://info.icopyright.com/welcome-wp.php?pid=<?php print $id2 ?>" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>
+      <iframe src="http://info.icopyright.com/welcome-wp.php?pid=<?php print $pid ?>" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>
       <p>
         Please review the default settings below and make any changes you wish. You may find it helpful to view the
         video <a href='http://info.icopyright.com/icopyright-video' target='_blank'>"Introduction to iCopyright"</a>.

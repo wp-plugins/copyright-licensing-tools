@@ -15,7 +15,7 @@ define('ICOPYRIGHT_AUTH_PASSWORD', '');
 /**
  * Return the iCopyright server and port that is handling the various services
  *
- * @param bool $secure 
+ * @param bool $secure
  *      should we go over https?
  * @return the full server specification
  */
@@ -39,34 +39,28 @@ function icopyright_get_server($secure = FALSE) {
  *      the email address of the user
  * @param  $password
  *      the user's iCopyright password
- * @return the response from iCopyright's servers in XML format
+ * @return the response from iCopyright's servers
  */
 function icopyright_post_new_publisher($postdata, $useragent, $email, $password) {
   // Create the new publisher
   $res = icopyright_post('/api/xml/publisher/addbrief', $postdata, $useragent);
-
-  // If that worked, enable syndication right away
-  $xml = @simplexml_load_string($res);
-  $status = $xml->status['code'];
-  if ($status == '200') {
-    $icopyright_pubid_array = (array)$xml->publication_id;
-    $pid = $icopyright_pubid_array[0];
+  if(icopyright_check_response($res)) {
+    $xml = @simplexml_load_string($res->response);
+    $pid = (string)$xml->publication_id;
     icopyright_post_syndication_service($pid, TRUE, $useragent, $email, $password);
   }
   return $res;
 }
 
 /**
- * Checks the response for success code. Returns true if all is OK.
+ * Checks the response object for success code. Returns true if all is OK.
  *
  * @param  $res
  *      The response from a post
  * @return TRUE if all is OK
  */
 function icopyright_check_response($res) {
-  $xml = @simplexml_load_string($res);
-  $status = $xml->status['code'];
-  return ($status == '200');
+  return ($res->http_code == '200');
 }
 
 /**
@@ -82,7 +76,7 @@ function icopyright_check_response($res) {
  *      the email address of the user
  * @param  $password
  *      the user's iCopyright password
- * @return the response from iCopyright's servers in XML format
+ * @return the response from iCopyright's servers
  */
 function icopyright_post_update_feed_url($pid, $value, $useragent, $email, $password) {
   $url = "/api/xml/publication/update/$pid";
@@ -241,7 +235,9 @@ function icopyright_make_header($email, $password) {
 }
 
 /**
- * General helper function to post RESTfully to iCopyright
+ * General helper function to post RESTfully to iCopyright. Returns an object with the following
+ * fields: response (the text back from the server); http_code (the code, like 200 or 404); http_expl
+ * (the http string corresponding to that code); curl_code (the curl error code)
  *
  * @param $url
  *      the URL to post to
@@ -251,12 +247,12 @@ function icopyright_make_header($email, $password) {
  *      the user agent doing the requesting -- should be the plugin and version number
  * @param $headers
  *      headers to include for authentication, if any
- * @return the results of the post in XML format
+ * @return object results of the post as specified
  */
 function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
   $rs_ch = curl_init(icopyright_get_server(TRUE) . $url);
   curl_setopt($rs_ch, CURLOPT_SSL_VERIFYPEER, false);
-  
+
   // If the server is locked down (for testing, for example) use auth tokens
   if ((ICOPYRIGHT_AUTH_USER != NULL) && (ICOPYRIGHT_AUTH_PASSWORD != NULL)) {
     $token = ICOPYRIGHT_AUTH_USER . ':' . ICOPYRIGHT_AUTH_PASSWORD;
@@ -275,7 +271,31 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
   if ($useragent != NULL) {
     curl_setopt($rs_ch, CURLOPT_USERAGENT, $useragent);
   }
-  $res = curl_exec($rs_ch);
+
+  // Fetch the respopnse
+  $rv = new stdClass();
+  if($fullresponse = curl_exec($rs_ch)) {
+    $rv->response = str_replace('ns0:', '', $fullresponse);
+    // Got a response, but sometimes the response went to the server but is still an error, with the code embedded:
+    // in other words, they return 200 but there's an error message in the payload
+    $xml = @simplexml_load_string($rv->response);
+    $status = $xml->status;
+    $rv->http_code = (string)$status['code'];
+  } else {
+    $rv->response = $fullresponse;
+    $rv->http_code = curl_getinfo($rs_ch, CURLINFO_HTTP_CODE);
+  }
+  $responses = array(
+    100 => 'Continue', 101 => 'Switching Protocols',
+    200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content',
+    300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Found', 303 => 'See Other', 304 => 'Not Modified', 305 => 'Use Proxy', 307 => 'Temporary Redirect',
+    400 => 'Bad Request', 401 => 'Unauthorized', 402 => 'Payment Required', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 406 => 'Not Acceptable', 407 => 'Proxy Authentication Required', 408 => 'Request Time-out', 409 => 'Conflict', 410 => 'Gone', 411 => 'Length Required', 412 => 'Precondition Failed', 413 => 'Request Entity Too Large', 414 => 'Request-URI Too Large', 415 => 'Unsupported Media Type', 416 => 'Requested range not satisfiable', 417 => 'Expectation Failed',
+    500 => 'Internal Server Error', 501 => 'Not Implemented', 502 => 'Bad Gateway', 503 => 'Service Unavailable', 504 => 'Gateway Time-out', 505 => 'HTTP Version not supported'
+  );
+  $rv->http_expl = $responses[$rv->http_code];
+  $rv->curl_errno = curl_errno($rs_ch);
+  $rv->curl_error = curl_error($rs_ch);
   curl_close($rs_ch);
-  return str_replace('ns0:', '', $res);
+
+  return $rv;
 }
