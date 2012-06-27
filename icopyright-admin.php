@@ -9,287 +9,25 @@ add_action('admin_init', 'register_icopyright_options_parameter');
 function icopyright_admin() {
   //add values into option table
   if (isset($_POST['submitted']) == 'yes-update-me') {
-    //assign error
-    $error_message = '';
-
-    //check nonce
-    check_admin_referer('icopyright_settings-options');
-
-    //assign posted value
-    $icopyright_pubid = stripslashes($_POST['icopyright_pubid']);
-    $icopyright_display = stripslashes($_POST['icopyright_display']);
-    $icopyright_tools = stripslashes($_POST['icopyright_tools']);
-    $icopyright_display_on_pages = stripslashes($_POST['icopyright_display_on_pages']);
-    $icopyright_align = stripslashes($_POST['icopyright_align']);
-    $icopyright_show = stripslashes($_POST['icopyright_show']);
-    $icopyright_show_multiple = stripslashes($_POST['icopyright_show_multiple']);
-    $icopyright_ez_excerpt = stripslashes($_POST['icopyright_ez_excerpt']);
-    $icopyright_syndication = stripslashes($_POST['icopyright_syndication']);
-    $icopyright_share = stripslashes($_POST['icopyright_share']);
-    $icopyright_use_copyright_filter = stripslashes($_POST['icopyright_use_category_filter']);
-    $icopyright_conductor_email = stripslashes($_POST['icopyright_conductor_email']);
-    $icopyright_conductor_password = stripslashes($_POST['icopyright_conductor_password']);
-    $icopyright_theme = stripslashes($_POST['icopyright_article_tools_theme']);
-    $icopyright_background = stripslashes($_POST['icopyright_background']);
-
-    //check publication id
-    if (empty($icopyright_pubid)) {
-      $error_message .= '<li>Empty Publication ID, Please key in Publication ID or sign up for one!</li>';
-    }
-
-    //check for numerical publication id when id is not empty
-    if (!empty($icopyright_pubid) && !is_numeric($icopyright_pubid)) {
-      $error_message .= '<li>Publication ID error, Please key in numerics only!</li>';
-    }
-
-    //check conductor email
-    //since version 1.1.4
-    if (empty($icopyright_conductor_email)) {
-      $error_message .= '<li>Empty Email Address, Please key in Conductor Login Email Address!</li>';
-    } else {
-      //update option
-      update_option('icopyright_conductor_email', $icopyright_conductor_email);
-    }
-
-    //check conductor password
-    //since version 1.1.4
-    if (empty($icopyright_conductor_password)) {
-      $error_message .= '<li>Empty Password, Please key in Conductor Login Password!</li>';
-    } else {
-      //update option
-      update_option('icopyright_conductor_password', $icopyright_conductor_password);
-    }
-
-    //do ez excerpt setting, after email address and password are updated for old users.
-    //since version 1.1.4
-    $conductor_password = get_option('icopyright_conductor_password');
-    $conductor_email = get_option('icopyright_conductor_email');
-    $user_agent = ICOPYRIGHT_USERAGENT;
-
-    if ($icopyright_ez_excerpt == 'yes' && !empty($conductor_email) && !empty($conductor_password)) {
-      //user enabled ez excerpt
-      $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
-
-      //checked for response from API
-      $check_ez_res = icopyright_check_response($ez_res);
-      if (!$check_ez_res == true) {
-        $error_message .= "<li>Failed to update EZ Excerpt Setting</li>";
-      }
-    }
-
-    if ($icopyright_ez_excerpt == 'no' && !empty($conductor_email) && !empty($conductor_password)) {
-      //user disabled ez excerpt
-      $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
-
-      //checked for response from API
-      $check_ez_res = icopyright_check_response($ez_res);
-      if (!$check_ez_res == true) {
-        $error_message .= "<li>Failed to update EZ Excerpt Setting</li>";
-      }
-    }
-
-
-    //do syndication setting, variables same as ez excerpt setting, except api call.
-    //since version 1.1.4
-    if ($icopyright_syndication == 'yes' && !empty($conductor_email) && !empty($conductor_password)) {
-      //user enabled syndication
-      $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 1, $user_agent, $conductor_email, $conductor_password);
-
-      //checked for response from API
-      $check_syndicate_res = icopyright_check_response($syndicate_res);
-      if (!$check_syndicate_res == true) {
-        $error_message .= "<li>Failed to update Syndication Setting</li>";
-      }
-    }
-
-    if ($icopyright_syndication == 'no' && !empty($conductor_email) && !empty($conductor_password)) {
-      //user disabled syndication
-      $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, 0, $user_agent, $conductor_email, $conductor_password);
-
-      //checked for response from API
-      $check_syndicate_res = icopyright_check_response($syndicate_res);
-      if (!$check_syndicate_res == true) {
-        $error_message .= "<li>Failed to update Syndication Setting</li>";
-      }
-    }
-
-    // Turn on and off sharing
-    if (!empty($conductor_email) && !empty($conductor_password)) {
-      $val = ($icopyright_share == 'yes' ? 1 : 0);
-      $share_res = icopyright_post_share_service($icopyright_pubid, $val, $user_agent, $conductor_email, $conductor_password);
-      $check_share_res = icopyright_check_response($share_res);
-      if (!$check_share_res == true) {
-        $error_message .= "<li>Failed to update Share Setting</li>";
-      }
-    }
-
-    // Set the toolbar theme and background and so on
-    if (!empty($conductor_email) && !empty($conductor_password)) {
-      $t_res = icopyright_post_toolbar_theme($icopyright_pubid, $icopyright_theme, $icopyright_background, $user_agent, $conductor_email, $conductor_password);
-      if (icopyright_check_response($t_res) != true) {
-        $error_message .= "<li>Failed to update Toolbar Settings</li>";
-      }
-    }
-
-    // Check selected categories input for sensibility
-    $selectedCategories = array();
-    $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : array();
-    foreach($selectedCat as $catid) {
-      if(is_numeric($catid)) $selectedCategories[] = $catid;
-    }
-
-    //assign value to icopyright admin settings array
-    //for saving into options table as an array value.
-    $icopyright_admin = array('pub_id' => $icopyright_pubid,
-      'display' => $icopyright_display,
-      'tools' => $icopyright_tools,
-      'display_on_pages' => $icopyright_display_on_pages,
-      'align' => $icopyright_align,
-      'background' => $icopyright_background,
-      'theme' => $icopyright_theme,
-      'show' => $icopyright_show,
-      'show_multiple' => $icopyright_show_multiple,
-      'ez_excerpt' => $icopyright_ez_excerpt,
-      'syndication' => $icopyright_syndication,
-      'share' => $icopyright_share,
-      'categories' => implode(',', $selectedCategories),
-      'use_category_filter' => $icopyright_use_copyright_filter,
-    );
-    //check if no error, then update admin setting
-    if (empty($error_message)) {
-      //update array value icopyright admin into WordPress Database Options table
-      update_option('icopyright_admin', $icopyright_admin);
-    }
-
-    //check error message, if there is any, show it to blogger
-    if (!empty($error_message)) {
-      ?>
-    <div  id="message" class="updated fade">
-      <p style='font-size:14px; margin:5px;'><strong>The following error(s) needs your attention!</strong></p>
-      <?php
-      echo "<ol>" . $error_message . "</ol>";
-      ?>
-    </div>
-    <?php
-    } else {
-      //if no error, print success message to blogger
-      ?>
-    <div  id="message" class="updated fade">
-      <p><strong>Options Updated!</strong></p>
-    </div>
-    <script type='text/javascript'>document.getElementById('icopyright-warning').style.display='none';</script>
-    <?php
-    }
+    post_settings();
   }
-  //end if $_POST['submitted']
-
-  //process form post values!
   if (isset($_POST['submitted2']) == 'yes-post-me') {
-    //assign posted values
-    $fname = $_POST['fname'];
-    $lname = $_POST['lname'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $pname = $_POST['pname'];
-    $url = $_POST['url'];
-
-    //create post data string
-    $postdata = "fname=$fname&lname=$lname&email=$email&password=$password&pname=$pname&url=$url";
-
-    //post data to API using CURL and assigning response.
-    $useragent = ICOPYRIGHT_USERAGENT;
-    $response = icopyright_post_new_publisher($postdata, $useragent, $email, $password);
-    $response = str_replace('ns0:', '', $response);
-
-    $xml = @simplexml_load_string($response);
-
-    //check if response is empty or not xml, echo out service not available notice to blogger!
-    if (empty($xml)) {
-      //print error message to blogger
-      ?>
-    <div id="message" class="updated fade">
-      <p><strong>Sorry! Publication ID Registration Service is not available.
-        This may be due to API server maintenance. Please try again later!</strong></p>
-    </div>
-    <?php
-    }
-
-    $icopyright_form_status = (string)$xml->status['code'];
-
-    //check status code for 400 and 401
-    if (($icopyright_form_status == '400') || ($icopyright_form_status == '401')) {
-      ?>
-    <div id="message" class="updated fade">
-      <strong><p>The following fields needs your attention</p></strong>
-      <ol>
-        <?php
-        //error
-        foreach ($xml->status->messages->message as $error_message) {
-          echo '<li>' . $error_message . '</li>';
-        }
-        ?>
-      </ol>
-    </div>
-    <?php
-      //check terms of agreement box, since the blogger had already checked and posted the form.
-      global $icopyright_tou_checked;
-      $icopyright_tou_checked = 'true';
-
-      global $show_icopyright_register_form;
-      $show_icopyright_register_form = 'true';
-    }
-
-    //check status code for 200
-    if ($icopyright_form_status == '200') {
-
-      //parse publication id from response
-      $icopyright_pubid_res = $xml->publication_id;
-
-      //cast xml publication id object into array for updating into options table
-      $icopyright_pubid_array = (array)$icopyright_pubid_res;
-      $pid = $icopyright_pubid_array[0];
-      icopyright_set_up_new_publication($pid, $password, $email);
-      $icopyright_conductor_url = ICOPYRIGHT_URL . "publisher/";
-      ?>
-    <div id="message" class="updated fade">
-      <iframe src="http://info.icopyright.com/welcome-wp.php?pid=<?php print $pid ?>" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>
-      <p>
-        Please review the default settings below and make any changes you wish. You may find it helpful to view the
-        video <a href='http://info.icopyright.com/icopyright-video' target='_blank'>"Introduction to iCopyright"</a>.
-        Feel free to visit your new <a href='<?php echo $icopyright_conductor_url; ?>' target='_blank'>Conductor</a>
-        account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.
-      </p>
-      <?php echo $update_feed_error; ?>
-    </div>
-
-    <script type='text/javascript'>
-      document.getElementById('icopyright-warning').style.display='none';
-    </script>
-    <?php
-      global $show_icopyright_register_form;
-      $show_icopyright_register_form = 'false';
-    }
-    //end if ($icopyright_form_status=='200')
-  }//end if(isset($_POST['submitted2'])== 'yes-post-me')
-
+    post_new_publisher();
+  }
+  $icopyright_option = get_option('icopyright_admin');
+  $icopyright_pubid = $icopyright_option['pub_id'];
   ?>
 
 	<div class="wrap">
-
 		<h2><?php _e("iCopyright Settings"); ?></h2>
-
 <div id="icopyright_option" <?php global $show_icopyright_register_form; if($show_icopyright_register_form=='true'){echo'style="display:none"';} ?> >
-
 <p>
 			The following settings will determine how the iCopyright Toolbar and Interactive Copyright Notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress" target="_blank">help</a>.
 </p>
-
 <form name="icopyrightform" id="icopyrightform" method="post" action="">
 
   <?php settings_fields('icopyright_settings'); ?>
-
-
-  <?php $icopyright_option = get_option('icopyright_admin'); ?>
+  <?php ?>
 <br/>
 			<!--Deployment of iCopyright Toolbar Section Begin -->
 			<h3><?php _e('Deployment of iCopyright Toolbar and Interactive Copyright Notice: ')?></h3>
@@ -730,7 +468,14 @@ function icopyright_admin() {
 </div><!--end icopyright_option -->
 
   <?php
-  if ( $icopyright_form_status != '200' ) {
+  if (empty($icopyright_pubid)) {
+    //assign posted values
+    $fname = $_POST['fname'];
+    $lname = $_POST['lname'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $pname = $_POST['pname'];
+    $url = $_POST['url'];
     create_icopyright_register_form($fname, $lname, $email,$password,$pname,$url);
   }
 
@@ -871,5 +616,207 @@ function icopyright_admin_footer_script() {
   </script>
 
   <?php
+  }
+}
+
+/**
+ * Posts the changes made to the settings page
+ */
+function post_settings() {
+  //assign error
+  $error_message = '';
+
+  //check nonce
+  check_admin_referer('icopyright_settings-options');
+
+  //assign posted value
+  $icopyright_pubid = stripslashes($_POST['icopyright_pubid']);
+  $icopyright_display = stripslashes($_POST['icopyright_display']);
+  $icopyright_tools = stripslashes($_POST['icopyright_tools']);
+  $icopyright_display_on_pages = stripslashes($_POST['icopyright_display_on_pages']);
+  $icopyright_align = stripslashes($_POST['icopyright_align']);
+  $icopyright_show = stripslashes($_POST['icopyright_show']);
+  $icopyright_show_multiple = stripslashes($_POST['icopyright_show_multiple']);
+  $icopyright_ez_excerpt = stripslashes($_POST['icopyright_ez_excerpt']);
+  $icopyright_syndication = stripslashes($_POST['icopyright_syndication']);
+  $icopyright_share = stripslashes($_POST['icopyright_share']);
+  $icopyright_use_copyright_filter = stripslashes($_POST['icopyright_use_category_filter']);
+  $icopyright_conductor_email = stripslashes($_POST['icopyright_conductor_email']);
+  $icopyright_conductor_password = stripslashes($_POST['icopyright_conductor_password']);
+  $icopyright_theme = stripslashes($_POST['icopyright_article_tools_theme']);
+  $icopyright_background = stripslashes($_POST['icopyright_background']);
+
+  //check publication id
+  if (empty($icopyright_pubid)) {
+    $error_message .= '<li>Empty Publication ID, Please key in Publication ID or sign up for one!</li>';
+  }
+
+  //check for numerical publication id when id is not empty
+  if (!empty($icopyright_pubid) && !is_numeric($icopyright_pubid)) {
+    $error_message .= '<li>Publication ID error, Please key in numerics only!</li>';
+  }
+
+  //check conductor email
+  //since version 1.1.4
+  if (empty($icopyright_conductor_email)) {
+    $error_message .= '<li>Empty Email Address, Please key in Conductor Login Email Address!</li>';
+  } else {
+    //update option
+    update_option('icopyright_conductor_email', $icopyright_conductor_email);
+  }
+
+  //check conductor password
+  //since version 1.1.4
+  if (empty($icopyright_conductor_password)) {
+    $error_message .= '<li>Empty Password, Please key in Conductor Login Password!</li>';
+  } else {
+    //update option
+    update_option('icopyright_conductor_password', $icopyright_conductor_password);
+  }
+
+  if(!empty($error_message)) return;
+
+  //do ez excerpt setting, after email address and password are updated for old users.
+  $conductor_password = get_option('icopyright_conductor_password');
+  $conductor_email = get_option('icopyright_conductor_email');
+  $user_agent = ICOPYRIGHT_USERAGENT;
+
+  // EZ-Excerpt setting
+  $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, ($icopyright_ez_excerpt == 'yes'), $user_agent, $conductor_email, $conductor_password);
+  $check_ez_res = icopyright_check_response($ez_res);
+  if (!$check_ez_res == true) {
+    $error_message .= "<li>Failed to update EZ Excerpt Setting</li>";
+  }
+
+  // Syndication setting
+  $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, ($icopyright_syndication == 'yes'), $user_agent, $conductor_email, $conductor_password);
+  $check_syndicate_res = icopyright_check_response($syndicate_res);
+  if (!$check_syndicate_res == true) {
+    $error_message .= "<li>Failed to update Syndication Setting</li>";
+  }
+
+  // Turn on and off sharing
+  $share_res = icopyright_post_share_service($icopyright_pubid, ($icopyright_share == 'yes'), $user_agent, $conductor_email, $conductor_password);
+  $check_share_res = icopyright_check_response($share_res);
+  if (!$check_share_res == true) {
+    $error_message .= "<li>Failed to update Share Setting</li>";
+  }
+
+  // Set the toolbar theme and background and so on
+  $t_res = icopyright_post_toolbar_theme($icopyright_pubid, $icopyright_theme, $icopyright_background, $user_agent, $conductor_email, $conductor_password);
+  if (icopyright_check_response($t_res) != true) {
+    $error_message .= "<li>Failed to update Toolbar Settings</li>";
+  }
+
+  // Check selected categories input for sensibility
+  $selectedCategories = array();
+  $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : array();
+  foreach($selectedCat as $catid) {
+    if(is_numeric($catid)) $selectedCategories[] = $catid;
+  }
+
+  //assign value to icopyright admin settings array
+  //for saving into options table as an array value.
+  $icopyright_admin = array('pub_id' => $icopyright_pubid,
+    'display' => $icopyright_display,
+    'tools' => $icopyright_tools,
+    'display_on_pages' => $icopyright_display_on_pages,
+    'align' => $icopyright_align,
+    'background' => $icopyright_background,
+    'theme' => $icopyright_theme,
+    'show' => $icopyright_show,
+    'show_multiple' => $icopyright_show_multiple,
+    'ez_excerpt' => $icopyright_ez_excerpt,
+    'syndication' => $icopyright_syndication,
+    'share' => $icopyright_share,
+    'categories' => implode(',', $selectedCategories),
+    'use_category_filter' => $icopyright_use_copyright_filter,
+  );
+
+  //check if no error, then update admin setting
+  if (empty($error_message)) {
+    //update array value icopyright admin into WordPress Database Options table
+    update_option('icopyright_admin', $icopyright_admin);
+  }
+  display_status_update($error_message);
+}
+
+/**
+ * Given an error message, displays it on the page. If the error message is empty, then an OK message is shown.
+ * @param $error_message
+ */
+function display_status_update($error_message) {
+  print '<div id="message" class="updated fade">';
+  if(empty($error_message)) {
+    print '<p><strong>Options Updated.</strong></p>';
+  } else {
+    print '<p style="font-size: 14px; margin: 5px;"><strong>The options were not successfully updated.</strong></p>';
+    print '<ol>' . $error_message . '</ol>';
+  }
+  print '</div>';
+  print '<script type="text/javascript">jQuery("#icopyright-warning").hide();</script>';
+}
+
+/**
+ * Simply spits out a welcome message
+ */
+function display_publication_welcome() {
+  $icopyright_conductor_url = ICOPYRIGHT_URL . "publisher/";
+  print '<div id="message" class="updated fade">';
+  print '<iframe src="http://info.icopyright.com/welcome-wp.php?pid=<?php print $pid ?>" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>';
+  print '<p>';
+  print 'Please review the default settings below and make any changes you wish. You may find it helpful to view the ';
+  print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>.';
+  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank">Conductor</a>';
+  print 'account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.';
+  print '</p>';
+  print '</div>';
+  print '<script type="text/javascript">jQuery("#icopyright-warning").hide();</script>';
+}
+
+  /**
+ * Posts the new publisher (registration) form
+ */
+function post_new_publisher() {
+  //assign posted values
+  $fname = $_POST['fname'];
+  $lname = $_POST['lname'];
+  $email = $_POST['email'];
+  $password = $_POST['password'];
+  $pname = $_POST['pname'];
+  $url = $_POST['url'];
+
+  //create post data string
+  $postdata = "fname=$fname&lname=$lname&email=$email&password=$password&pname=$pname&url=$url";
+  $useragent = ICOPYRIGHT_USERAGENT;
+  $rv = icopyright_post_new_publisher($postdata, $useragent, $email, $password);
+  $xml = @simplexml_load_string($rv->response);
+  if (icopyright_check_response($rv)) {
+    // Success: store the publication ID that got sent as a variable and set up the publication
+    $pid = (string)$xml->publication_id;
+    icopyright_set_up_new_publication($pid, $email, $password);
+    display_publication_welcome();
+  } else {
+    // Was there an error, or did the response not even go through?
+    if(empty($xml)) {
+      print '<div id="message" class="updated fade">';
+      print '<p><strong>Sorry! Publication ID Registration Service is not available. This may be due to API server maintenance. Please try again later.</strong></p>';
+      print '</div>';
+    } else {
+      // There was a failure for the post, as in problems with the form field elements
+      print '<div id="message" class="updated fade">';
+      print '<p><strong>The following fields needs your attention</strong></p>';
+      print '<ol>';
+      foreach ($xml->status->messages->message as $error_message) {
+        print '<li>' . $error_message . '</li>';
+      }
+      print '</ol></div>';
+
+      //check terms of agreement box, since the blogger had already checked and posted the form.
+      global $icopyright_tou_checked;
+      $icopyright_tou_checked = 'true';
+      global $show_icopyright_register_form;
+      $show_icopyright_register_form = 'true';
+    }
   }
 }

@@ -69,7 +69,6 @@ register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
  * which takes it from there.
  */
 function icopyright_activate() {
-  update_option('icopyright_in_activation_hook', 'true');
   $check_admin_setting = get_option('icopyright_admin');
   if (empty($check_admin_setting)) {
     // First time being activated, so set up with appropriate defaults
@@ -87,7 +86,6 @@ function icopyright_activate() {
     $postdata = "fname=$fname&lname=$lname&email=$email&password=$password&pname=$pname&url=$url";
     $useragent = ICOPYRIGHT_USERAGENT;
     $rv = icopyright_post_new_publisher($postdata, $useragent, $email, $password);
-
     $xml = @simplexml_load_string($rv->response);
     if (icopyright_check_response($rv)) {
       // Success: store the publication ID that got sent as a variable
