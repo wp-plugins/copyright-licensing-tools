@@ -20,15 +20,16 @@ function icopyright_admin() {
 
 	<div class="wrap">
 		<h2><?php _e("iCopyright Settings"); ?></h2>
-<div id="icopyright_option" <?php global $show_icopyright_register_form; if($show_icopyright_register_form=='true'){echo'style="display:none"';} ?> >
-<p>
-			The following settings will determine how the iCopyright Toolbar and Interactive Copyright Notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress" target="_blank">help</a>.
-</p>
+<div id="icopyright_option" <?php if(empty($icopyright_pubid)){echo'style="display:none"';} ?> >
 <form name="icopyrightform" id="icopyrightform" method="post" action="">
 
   <?php settings_fields('icopyright_settings'); ?>
-  <?php ?>
+  <?php if(!empty($icopyright_pubid)) {?>
+<p>
+  The following settings will determine how the iCopyright Toolbar and Interactive Copyright Notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress" target="_blank">help</a>.
+</p>
 <br/>
+
 			<!--Deployment of iCopyright Toolbar Section Begin -->
 			<h3><?php _e('Deployment of iCopyright Toolbar and Interactive Copyright Notice: ')?></h3>
 
@@ -331,6 +332,7 @@ function icopyright_admin() {
   </tr>
   </tbody>
 </table>
+<?php } ?>
 
 <script type="text/javascript">
   // Function to update the previews with what the toolbars will look like with these settings
@@ -459,10 +461,13 @@ function icopyright_admin() {
 <br />
 
 <!--visit conductor link-->
-<p>
+  <?php if(!empty($icopyright_pubid )) { ?>
+  <p>
   <strong><a href="<?php echo ICOPYRIGHT_URL.'publisher/';?>" target="_blank"><?php _e('Log in to Conductor')?></a> to enable additional services, adjust further settings, and view usage reports.</strong>
-</p>
-<br/>
+  </p>
+  <br/>
+  <?php } ?>
+
 </form>
 <br />
 </div><!--end icopyright_option -->
@@ -657,7 +662,6 @@ function post_settings() {
   }
 
   //check conductor email
-  //since version 1.1.4
   if (empty($icopyright_conductor_email)) {
     $error_message .= '<li>Empty Email Address, Please key in Conductor Login Email Address!</li>';
   } else {
@@ -666,14 +670,12 @@ function post_settings() {
   }
 
   //check conductor password
-  //since version 1.1.4
   if (empty($icopyright_conductor_password)) {
     $error_message .= '<li>Empty Password, Please key in Conductor Login Password!</li>';
   } else {
     //update option
     update_option('icopyright_conductor_password', $icopyright_conductor_password);
   }
-
   if(!empty($error_message)) return;
 
   //do ez excerpt setting, after email address and password are updated for old users.
@@ -681,63 +683,68 @@ function post_settings() {
   $conductor_email = get_option('icopyright_conductor_email');
   $user_agent = ICOPYRIGHT_USERAGENT;
 
-  // EZ-Excerpt setting
-  $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, ($icopyright_ez_excerpt == 'yes'), $user_agent, $conductor_email, $conductor_password);
-  $check_ez_res = icopyright_check_response($ez_res);
-  if (!$check_ez_res == true) {
-    $error_message .= "<li>Failed to update EZ Excerpt Setting</li>";
+  if(empty($icopyright_display)) {
+    icopyright_set_up_new_publication($icopyright_pubid, $icopyright_conductor_email, $icopyright_conductor_password);
+    display_publication_welcome();
+  } else {
+    $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, ($icopyright_ez_excerpt == 'yes'), $user_agent, $conductor_email, $conductor_password);
+    $check_ez_res = icopyright_check_response($ez_res);
+    if (!$check_ez_res == true) {
+      $error_message .= "<li>Failed to update EZ Excerpt Setting</li>";
+    }
+
+    // Syndication setting
+    $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, ($icopyright_syndication == 'yes'), $user_agent, $conductor_email, $conductor_password);
+    $check_syndicate_res = icopyright_check_response($syndicate_res);
+    if (!$check_syndicate_res == true) {
+      $error_message .= "<li>Failed to update Syndication Setting</li>";
+    }
+
+    // Turn on and off sharing
+    $share_res = icopyright_post_share_service($icopyright_pubid, ($icopyright_share == 'yes'), $user_agent, $conductor_email, $conductor_password);
+    $check_share_res = icopyright_check_response($share_res);
+    if (!$check_share_res == true) {
+      $error_message .= "<li>Failed to update Share Setting</li>";
+    }
+
+    // Set the toolbar theme and background and so on
+    $t_res = icopyright_post_toolbar_theme($icopyright_pubid, $icopyright_theme, $icopyright_background, $user_agent, $conductor_email, $conductor_password);
+    if (icopyright_check_response($t_res) != true) {
+      $error_message .= "<li>Failed to update Toolbar Settings</li>";
+    }
+
+    // Check selected categories input for sensibility
+    $selectedCategories = array();
+    $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : array();
+    foreach($selectedCat as $catid) {
+      if(is_numeric($catid)) $selectedCategories[] = $catid;
+    }
+
+    //assign value to icopyright admin settings array
+    //for saving into options table as an array value.
+    $icopyright_admin = array('pub_id' => $icopyright_pubid,
+      'display' => $icopyright_display,
+      'tools' => $icopyright_tools,
+      'display_on_pages' => $icopyright_display_on_pages,
+      'align' => $icopyright_align,
+      'background' => $icopyright_background,
+      'theme' => $icopyright_theme,
+      'show' => $icopyright_show,
+      'show_multiple' => $icopyright_show_multiple,
+      'ez_excerpt' => $icopyright_ez_excerpt,
+      'syndication' => $icopyright_syndication,
+      'share' => $icopyright_share,
+      'categories' => implode(',', $selectedCategories),
+      'use_category_filter' => $icopyright_use_copyright_filter,
+    );
+
+    //check if no error, then update admin setting
+    if (empty($error_message)) {
+      //update array value icopyright admin into WordPress Database Options table
+      update_option('icopyright_admin', $icopyright_admin);
+    }
   }
 
-  // Syndication setting
-  $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, ($icopyright_syndication == 'yes'), $user_agent, $conductor_email, $conductor_password);
-  $check_syndicate_res = icopyright_check_response($syndicate_res);
-  if (!$check_syndicate_res == true) {
-    $error_message .= "<li>Failed to update Syndication Setting</li>";
-  }
-
-  // Turn on and off sharing
-  $share_res = icopyright_post_share_service($icopyright_pubid, ($icopyright_share == 'yes'), $user_agent, $conductor_email, $conductor_password);
-  $check_share_res = icopyright_check_response($share_res);
-  if (!$check_share_res == true) {
-    $error_message .= "<li>Failed to update Share Setting</li>";
-  }
-
-  // Set the toolbar theme and background and so on
-  $t_res = icopyright_post_toolbar_theme($icopyright_pubid, $icopyright_theme, $icopyright_background, $user_agent, $conductor_email, $conductor_password);
-  if (icopyright_check_response($t_res) != true) {
-    $error_message .= "<li>Failed to update Toolbar Settings</li>";
-  }
-
-  // Check selected categories input for sensibility
-  $selectedCategories = array();
-  $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : array();
-  foreach($selectedCat as $catid) {
-    if(is_numeric($catid)) $selectedCategories[] = $catid;
-  }
-
-  //assign value to icopyright admin settings array
-  //for saving into options table as an array value.
-  $icopyright_admin = array('pub_id' => $icopyright_pubid,
-    'display' => $icopyright_display,
-    'tools' => $icopyright_tools,
-    'display_on_pages' => $icopyright_display_on_pages,
-    'align' => $icopyright_align,
-    'background' => $icopyright_background,
-    'theme' => $icopyright_theme,
-    'show' => $icopyright_show,
-    'show_multiple' => $icopyright_show_multiple,
-    'ez_excerpt' => $icopyright_ez_excerpt,
-    'syndication' => $icopyright_syndication,
-    'share' => $icopyright_share,
-    'categories' => implode(',', $selectedCategories),
-    'use_category_filter' => $icopyright_use_copyright_filter,
-  );
-
-  //check if no error, then update admin setting
-  if (empty($error_message)) {
-    //update array value icopyright admin into WordPress Database Options table
-    update_option('icopyright_admin', $icopyright_admin);
-  }
   display_status_update($error_message);
 }
 
@@ -774,7 +781,7 @@ function display_publication_welcome() {
   print '<script type="text/javascript">jQuery("#icopyright-warning").hide();</script>';
 }
 
-  /**
+/**
  * Posts the new publisher (registration) form
  */
 function post_new_publisher() {
