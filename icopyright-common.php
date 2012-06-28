@@ -28,6 +28,24 @@ function icopyright_get_server($secure = FALSE) {
 }
 
 /**
+ * Asks the iCopyright server to ping us, to see if there's a successful link between the iCopyright servers
+ * and us. If there isn't, then the quality of service will be somewhat degraded
+ * @param $useragent
+ *      string the user agent string
+ * @param $pid
+ *      integer the publication ID
+ * @param $email
+ *      string the email address of a registrar
+ * @param $password
+ *      string the password of that registrar
+ * @return boolean true if the link is established; false if not
+ */
+function icopyright_ping($useragent, $pid, $email, $password) {
+  $res = icopyright_post("/api/xml/publication/ping/$pid", NULL, $useragent, icopyright_make_header($email, $password));
+  return icopyright_check_response($res);
+}
+
+/**
  * Given a RESTful request to add a publisher, post it to iCopyright's servers
  *
  * @param  $postdata
@@ -259,8 +277,10 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
     curl_setopt($rs_ch, CURLOPT_USERPWD, $token);
     curl_setopt($rs_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
   }
-  curl_setopt($rs_ch, CURLOPT_POST, 1);
-  curl_setopt($rs_ch, CURLOPT_POSTFIELDS, $postdata);
+  if($postdata != NULL) {
+    curl_setopt($rs_ch, CURLOPT_POST, 1);
+    curl_setopt($rs_ch, CURLOPT_POSTFIELDS, $postdata);
+  }
   curl_setopt($rs_ch, CURLOPT_FOLLOWLOCATION, 1);
   curl_setopt($rs_ch, CURLOPT_HEADER, 0);
   if ($headers != NULL) {
