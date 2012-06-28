@@ -21,6 +21,9 @@ function icopyright_admin() {
 	<div class="wrap">
 		<h2><?php _e("iCopyright Settings"); ?></h2>
 <div id="icopyright_option" <?php if(empty($icopyright_pubid)){echo'style="display:none"';} ?> >
+
+<?php check_connectivity() ?>
+
 <form name="icopyrightform" id="icopyrightform" method="post" action="">
 
   <?php settings_fields('icopyright_settings'); ?>
@@ -504,35 +507,12 @@ function icopyright_admin_scripts() {
   ?>
 <!-- icopyright admin css -->
 <style type="text/css">
-  .widefat	{
-    background: none;
-  }
-
-  .widefat tr td	{
-    border: none;
-    height: 30px;
-  }
-
-  .widefat input {
-    background: none;
-    border: 1px solid #666666
-  }
-
-  .widefat tr {
-    background-color: #eee;
-  }
-
-  .widefat tr.odd {
-    background-color: #fff;
-  }
-
-  #icopyright-logo	{
-    width:30px;
-    height:30px;
-    background-image:url('<?php echo ICOPYRIGHT_PLUGIN_URL; ?>/images/icopyright-logo.png');
-    background-repeat:no-repeat;
-  }
-
+  .widefat	{ background: none; }
+  .widefat tr td	{ border: none; height: 30px; }
+  .widefat input { background: none; border: 1px solid #666666 }
+  .widefat tr { background-color: #eee; }
+  .widefat tr.odd { background-color: #fff; }
+  #icopyright-logo	{ width:30px; height:30px; background-image:url('<?php echo ICOPYRIGHT_PLUGIN_URL; ?>/images/icopyright-logo.png'); background-repeat:no-repeat; }
   #icopyright-show-when td { padding: 0; }
 </style>
 
@@ -779,6 +759,23 @@ function display_publication_welcome() {
   print '</p>';
   print '</div>';
   print '<script type="text/javascript">jQuery("#icopyright-warning").hide();</script>';
+}
+
+/**
+ * Displays warning message if there is no connectivity
+ */
+function check_connectivity() {
+  $icopyright_option = get_option('icopyright_admin');
+  $icopyright_pubid = $icopyright_option['pub_id'];
+  if(isset($icopyright_pubid)) {
+    $email = get_option('icopyright_conductor_email');
+    $password = get_option('icopyright_conductor_password');
+    if(!icopyright_ping(ICOPYRIGHT_USERAGENT, $icopyright_pubid, $email, $password)) {
+      print '<div id="message" class="updated">';
+      print '<p><strong>WARNING</strong>: The iCopyright servers cannot communicate with this site. Services that require the link will be degraded.</p>';
+      print '</div>';
+    }
+  }
 }
 
 /**
