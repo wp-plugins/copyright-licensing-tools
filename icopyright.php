@@ -56,6 +56,7 @@ function icopyright_settings_link($links, $file) {
 //function to delete option during uninstallation
 function icopyright_remove_settings() {
   delete_option('icopyright_admin');
+  delete_option('icopyright_account');
   delete_option('icopyright_conductor_password');
   delete_option('icopyright_conductor_email');
   delete_option('icopryight_redirect_on_first_activation');
@@ -91,6 +92,7 @@ function icopyright_activate() {
       // Success: store the publication ID that got sent as a variable
       $pid = (string)$xml->publication_id;
       icopyright_set_up_new_publication($pid, $email, $password);
+      // icopyright_set_up_new_account($fname, $lname, $pname, $url);
     }
     // Failure? That's OK, user will be sent to the registration page shortly
     update_option('icopyright_redirect_on_first_activation', 'true');
