@@ -22,7 +22,7 @@ function icopyright_admin() {
 		<h2><?php _e("iCopyright Settings"); ?></h2>
 <div id="icopyright_option" <?php if(empty($icopyright_pubid)){echo'style="display:none"';} ?> >
 
-<?php check_connectivity() ?>
+  <?php check_connectivity() ?>
 
 <form name="icopyrightform" id="icopyrightform" method="post" action="">
 
@@ -33,8 +33,8 @@ function icopyright_admin() {
 </p>
 <br/>
 
-			<!--Deployment of iCopyright Toolbar Section Begin -->
-			<h3><?php _e('Deployment of iCopyright Toolbar and Interactive Copyright Notice: ')?></h3>
+<!--Deployment of iCopyright Toolbar Section Begin -->
+<h3><?php _e('Deployment of iCopyright Toolbar and Interactive Copyright Notice: ')?></h3>
 
 <table class="form-table">
   <tbody>
@@ -192,7 +192,7 @@ function icopyright_admin() {
               <input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = $icopyright_option['show_multiple']; if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> />
             </td>
             <td>
-											  Show both iCopyright Toolbar and Interactive Copyright Notice
+              Show both iCopyright Toolbar and Interactive Copyright Notice
             </td>
           </tr>
           <tr class="show-toolbar">
@@ -203,7 +203,7 @@ function icopyright_admin() {
               <input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="tools"){echo "checked";}?> />
             </td>
             <td>
-											  Show only iCopyright Toolbar
+              Show only iCopyright Toolbar
             </td>
           </tr>
           <tr class="show-icn">
@@ -251,9 +251,9 @@ function icopyright_admin() {
     <th scope="row">Categories</th>
     <td>
       <fieldset>
-								<input class="category-radio" name="icopyright_use_category_filter" type="radio" value="no" <?php if($use_filter!="yes"){echo "checked";}?> /> <?php _e('Apply tools to all posts')?>
+        <input class="category-radio" name="icopyright_use_category_filter" type="radio" value="no" <?php if($use_filter!="yes"){echo "checked";}?> /> <?php _e('Apply tools to all posts')?>
         <br />
-								<input class="category-radio" name="icopyright_use_category_filter" type="radio" value="yes" <?php if($use_filter=="yes"){echo "checked";}?> /> <?php _e('Apply tools only to selected categories')?>
+        <input class="category-radio" name="icopyright_use_category_filter" type="radio" value="yes" <?php if($use_filter=="yes"){echo "checked";}?> /> <?php _e('Apply tools only to selected categories')?>
         <br/>
 
         <?php
@@ -335,7 +335,7 @@ function icopyright_admin() {
   </tr>
   </tbody>
 </table>
-<?php } ?>
+  <?php } ?>
 
 <script type="text/javascript">
   // Function to update the previews with what the toolbars will look like with these settings
@@ -412,48 +412,32 @@ function icopyright_admin() {
   }
   ?>
 
-<table class="form-table">
-  <tbody>
-  <tr align="top">
-    <th scope="row">Settings</th>
-    <td>
-      <fieldset>
-        <input type="button" id="toggle_advance_setting" value="Show Advanced Settings" style="cursor:pointer">
-        <br/><br/><br/>
-        <div id='advance_setting' style="display:none">
-          <!--Publication ID-->
-          <p>
-            <strong><?php _e('Publication ID:')?></strong>
-            <input type="text" name="icopyright_pubid" style="width:200px" value="<?php $icopyright_pubid = $icopyright_option['pub_id']; echo $icopyright_pubid; ?>"/>
+<input type="button" id="toggle_advance_setting" value="Show Advanced Settings" style="cursor:pointer">
 
-            <?php
-            if( empty( $icopyright_pubid )) {
-              echo 'or <a href="#" onclick="show_icopyright_form()">click here to register</a>';
-            } else {
-              echo '<br/><span style="font-style:italic;margin:0 0 0 105px;">Advanced User Only.</span>';
-            }
-            ?>
-          </p>
-          <br />
-
-          <!--Conductor email-->
-          <p>
-            <strong><?php _e('Conductor Email Address:')?></strong>
-            <input type="text" name="icopyright_conductor_email" style="width:200px;" value="<?php echo $icopyright_conductor_email; ?>"/>
-          </p>
-          <br />
-
-          <!--Conductor password-->
-          <p>
-            <strong><?php _e('Conductor Password:')?></strong>
-            <input type="password" name="icopyright_conductor_password" style="width:200px;margin-left:30px;" value="<?php echo $icopyright_conductor_password; ?>"/>
-          </p>
-        </div><!--close div id="advance_settings"-->
-      </fieldset>
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div id='advance_setting' style="display:none">
+  <table class="form-table">
+    <tbody>
+    <tr valign="top">
+      <th scope="row">Publication ID</th>
+      <td>
+        <input type="text" name="icopyright_pubid" style="width:200px" value="<?php $icopyright_pubid = $icopyright_option['pub_id']; echo $icopyright_pubid; ?>"/>
+      </td>
+    </tr>
+    <tr valign="top">
+      <th scope="row">Conductor Email Address</th>
+      <td>
+        <input type="text" name="icopyright_conductor_email" style="width:200px;" value="<?php echo $icopyright_conductor_email; ?>"/>
+      </td>
+    </tr>
+    <tr valign="top">
+      <th scope="row">Conductor Password</th>
+      <td>
+        <input type="password" name="icopyright_conductor_password" style="width:200px;" value="<?php echo $icopyright_conductor_password; ?>"/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
 <!-- Advanced Settings End -->
 <br /><br />
@@ -465,10 +449,10 @@ function icopyright_admin() {
 
 <!--visit conductor link-->
   <?php if(!empty($icopyright_pubid )) { ?>
-  <p>
+<p>
   <strong><a href="<?php echo ICOPYRIGHT_URL.'publisher/';?>" target="_blank"><?php _e('Log in to Conductor')?></a> to enable additional services, adjust further settings, and view usage reports.</strong>
-  </p>
-  <br/>
+</p>
+<br/>
   <?php } ?>
 
 </form>
