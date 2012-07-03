@@ -749,7 +749,8 @@ function post_settings() {
     }
 
     // Save publication info details
-    $i_res = icopyright_post_publication_info($icopyright_pubid, $icopyright_site_name, $icopyright_site_url, $icopyright_feed_url,
+    $i_res = icopyright_post_publication_info($icopyright_pubid, $icopyright_fname, $icopyright_lname,
+      $icopyright_site_name, $icopyright_site_url, $icopyright_feed_url,
       $icopyright_address_line1, $icopyright_address_line2, $icopyright_address_line3, $icopyright_address_city,
       $icopyright_address_state, $icopyright_address_postal, $icopyright_address_country, $icopyright_address_phone,
       $user_agent, $conductor_email, $conductor_password

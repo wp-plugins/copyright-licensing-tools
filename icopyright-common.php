@@ -74,6 +74,8 @@ function icopyright_post_new_publisher($postdata, $useragent, $email, $password)
  * Update the publication info as necessary
  *
  * @param $pid
+ * @param $fname
+ * @param $lname
  * @param $name
  * @param $pub_url
  * @param $feed_url
@@ -90,9 +92,11 @@ function icopyright_post_new_publisher($postdata, $useragent, $email, $password)
  * @param $password
  * @return object
  */
-function icopyright_post_publication_info($pid, $name, $pub_url, $feed_url, $line1, $line2, $line3, $city, $state, $postal, $country,
+function icopyright_post_publication_info($pid, $fname, $lname, $name, $pub_url, $feed_url, $line1, $line2, $line3, $city, $state, $postal, $country,
                                              $phone, $useragent, $email, $password) {
   $post = array(
+    'fname' => $fname,
+    'lname' => $lname,
     'pname' => $name,
     'pub_url' => $pub_url,
     'feed_url' => $feed_url,
