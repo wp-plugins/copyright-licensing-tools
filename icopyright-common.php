@@ -71,6 +71,45 @@ function icopyright_post_new_publisher($postdata, $useragent, $email, $password)
 }
 
 /**
+ * Update the publication info as necessary
+ *
+ * @param $pid
+ * @param $name
+ * @param $pub_url
+ * @param $line1
+ * @param $line2
+ * @param $line3
+ * @param $city
+ * @param $state
+ * @param $postal
+ * @param $country
+ * @param $phone
+ * @param $useragent
+ * @param $email
+ * @param $password
+ * @return object
+ */
+function icopyright_post_publication_info($pid, $name, $pub_url, $line1, $line2, $line3, $city, $state, $postal, $country,
+                                             $phone, $useragent, $email, $password) {
+  $post = array(
+    'pname' => $name,
+    'pub_url' => $pub_url,
+    'line1' => $line1,
+    'line2' => $line2,
+    'line3' => $line3,
+    'city' => $city,
+    'state' => $state,
+    'postal' => $postal,
+    'country' => $country,
+    'phone' => $phone,
+  );
+  $postdata = http_build_query($post);
+  $url = "/api/xml/publication/update/$pid";
+  $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password));
+  return $res;
+}
+
+/**
  * Checks the response object for success code. Returns true if all is OK.
  *
  * @param  $res

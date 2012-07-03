@@ -490,7 +490,7 @@ function icopyright_admin() {
     </tr>
     <tr valign="top">
       <th scope="row">Conductor Feed URL</th>
-      <td><input type="text" name="icopyright_feed_url" style="width:300px;" value="<?php echo $icopyright_feed_url; ?>"/></td>
+      <td><input type="text" name="icopyright_feed_url" style="width:300px;" value=""/></td>
     </tr>
   </table>
 </div>
@@ -746,6 +746,13 @@ function post_settings() {
       $error_message .= "<li>Failed to update Toolbar Settings</li>";
     }
 
+    // Save publication info details
+    $i_res = icopyright_post_publication_info($icopyright_pubid, $icopyright_site_name, $icopyright_site_url,
+      $icopyright_address_line1, $icopyright_address_line2, $icopyright_address_line3, $icopyright_address_city,
+      $icopyright_address_state, $icopyright_address_postal, $icopyright_address_country, $icopyright_address_phone,
+      $user_agent, $conductor_email, $conductor_password
+    );
+
     // Check selected categories input for sensibility
     $selectedCategories = array();
     $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : array();
@@ -753,8 +760,7 @@ function post_settings() {
       if(is_numeric($catid)) $selectedCategories[] = $catid;
     }
 
-    //assign value to icopyright admin settings array
-    //for saving into options table as an array value.
+    // Save the icopyright admin settings.
     $icopyright_admin = array('pub_id' => $icopyright_pubid,
       'display' => $icopyright_display,
       'tools' => $icopyright_tools,
@@ -770,7 +776,7 @@ function post_settings() {
       'categories' => implode(',', $selectedCategories),
       'use_category_filter' => $icopyright_use_copyright_filter,
     );
-
+    // Save the account info also
     $icopyright_account = array(
       'fname' => $icopyright_fname,
       'lname' => $icopyright_lname,
