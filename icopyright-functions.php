@@ -546,7 +546,7 @@ function icopyright_admin_defaults() {
 }
 
 /**
- * After a new publication has been created, set up all the various fields
+ * After a new publication has been created, set up all the various settings
  * @param $pid
  * @param $email
  * @param $password
@@ -554,10 +554,21 @@ function icopyright_admin_defaults() {
 function icopyright_set_up_new_publication($pid, $email, $password) {
   $icopyright_admin_default = icopyright_admin_defaults();
   $icopyright_admin_default['pub_id'] = $pid;
+
+  $plugin_feed_url = icopyright_get_default_feed_url();
+  $icopyright_admin_default['feed_url'] = $plugin_feed_url;
+  icopyright_post_update_feed_url($pid, $plugin_feed_url, ICOPYRIGHT_USERAGENT, $email, $password);
+
   update_option('icopyright_admin', $icopyright_admin_default);
   update_option('icopyright_conductor_password', $password);
   update_option('icopyright_conductor_email', $email);
+}
 
+/**
+ * Returns the default feed URL for this publication, based on whether this is a singlesite or multisite installation
+ * @return string the default feed URL for this publication
+ */
+function icopyright_get_default_feed_url() {
   $plugin_feed_url = null;
   $blog_id = $_POST['blog_id'];
   if (!empty($blog_id)) {
@@ -568,8 +579,7 @@ function icopyright_set_up_new_publication($pid, $email, $password) {
     //post in old feed url structure.
     $plugin_feed_url .= WP_PLUGIN_URL . "/copyright-licensing-tools/icopyright_xml.php?id=*";
   }
-  //post data to API using CURL and assigning response.
-  icopyright_post_update_feed_url($pid, $plugin_feed_url, ICOPYRIGHT_USERAGENT, $email, $password);
+  return $plugin_feed_url;
 }
 
 ?>

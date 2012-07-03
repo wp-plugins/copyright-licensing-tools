@@ -14,11 +14,11 @@ function icopyright_admin() {
   if (isset($_POST['submitted2']) == 'yes-post-me') {
     post_new_publisher();
   }
-  $icopyright_option = get_option('icopyright_admin');
+  $icopyright_admin = get_option('icopyright_admin');
   $icopyright_account = get_option('icopyright_account');
   $icopyright_conductor_email = get_option('icopyright_conductor_email');
   $icopyright_conductor_password = get_option('icopyright_conductor_password');
-  $icopyright_pubid = $icopyright_option['pub_id'];
+  $icopyright_pubid = $icopyright_admin['pub_id'];
   ?>
 
 	<div class="wrap">
@@ -103,7 +103,7 @@ function icopyright_admin() {
     <th scope="row">Deployment Mechanism</th>
     <td>
       <fieldset>
-        <input name="icopyright_display" type="radio" value="auto"  onclick="hide_manual_option()" <?php $icopyright_display = $icopyright_option['display']; if(empty($icopyright_display)||$icopyright_display=="auto"){echo "checked";}?> />
+        <input name="icopyright_display" type="radio" value="auto"  onclick="hide_manual_option()" <?php $icopyright_display = $icopyright_admin['display']; if(empty($icopyright_display)||$icopyright_display=="auto"){echo "checked";}?> />
         <?php _e('Automatic ')?><br/>
 								<span class="description">
 									<?php _e('iCopyright Toolbar and Interactive Copyright Notice will be automatically added into content of post')?>
@@ -111,7 +111,7 @@ function icopyright_admin() {
 
         <br />
 
-        <input name="icopyright_display" type="radio" value="manual" onclick="show_manual_option()" <?php $icopyright_display2 = $icopyright_option['display']; if($icopyright_display2=="manual"){echo "checked";}?>/>
+        <input name="icopyright_display" type="radio" value="manual" onclick="show_manual_option()" <?php $icopyright_display2 = $icopyright_admin['display']; if($icopyright_display2=="manual"){echo "checked";}?>/>
         <?php _e('Manual ')?><br/>
 								<span class="description">
 									<?php _e('Deploy iCopyright Toolbar and Interactive Copyright Notice into content of post, using WordPress shortcode')?>
@@ -120,7 +120,7 @@ function icopyright_admin() {
       </fieldset>
 
       <fieldset>
-        <div id="M3" style="float:left;margin:0 50px 0 0;display:none;<?php $display5 = $icopyright_option['display']; if($display5=="manual"){echo "display:block;";}?>">
+        <div id="M3" style="float:left;margin:0 50px 0 0;display:none;<?php $display5 = $icopyright_admin['display']; if($display5=="manual"){echo "display:block;";}?>">
           <p>
             <strong><?php _e('Available WordPress Shortcodes: ')?></strong>
           </p>
@@ -159,7 +159,7 @@ function icopyright_admin() {
 <!--Deployment of iCopyright Article Tools Section End -->
 <br/>
 <!--iCopyright Toolbar Appearance Section Begin -->
-  <?php $icopyright_share = $icopyright_option['share']; ?>
+  <?php $icopyright_share = $icopyright_admin['share']; ?>
 
 <h3><?php _e('iCopyright Toolbar Appearance:')?></h3>
 <table class="form-table">
@@ -168,9 +168,9 @@ function icopyright_admin() {
     <th scope="row">Alignment</th>
     <td>
       <fieldset>
-        <input name="icopyright_align" type="radio" value="left" <?php $icopyright_align = $icopyright_option['align']; if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> /> <?php _e('Left')?>
+        <input name="icopyright_align" type="radio" value="left" <?php $icopyright_align = $icopyright_admin['align']; if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> /> <?php _e('Left')?>
         <br/>
-        <input name="icopyright_align" type="radio" value="right" <?php $icopyright_align = $icopyright_option['align'];if($icopyright_align=="right"){echo "checked";}?> /> <?php _e('Right')?>
+        <input name="icopyright_align" type="radio" value="right" <?php $icopyright_align = $icopyright_admin['align'];if($icopyright_align=="right"){echo "checked";}?> /> <?php _e('Right')?>
       </fieldset>
     </td>
     <td rowspan="4">
@@ -187,7 +187,7 @@ function icopyright_admin() {
     <th scope="row">Orientation</th>
     <td>
       <fieldset>
-        <input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_option['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> /> <?php _e('Horizontal')?>
+        <input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_admin['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> /> <?php _e('Horizontal')?>
         <br/>
         <input name="icopyright_tools" type="radio" value="vertical" <?php if($icopyright_tools=="vertical"){echo "checked";}?> /> <?php _e('Vertical')?>
       </fieldset>
@@ -200,7 +200,7 @@ function icopyright_admin() {
         <select name="icopyright_article_tools_theme" class="form-select" id="icopyright_article_tools_theme" >
           <?php
           $themes = icopyright_theme_options();
-          $icopyright_theme = $icopyright_option['theme']; if(empty($icopyright_theme)) $icopyright_theme = 'CLASSIC';
+          $icopyright_theme = $icopyright_admin['theme']; if(empty($icopyright_theme)) $icopyright_theme = 'CLASSIC';
           foreach($themes as $option => $name) {
             print "<option value=\"$option\"";
             if($option == $icopyright_theme) print ' selected="selected"';
@@ -215,7 +215,7 @@ function icopyright_admin() {
     <th scope="row">Background</th>
     <td>
       <fieldset>
-        <input name="icopyright_background" type="radio" value="OPAQUE" <?php $icopyright_background = $icopyright_option['background']; if(empty($icopyright_background)||$icopyright_background=="OPAQUE"){echo "checked";}?> /> <?php _e('Opaque')?>
+        <input name="icopyright_background" type="radio" value="OPAQUE" <?php $icopyright_background = $icopyright_admin['background']; if(empty($icopyright_background)||$icopyright_background=="OPAQUE"){echo "checked";}?> /> <?php _e('Opaque')?>
         <br/>
         <input name="icopyright_background" type="radio" value="TRANSPARENT" <?php if($icopyright_background=="TRANSPARENT"){echo "checked";}?> /> <?php _e('Transparent')?>
       </fieldset>
@@ -247,10 +247,10 @@ function icopyright_admin() {
           <tbody>
           <tr class="show-both">
             <td style="text-align: center;">
-              <input name="icopyright_show" type="radio" value="both" <?php $icopyright_show = $icopyright_option['show']; if(empty($icopyright_show)||$icopyright_show=="both"){echo "checked";}?> />
+              <input name="icopyright_show" type="radio" value="both" <?php $icopyright_show = $icopyright_admin['show']; if(empty($icopyright_show)||$icopyright_show=="both"){echo "checked";}?> />
             </td>
             <td style="text-align: center;">
-              <input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = $icopyright_option['show_multiple']; if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> />
+              <input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = $icopyright_admin['show_multiple']; if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> />
             </td>
             <td>
               Show both iCopyright Toolbar and Interactive Copyright Notice
@@ -258,10 +258,10 @@ function icopyright_admin() {
           </tr>
           <tr class="show-toolbar">
             <td style="text-align: center;">
-              <input name="icopyright_show" type="radio" value="tools" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="tools"){echo "checked";}?> />
+              <input name="icopyright_show" type="radio" value="tools" <?php $icopyright_show = $icopyright_admin['show'];if($icopyright_show=="tools"){echo "checked";}?> />
             </td>
             <td style="text-align: center;">
-              <input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="tools"){echo "checked";}?> />
+              <input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = $icopyright_admin['show_multiple'];if($icopyright_show_multiple=="tools"){echo "checked";}?> />
             </td>
             <td>
               Show only iCopyright Toolbar
@@ -269,10 +269,10 @@ function icopyright_admin() {
           </tr>
           <tr class="show-icn">
             <td style="text-align: center;">
-              <input name="icopyright_show" type="radio" value="notice" <?php $icopyright_show = $icopyright_option['show'];if($icopyright_show=="notice"){echo "checked";}?> />
+              <input name="icopyright_show" type="radio" value="notice" <?php $icopyright_show = $icopyright_admin['show'];if($icopyright_show=="notice"){echo "checked";}?> />
             </td>
             <td style="text-align: center;">
-              <input name="icopyright_show_multiple" type="radio" value="notice" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="notice"){echo "checked";}?> />
+              <input name="icopyright_show_multiple" type="radio" value="notice" <?php $icopyright_show_multiple = $icopyright_admin['show_multiple'];if($icopyright_show_multiple=="notice"){echo "checked";}?> />
             </td>
             <td>
               Show only Interactive Copyright Notice
@@ -283,7 +283,7 @@ function icopyright_admin() {
               &nbsp;
             </td>
             <td style="text-align: center;">
-              <input name="icopyright_show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = $icopyright_option['show_multiple'];if($icopyright_show_multiple=="nothing"){echo "checked";}?> />
+              <input name="icopyright_show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = $icopyright_admin['show_multiple'];if($icopyright_show_multiple=="nothing"){echo "checked";}?> />
             </td>
             <td>
               Show nothing
@@ -298,7 +298,7 @@ function icopyright_admin() {
     <th scope="row">Pages</th>
     <td>
       <fieldset>
-        <input id="icopyright_display_on_pages" name="icopyright_display_on_pages" type="checkbox" <?php if($icopyright_option['display_on_pages'] == 'yes') print 'checked="checked"'; ?> value="yes">
+        <input id="icopyright_display_on_pages" name="icopyright_display_on_pages" type="checkbox" <?php if($icopyright_admin['display_on_pages'] == 'yes') print 'checked="checked"'; ?> value="yes">
         <label for="icopyright_display_on_pages">Display tools on pages as well as posts</label>
       </fieldset>
     </td>
@@ -306,7 +306,7 @@ function icopyright_admin() {
   <!-- Categories Begin -->
     <?php
     $systemCategories = get_categories();
-    $use_filter = $icopyright_option['use_category_filter'];
+    $use_filter = $icopyright_admin['use_category_filter'];
     ?>
   <tr align="top">
     <th scope="row">Categories</th>
@@ -369,9 +369,9 @@ function icopyright_admin() {
     <th scope="row">EZ Excerpt</th>
     <td>
       <fieldset>
-        <input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_option['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
+        <input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = $icopyright_admin['ez_excerpt']; if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
         <br/>
-        <input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_option['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
+        <input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = $icopyright_admin['ez_excerpt']; if($icopyright_ez_excerpt2=="no"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
       </fieldset>
             <span class="description">When EZ Excerpt is activated, any reader who tries to copy/paste
               a portion of your article will be presented with a box asking "Obtain a License?". If reader
@@ -384,9 +384,9 @@ function icopyright_admin() {
     <th scope="row">Syndication</th>
     <td>
       <fieldset>
-        <input name="icopyright_syndication" type="radio" value="yes" <?php $icopyright_syndication = $icopyright_option['syndication']; if(empty($icopyright_syndication)||$icopyright_syndication=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
+        <input name="icopyright_syndication" type="radio" value="yes" <?php $icopyright_syndication = $icopyright_admin['syndication']; if(empty($icopyright_syndication)||$icopyright_syndication=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
         <br/>
-        <input name="icopyright_syndication" type="radio" value="no" <?php $icopyright_syndication2 = $icopyright_option['syndication']; if($icopyright_syndication2=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
+        <input name="icopyright_syndication" type="radio" value="no" <?php $icopyright_syndication2 = $icopyright_admin['syndication']; if($icopyright_syndication2=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
       </fieldset>
             <span class="description">The Syndication Feed service enables other websites to subscribe to a feed
               of your content and pay you based on the number of times your articles are viewed on their site at
@@ -401,11 +401,11 @@ function icopyright_admin() {
 <script type="text/javascript">
   // Function to update the previews with what the toolbars will look like with these settings
   function toolbarTouch() {
-    if('<?php print $icopyright_option['pub_id']; ?>' == '') return;
+    if('<?php print $icopyright_admin['pub_id']; ?>' == '') return;
     var orient = (jQuery('input:radio[name=icopyright_tools]:checked').val() == 'horizontal' ? 'horz' : 'vert');
     var theme = jQuery('#icopyright_article_tools_theme').val();
     var background = jQuery('input:radio[name=icopyright_background]:checked').val();
-    var publication = '<?php print $icopyright_option['pub_id']; ?>';
+    var publication = '<?php print $icopyright_admin['pub_id']; ?>';
     var url = '<?php print icopyright_get_server() ?>/publisher/TouchToolbar.act?' +
       jQuery.param({
         theme: theme,
@@ -460,7 +460,7 @@ function icopyright_admin() {
 <h3><?php _e('Advanced Settings: ')?></h3>
 
   <?php
-  $icopyright_conductor_id = $icopyright_option['pub_id'];
+  $icopyright_conductor_id = $icopyright_admin['pub_id'];
   if(!empty($icopyright_conductor_id)){
     //this is existing installation, we show email and password required message.
     //this will not show for new installation.
@@ -477,7 +477,7 @@ function icopyright_admin() {
     <tbody>
     <tr valign="top">
       <th scope="row">Publication ID</th>
-      <td><input type="text" name="icopyright_pubid" style="width:200px" value="<?php $icopyright_pubid = $icopyright_option['pub_id']; echo $icopyright_pubid; ?>"/></td>
+      <td><input type="text" name="icopyright_pubid" style="width:200px" value="<?php $icopyright_pubid = $icopyright_admin['pub_id']; echo $icopyright_pubid; ?>"/></td>
     </tr>
     </tbody>
     <tr valign="top">
@@ -490,7 +490,8 @@ function icopyright_admin() {
     </tr>
     <tr valign="top">
       <th scope="row">Conductor Feed URL</th>
-      <td><input type="text" name="icopyright_feed_url" style="width:300px;" value=""/></td>
+      <td><input type="text" name="icopyright_feed_url" style="width:300px;"
+                 value="<?php echo (isset($icopyright_admin['feed_url']) ? $icopyright_admin['feed_url'] : icopyright_get_default_feed_url()); ?>"/></td>
     </tr>
   </table>
 </div>
@@ -670,6 +671,7 @@ function post_settings() {
   $icopyright_conductor_password = stripslashes($_POST['icopyright_conductor_password']);
   $icopyright_theme = stripslashes($_POST['icopyright_article_tools_theme']);
   $icopyright_background = stripslashes($_POST['icopyright_background']);
+  $icopyright_feed_url = stripslashes($_POST['icopyright_feed_url']);
 
   $icopyright_fname = stripslashes($_POST['icopyright_fname']);
   $icopyright_lname = stripslashes($_POST['icopyright_lname']);
@@ -747,7 +749,7 @@ function post_settings() {
     }
 
     // Save publication info details
-    $i_res = icopyright_post_publication_info($icopyright_pubid, $icopyright_site_name, $icopyright_site_url,
+    $i_res = icopyright_post_publication_info($icopyright_pubid, $icopyright_site_name, $icopyright_site_url, $icopyright_feed_url,
       $icopyright_address_line1, $icopyright_address_line2, $icopyright_address_line3, $icopyright_address_city,
       $icopyright_address_state, $icopyright_address_postal, $icopyright_address_country, $icopyright_address_phone,
       $user_agent, $conductor_email, $conductor_password
@@ -775,6 +777,7 @@ function post_settings() {
       'share' => $icopyright_share,
       'categories' => implode(',', $selectedCategories),
       'use_category_filter' => $icopyright_use_copyright_filter,
+      'feed_url' => $icopyright_feed_url,
     );
     // Save the account info also
     $icopyright_account = array(
