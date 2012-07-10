@@ -40,51 +40,51 @@ function icopyright_admin() {
   <tbody>
   <tr align="top">
     <th scope="row">First Name</th>
-    <td><input type="text" name="icopyright_fname" style="width:150px;" value="<?php echo $icopyright_account['fname']; ?>"/></td>
+    <td><input type="text" name="icopyright_fname" style="width:150px;" value="<?php echo pvalue('fname') ; ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Last Name</th>
-    <td><input type="text" name="icopyright_lname" style="width:150px;" value="<?php echo $icopyright_account['lname']; ?>"/></td>
+    <td><input type="text" name="icopyright_lname" style="width:150px;" value="<?php echo pvalue('lname'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Site Name</th>
-    <td><input type="text" name="icopyright_site_name" style="width:200px;" value="<?php echo $icopyright_account['site_name']; ?>"/></td>
+    <td><input type="text" name="icopyright_site_name" style="width:200px;" value="<?php echo pvalue('site_name'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Site URL</th>
-    <td><input type="text" name="icopyright_site_url" style="width:200px;" value="<?php echo $icopyright_account['site_url']; ?>"/></td>
+    <td><input type="text" name="icopyright_site_url" style="width:200px;" value="<?php echo pvalue('site_url'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Address</th>
-    <td><input type="text" name="icopyright_address_line1" style="width:200px;" value="<?php echo $icopyright_account['address_line1']; ?>"/></td>
+    <td><input type="text" name="icopyright_address_line1" style="width:200px;" value="<?php echo pvalue('address_line1'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row"></th>
-    <td><input type="text" name="icopyright_address_line2" style="width:200px;" value="<?php echo $icopyright_account['address_line2']; ?>"/></td>
+    <td><input type="text" name="icopyright_address_line2" style="width:200px;" value="<?php echo pvalue('address_line2'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row"></th>
-    <td><input type="text" name="icopyright_address_line3" style="width:200px;" value="<?php echo $icopyright_account['address_line3']; ?>"/></td>
+    <td><input type="text" name="icopyright_address_line3" style="width:200px;" value="<?php echo pvalue('address_line3'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">City</th>
-    <td><input type="text" name="icopyright_address_city" style="width:200px;" value="<?php echo $icopyright_account['address_city']; ?>"/></td>
+    <td><input type="text" name="icopyright_address_city" style="width:200px;" value="<?php echo pvalue('address_city'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">State</th>
-    <td><input type="text" name="icopyright_address_state" style="width:50px;" value="<?php echo $icopyright_account['address_state']; ?>"/></td>
+    <td><input type="text" name="icopyright_address_state" style="width:50px;" value="<?php echo pvalue('address_state'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Country</th>
-    <td><input type="text" name="icopyright_address_country" style="width:50px;" value="<?php echo $icopyright_account['address_country']; ?>"/></td>
+    <td><input type="text" name="icopyright_address_country" style="width:50px;" value="<?php echo pvalue('address_country'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Postal Code</th>
-    <td><input type="text" name="icopyright_address_postal" style="width:100px;" value="<?php echo $icopyright_account['address_postal']; ?>"/></td>
+    <td><input type="text" name="icopyright_address_postal" style="width:100px;" value="<?php echo pvalue('address_postal'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Phone</th>
-    <td><input type="text" name="icopyright_address_phone" style="width:100px;" value="<?php echo $icopyright_account['address_phone']; ?>"/></td>
+    <td><input type="text" name="icopyright_address_phone" style="width:100px;" value="<?php echo pvalue('address_phone'); ?>"/></td>
   </tr>
   </tbody>
 </table>
@@ -909,6 +909,15 @@ function post_new_publisher() {
       global $show_icopyright_register_form;
       $show_icopyright_register_form = 'true';
     }
+  }
+}
+
+function pvalue($parg) {
+  if (isset($_POST["icopyright_$parg"]))
+    print $_POST["icopyright_$parg"];
+  else {
+    $icopyright_account = get_option('icopyright_account');
+    print $icopyright_account[$parg];
   }
 }
 	
