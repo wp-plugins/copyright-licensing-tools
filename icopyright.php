@@ -87,9 +87,9 @@ function icopyright_activate() {
     $postdata = "fname=$fname&lname=$lname&email=$email&password=$password&pname=$pname&url=$url";
     $useragent = ICOPYRIGHT_USERAGENT;
     $rv = icopyright_post_new_publisher($postdata, $useragent, $email, $password);
-    $xml = @simplexml_load_string($rv->response);
     if (icopyright_check_response($rv)) {
       // Success: store the publication ID that got sent as a variable
+      $xml = @simplexml_load_string($rv->response);
       $pid = (string)$xml->publication_id;
       icopyright_set_up_new_publication($pid, $email, $password);
       // icopyright_set_up_new_account($fname, $lname, $pname, $url);
