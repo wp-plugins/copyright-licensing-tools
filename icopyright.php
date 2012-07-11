@@ -61,51 +61,14 @@ function icopyright_remove_settings() {
   delete_option('icopyright_conductor_email');
   delete_option('icopryight_redirect_on_first_activation');
 }
-
 register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
 
 /**
- * Called on activation. The first time the module is activated, try to register for a new publication
- * record, guessing some reasonable values for registration. We then send the user to the general options page,
- * which takes it from there.
+ * Called on activation.
  */
 function icopyright_activate() {
-  $check_admin_setting = get_option('icopyright_admin');
-  if (empty($check_admin_setting)) {
-    // First time being activated, so set up with appropriate defaults
-    // Make some reasonable guesses about what to use; the user can change them later
-    global $current_user;
-    get_currentuserinfo();
-    $email = $current_user->user_email;
-    $fname = $current_user->user_firstname;
-    if(empty($fname)) $fname = 'Anonymous';
-    $lname = $current_user->user_lastname;
-    if(empty($lname)) $lname = 'User';
-    $pname = get_bloginfo('name');
-    $url = get_bloginfo('url') . "/";
-    $password = wp_generate_password(12, FALSE, FALSE);
-
-    $postdata = array(
-      'fname' => $fname,
-      'lname' => $lname,
-      'email' => $email,
-      'pname' => $pname,
-      'url' => $url,
-      'password' => $password,
-    );
-    $rv = icopyright_post_new_publisher(http_build_query($postdata), ICOPYRIGHT_USERAGENT, $email, $password);
-    if (icopyright_check_response($rv)) {
-      // Success: store the publication ID that got sent as a variable
-      $xml = @simplexml_load_string($rv->response);
-      $pid = (string)$xml->publication_id;
-      icopyright_set_up_new_publication($pid, $email, $password);
-      icopyright_set_up_new_account($fname, $lname, $pname, $url);
-    }
-    // Failure? That's OK, user will be sent to the registration page shortly
-    update_option('icopyright_redirect_on_first_activation', 'true');
-  }
+  update_option('icopyright_redirect_on_first_activation', 'true');
 }
-
 function icopyright_redirect_on_activation() {
   if (get_option('icopyright_redirect_on_first_activation') == 'true') {
     update_option('icopyright_redirect_on_first_activation', 'false');
@@ -113,7 +76,6 @@ function icopyright_redirect_on_activation() {
     wp_redirect($icopyright_settings_url);
   }
 }
-
 register_activation_hook(__FILE__, 'icopyright_activate');
 add_action('init', 'icopyright_redirect_on_activation');
 
@@ -139,4 +101,5 @@ function icopyright_admin_warning() {
 }
 
 add_action('init', 'icopyright_admin_warning');
+
 ?>

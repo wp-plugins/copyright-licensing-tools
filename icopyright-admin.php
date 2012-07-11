@@ -15,7 +15,10 @@ function icopyright_admin() {
   print '<h2 id="wait">Please wait...</h2>';
   ob_start();
 
-  //add values into option table
+  $icopyright_admin = get_option('icopyright_admin');
+  if (empty($check_admin_setting)) {
+    icopyright_preregister();
+  }
   if (isset($_POST['submitted']) == 'yes-update-me') {
     post_settings();
   }
@@ -869,8 +872,10 @@ function check_connectivity() {
     $password = get_option('icopyright_conductor_password');
     if(!icopyright_ping(ICOPYRIGHT_USERAGENT, $icopyright_pubid, $email, $password)) {
       print '<div id="message" class="updated">';
-      print '<p><strong>WARNING</strong>: The iCopyright servers cannot communicate with this site. (Check your Conductor Feed URL, in <em>Advanced Settings</em>.)Services that require the link will be degraded.</p>';
+      print '<p><strong>WARNING</strong>: The iCopyright servers cannot communicate with this site. Services that require the link will be degraded.</p>';
+      print '<p>Check your Conductor Feed URL, in <em>Advanced Settings</em>.</p>';
       print '</div>';
+
     }
   }
 }
@@ -920,6 +925,43 @@ function post_new_publisher() {
       $show_icopyright_register_form = 'true';
     }
   }
+}
+
+/**
+ * Try to register for a new publication record, guessing some reasonable values for registration. We then send the
+ * user to the general options page, which takes it from there.
+ */
+function icopyright_preregister() {
+  // First time being activated, so set up with appropriate defaults
+  // Make some reasonable guesses about what to use; the user can change them later
+  global $current_user;
+  get_currentuserinfo();
+  $email = $current_user->user_email;
+  $fname = $current_user->user_firstname;
+  if(empty($fname)) $fname = 'Anonymous';
+  $lname = $current_user->user_lastname;
+  if(empty($lname)) $lname = 'User';
+  $pname = get_bloginfo('name');
+  $url = get_bloginfo('url') . "/";
+  $password = wp_generate_password(12, FALSE, FALSE);
+
+  $postdata = array(
+    'fname' => $fname,
+    'lname' => $lname,
+    'email' => $email,
+    'pname' => $pname,
+    'url' => $url,
+    'password' => $password,
+  );
+  $rv = icopyright_post_new_publisher(http_build_query($postdata), ICOPYRIGHT_USERAGENT, $email, $password);
+  if (icopyright_check_response($rv)) {
+    // Success: store the publication ID that got sent as a variable
+    $xml = @simplexml_load_string($rv->response);
+    $pid = (string)$xml->publication_id;
+    icopyright_set_up_new_publication($pid, $email, $password);
+    icopyright_set_up_new_account($fname, $lname, $pname, $url);
+  }
+  // Failure? That's OK, user will be sent to the registration page shortly
 }
 
 function pvalue($parg) {
