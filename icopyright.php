@@ -92,7 +92,7 @@ function icopyright_activate() {
       $xml = @simplexml_load_string($rv->response);
       $pid = (string)$xml->publication_id;
       icopyright_set_up_new_publication($pid, $email, $password);
-      // icopyright_set_up_new_account($fname, $lname, $pname, $url);
+      icopyright_set_up_new_account($fname, $lname, $pname, $url);
     }
     // Failure? That's OK, user will be sent to the registration page shortly
     update_option('icopyright_redirect_on_first_activation', 'true');

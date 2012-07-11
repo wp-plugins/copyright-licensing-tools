@@ -565,6 +565,24 @@ function icopyright_set_up_new_publication($pid, $email, $password) {
 }
 
 /**
+ * Initialize the account with what information we have
+ * @param $fname
+ * @param $lname
+ * @param $pname
+ * @param $url
+ */
+function icopyright_set_up_new_account($fname, $lname, $pname, $url) {
+  $icopyright_account = array(
+    'fname' => $fname,
+    'lname' => $lname,
+    'site_name' => $pname,
+    'site_url' => $url,
+  );
+  update_option('icopyright_account', $icopyright_account);
+}
+
+
+/**
  * Returns the default feed URL for this publication, based on whether this is a singlesite or multisite installation
  * @return string the default feed URL for this publication
  */
