@@ -901,6 +901,7 @@ function post_new_publisher() {
     // Success: store the publication ID that got sent as a variable and set up the publication
     $pid = (string)$xml->publication_id;
     icopyright_set_up_new_publication($pid, $email, $password);
+    icopyright_set_up_new_account($fname, $lname, $pname, $url);
     display_publication_welcome($pid);
   } else {
     // Was there an error, or did the response not even go through?
