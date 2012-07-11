@@ -853,8 +853,8 @@ function display_publication_welcome($pid) {
   print '<iframe src="http://info.icopyright.com/welcome-wp.php?pid=' . $pid . '" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>';
   print '<p>';
   print 'Please review the default settings below and make any changes you wish. You may find it helpful to view the ';
-  print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>.';
-  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank">Conductor</a>';
+  print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>. ';
+  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank">Conductor</a> ';
   print 'account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.';
   print '</p>';
   print '</div>';
@@ -960,7 +960,7 @@ function icopyright_preregister() {
     $pid = (string)$xml->publication_id;
     icopyright_set_up_new_publication($pid, $email, $password);
     icopyright_set_up_new_account($fname, $lname, $pname, $url);
-    display_publication_welcome();
+    display_publication_welcome($pid);
   }
   // Failure? That's OK, user will be sent to the registration page shortly
 }
