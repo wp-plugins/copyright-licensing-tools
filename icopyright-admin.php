@@ -732,7 +732,7 @@ function post_settings() {
 
   if(empty($icopyright_display)) {
     icopyright_set_up_new_publication($icopyright_pubid, $icopyright_conductor_email, $icopyright_conductor_password);
-    display_publication_welcome();
+    display_publication_welcome($icopyright_pubid);
   } else {
     $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, ($icopyright_ez_excerpt == 'yes'), $user_agent, $conductor_email, $conductor_password);
     $check_ez_res = icopyright_check_response($ez_res);
@@ -847,10 +847,10 @@ function display_status_update($error_message) {
 /**
  * Simply spits out a welcome message
  */
-function display_publication_welcome() {
+function display_publication_welcome($pid) {
   $icopyright_conductor_url = ICOPYRIGHT_URL . "publisher/";
   print '<div id="message" class="updated fade">';
-  print '<iframe src="http://info.icopyright.com/welcome-wp.php?pid=<?php print $pid ?>" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>';
+  print '<iframe src="http://info.icopyright.com/welcome-wp.php?pid=' . $pid . '" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>';
   print '<p>';
   print 'Please review the default settings below and make any changes you wish. You may find it helpful to view the ';
   print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>.';
@@ -901,7 +901,7 @@ function post_new_publisher() {
     // Success: store the publication ID that got sent as a variable and set up the publication
     $pid = (string)$xml->publication_id;
     icopyright_set_up_new_publication($pid, $email, $password);
-    display_publication_welcome();
+    display_publication_welcome($pid);
   } else {
     // Was there an error, or did the response not even go through?
     if(empty($xml)) {
