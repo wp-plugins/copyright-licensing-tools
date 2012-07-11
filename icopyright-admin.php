@@ -960,6 +960,7 @@ function icopyright_preregister() {
     $pid = (string)$xml->publication_id;
     icopyright_set_up_new_publication($pid, $email, $password);
     icopyright_set_up_new_account($fname, $lname, $pname, $url);
+    display_publication_welcome();
   }
   // Failure? That's OK, user will be sent to the registration page shortly
 }
