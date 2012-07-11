@@ -7,6 +7,14 @@ add_action('admin_init', 'register_icopyright_options_parameter');
 
 //create admin settings page
 function icopyright_admin() {
+
+  // This page can be slow, so give a status message
+  ob_implicit_flush(TRUE);
+  ob_end_flush();
+  ob_flush();
+  print '<h2 id="wait">Please wait...</h2>';
+  ob_start();
+
   //add values into option table
   if (isset($_POST['submitted']) == 'yes-update-me') {
     post_settings();
@@ -21,7 +29,7 @@ function icopyright_admin() {
   $icopyright_pubid = $icopyright_admin['pub_id'];
   ?>
 
-	<div class="wrap">
+	<div class="wrap" id="noneedtohide" style="display:none;" >
 		<h2><?php _e("iCopyright Settings"); ?></h2>
 <div id="icopyright_option" <?php if(empty($icopyright_pubid)){echo'style="display:none"';} ?> >
 
@@ -424,6 +432,8 @@ function icopyright_admin() {
   }
 
   jQuery(document).ready(function() {
+    jQuery("h2#wait").hide();
+    jQuery("div#noneedtohide").show();
     jQuery("#toggle_advance_setting").toggle(function(){
         jQuery("#advance_setting").slideDown();
         jQuery("#toggle_advance_setting").val("Hide Advanced Settings");
@@ -859,7 +869,7 @@ function check_connectivity() {
     $password = get_option('icopyright_conductor_password');
     if(!icopyright_ping(ICOPYRIGHT_USERAGENT, $icopyright_pubid, $email, $password)) {
       print '<div id="message" class="updated">';
-      print '<p><strong>WARNING</strong>: The iCopyright servers cannot communicate with this site. Services that require the link will be degraded.</p>';
+      print '<p><strong>WARNING</strong>: The iCopyright servers cannot communicate with this site. (Check your Conductor Feed URL, in <em>Advanced Settings</em>.)Services that require the link will be degraded.</p>';
       print '</div>';
     }
   }
