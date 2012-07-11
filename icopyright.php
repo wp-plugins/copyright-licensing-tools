@@ -84,9 +84,16 @@ function icopyright_activate() {
     $pname = get_bloginfo('name');
     $url = get_bloginfo('url') . "/";
     $password = wp_generate_password(12, FALSE, FALSE);
-    $postdata = "fname=$fname&lname=$lname&email=$email&password=$password&pname=$pname&url=$url";
-    $useragent = ICOPYRIGHT_USERAGENT;
-    $rv = icopyright_post_new_publisher($postdata, $useragent, $email, $password);
+
+    $postdata = array(
+      'fname' => $fname,
+      'lname' => $lname,
+      'email' => $email,
+      'pname' => $pname,
+      'url' => $url,
+      'password' => $password,
+    );
+    $rv = icopyright_post_new_publisher(http_build_query($postdata), ICOPYRIGHT_USERAGENT, $email, $password);
     if (icopyright_check_response($rv)) {
       // Success: store the publication ID that got sent as a variable
       $xml = @simplexml_load_string($rv->response);
