@@ -9,8 +9,7 @@ iCopyright adds article tools and an Interactive Copyright Notice to enable shar
 
 == Description ==
 
-The iCopyright Toolbar plugin adds article tools (print, email, share, and republish) and an Interactive Copyright Notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. Use the same solution many of the world's leading publishers use to protect and monetize their content. By iCopyright, Inc.
-
+The iCopyright Toolbar plugin adds article tools (print, email, share, and republish) and an Interactive Copyright Notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. Use the same solution many of the world's leading publishers use to protect and monetize their content. Automatic registration on activation. By activating the plugin, you indicate agreement with the [terms of use](http://license.icopyright.net/publisher/statichtml/CSA-Online-Plugin.pdf). By iCopyright, Inc.
 
 == Installation ==
 
@@ -26,7 +25,9 @@ The iCopyright Toolbar plugin adds article tools (print, email, share, and repub
    1. Visit Plugins > Add New > Upload in WordPress admin
    2. Upload copyright-licensing-tools.zip file
    3. Once uploaded, click Activate Plugin link
-   4. Configure the plugin through Settings 
+   4. Configure the plugin through Settings
+
+When you activate the plugin, your site will be registered automatically.
 
 == Frequently Asked Questions ==
 
@@ -39,6 +40,13 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 3. An example of the print services dialog
 
 == Changelog ==
+
+= 1.6 =
+1. Automatic registration on activation
+2. Form fields to update account information added to admin settings page
+3. Better error messages on problems
+4. Add warning if iCopyright servers cannot connect properly
+5. Add ability to change feed URL in advanced settings
 
 = 1.5.5 =
 1. Default display on page to true
