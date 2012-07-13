@@ -734,31 +734,19 @@ function post_settings() {
     icopyright_set_up_new_publication($icopyright_pubid, $icopyright_conductor_email, $icopyright_conductor_password);
     display_publication_welcome($icopyright_pubid);
   } else {
+    $results = array();
+    $error_message = '';
+
+    // Submit as appropriate
     $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, ($icopyright_ez_excerpt == 'yes'), $user_agent, $conductor_email, $conductor_password);
-    $check_ez_res = icopyright_check_response($ez_res);
-    if (!$check_ez_res == TRUE) {
-      $error_message .= "<li>Failed to update EZ Excerpt Setting</li>";
-    }
-
-    // Syndication setting
+    $results['EZ Excerpt Setting'] = $ez_res;
     $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, ($icopyright_syndication == 'yes'), $user_agent, $conductor_email, $conductor_password);
-    $check_syndicate_res = icopyright_check_response($syndicate_res);
-    if (!$check_syndicate_res == TRUE) {
-      $error_message .= "<li>Failed to update Syndication Setting</li>";
-    }
-
-    // Turn on and off sharing
+    $results['Syndication Setting'] = $ez_res;
     $share_res = icopyright_post_share_service($icopyright_pubid, ($icopyright_share == 'yes'), $user_agent, $conductor_email, $conductor_password);
-    $check_share_res = icopyright_check_response($share_res);
-    if (!$check_share_res == TRUE) {
-      $error_message .= "<li>Failed to update Share Setting</li>";
-    }
-
-    // Set the toolbar theme and background and so on
+    $results['Sharing Setting'] = $ez_res;
     $t_res = icopyright_post_toolbar_theme($icopyright_pubid, $icopyright_theme, $icopyright_background, $user_agent, $conductor_email, $conductor_password);
-    if (icopyright_check_response($t_res) != TRUE) {
-      $error_message .= "<li>Failed to update Toolbar Settings</li>";
-    }
+    $results['Toolbar Setting'] = $ez_res;
+    $error_message = check_errors($results);
 
     // Save publication info details
     $i_res = icopyright_post_publication_info($icopyright_pubid, $icopyright_fname, $icopyright_lname,
@@ -824,9 +812,9 @@ function post_settings() {
       update_option('icopyright_account', $icopyright_account);
     }
   }
-
   display_status_update($error_message);
 }
+
 
 /**
  * Given an error message, displays it on the page. If the error message is empty, then an OK message is shown.
@@ -853,8 +841,8 @@ function display_publication_welcome($pid) {
   print '<iframe src="http://info.icopyright.com/welcome-wp.php?pid=' . $pid . '" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>';
   print '<p>';
   print 'Please review the default settings below and make any changes you wish. You may find it helpful to view the ';
-  print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>. ';
-  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank">Conductor</a> ';
+  print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>.';
+  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank">Conductor</a>';
   print 'account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.';
   print '</p>';
   print '</div>';
@@ -974,4 +962,26 @@ function pvalue($parg) {
     print $icopyright_account[$parg];
   }
 }
-	
+
+/**
+ * Given an associative array of settings and results, returns an error message.
+ * Returns NULL if there were no errors.
+ * @param $results array map of setting => icopyright results
+ * @return string message
+ */
+function check_errors($results) {
+  $msg = NULL;
+  $unauthorized = FALSE;
+  foreach($results as $setting => $res) {
+    if(!icopyright_check_response($res)) {
+      $msg .= '<li>Failed to update ' . $setting . ' (' . $res->http_expl . ')</li>';
+      if($res->http_code == 401) $unauthorized = TRUE;
+    }
+  }
+  // Special case: unauthorized so just say that, no need to list everything
+  if($unauthorized) {
+    $msg = '<li>Your email address and password were not accepted, so no changes were made. ' .
+      'Use <em>Advanced Settings</em> below to make changes.</li>';
+  }
+  return $msg;
+}
