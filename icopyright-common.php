@@ -339,17 +339,9 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
 
   // Fetch the respopnse
   $rv = new stdClass();
-  if($fullresponse = curl_exec($rs_ch)) {
-    $rv->response = str_replace('ns0:', '', $fullresponse);
-    // Got a response, but sometimes the response went to the server but is still an error, with the code embedded:
-    // in other words, they return 200 but there's an error message in the payload
-    $xml = @simplexml_load_string($rv->response);
-    $status = $xml->status;
-    $rv->http_code = (string)$status['code'];
-  } else {
-    $rv->response = $fullresponse;
-    $rv->http_code = curl_getinfo($rs_ch, CURLINFO_HTTP_CODE);
-  }
+  $full_response = curl_exec($rs_ch);
+  $rv->response = str_replace('ns0:', '', $full_response);
+  $rv->http_code = curl_getinfo($rs_ch, CURLINFO_HTTP_CODE);
   $responses = array(
     100 => 'Continue', 101 => 'Switching Protocols',
     200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content',
