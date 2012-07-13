@@ -16,7 +16,7 @@ function icopyright_admin() {
   ob_start();
 
   $icopyright_admin = get_option('icopyright_admin');
-  if (empty($check_admin_setting)) {
+  if (empty($icopyright_admin)) {
     icopyright_preregister();
   }
   if (isset($_POST['submitted']) == 'yes-update-me') {
