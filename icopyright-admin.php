@@ -855,7 +855,7 @@ function display_publication_welcome($pid) {
 function check_connectivity() {
   $icopyright_option = get_option('icopyright_admin');
   $icopyright_pubid = $icopyright_option['pub_id'];
-  if(isset($icopyright_pubid)) {
+  if(is_numeric($icopyright_pubid)) {
     $email = get_option('icopyright_conductor_email');
     $password = get_option('icopyright_conductor_password');
     if(!icopyright_ping(ICOPYRIGHT_USERAGENT, $icopyright_pubid, $email, $password)) {
