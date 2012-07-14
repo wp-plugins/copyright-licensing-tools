@@ -342,6 +342,13 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
   $full_response = curl_exec($rs_ch);
   $rv->response = str_replace('ns0:', '', $full_response);
   $rv->http_code = curl_getinfo($rs_ch, CURLINFO_HTTP_CODE);
+  // A 200 code can carry an error message in the payload
+  if($rv->http_code == 200) {
+    $xml = @simplexml_load_string($rv->response);
+    $status = $xml->status;
+    $rv->http_code = (string)$status['code'];
+  }
+
   $responses = array(
     100 => 'Continue', 101 => 'Switching Protocols',
     200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content',
@@ -353,13 +360,6 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
   $rv->curl_errno = curl_errno($rs_ch);
   $rv->curl_error = curl_error($rs_ch);
   curl_close($rs_ch);
-
-  // A 200 code can carry an error message in the payload
-  if($rv->http_code == 200) {
-    $xml = @simplexml_load_string($rv->response);
-    $status = $xml->status;
-    $rv->http_code = (string)$status['code'];
-  }
 
   return $rv;
 }
