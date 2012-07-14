@@ -841,8 +841,8 @@ function display_publication_welcome($pid) {
   print '<iframe src="http://info.icopyright.com/welcome-wp.php?pid=' . $pid . '" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>';
   print '<p>';
   print 'Please review the default settings below and make any changes you wish. You may find it helpful to view the ';
-  print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>.';
-  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank">Conductor</a>';
+  print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>. ';
+  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank">Conductor</a> ';
   print 'account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.';
   print '</p>';
   print '</div>';
@@ -888,31 +888,34 @@ function post_new_publisher() {
   if (icopyright_check_response($rv)) {
     // Success: store the publication ID that got sent as a variable and set up the publication
     $pid = (string)$xml->publication_id;
-    icopyright_set_up_new_publication($pid, $email, $password);
-    icopyright_set_up_new_account($fname, $lname, $pname, $url);
-    display_publication_welcome($pid);
-  } else {
-    // Was there an error, or did the response not even go through?
-    if(empty($xml)) {
-      print '<div id="message" class="updated fade">';
-      print '<p><strong>Sorry! Publication ID Registration Service is not available. This may be due to API server maintenance. Please try again later.</strong></p>';
-      print '</div>';
-    } else {
-      // There was a failure for the post, as in problems with the form field elements
-      print '<div id="message" class="updated fade">';
-      print '<p><strong>The following fields needs your attention</strong></p>';
-      print '<ol>';
-      foreach ($xml->status->messages->message as $error_message) {
-        print '<li>' . $error_message . '</li>';
-      }
-      print '</ol></div>';
-
-      //check terms of agreement box, since the blogger had already checked and posted the form.
-      global $icopyright_tou_checked;
-      $icopyright_tou_checked = 'true';
-      global $show_icopyright_register_form;
-      $show_icopyright_register_form = 'true';
+    if(is_numeric($pid)) {
+      icopyright_set_up_new_publication($pid, $email, $password);
+      icopyright_set_up_new_account($fname, $lname, $pname, $url);
+      display_publication_welcome($pid);
+      return;
     }
+  }
+
+  // Was there an error, or did the response not even go through?
+  if(empty($xml)) {
+    print '<div id="message" class="updated fade">';
+    print '<p><strong>Sorry! Publication ID Registration Service is not available. This may be due to API server maintenance. Please try again later.</strong></p>';
+    print '</div>';
+  } else {
+    // There was a failure for the post, as in problems with the form field elements
+    print '<div id="message" class="updated fade">';
+    print '<p><strong>The following fields needs your attention</strong></p>';
+    print '<ol>';
+    foreach ($xml->status->messages->message as $error_message) {
+      print '<li>' . $error_message . '</li>';
+    }
+    print '</ol></div>';
+
+    //check terms of agreement box, since the blogger had already checked and posted the form.
+    global $icopyright_tou_checked;
+    $icopyright_tou_checked = 'true';
+    global $show_icopyright_register_form;
+    $show_icopyright_register_form = 'true';
   }
 }
 
@@ -947,9 +950,11 @@ function icopyright_preregister() {
     // Success: store the publication ID that got sent as a variable
     $xml = @simplexml_load_string($rv->response);
     $pid = (string)$xml->publication_id;
-    icopyright_set_up_new_publication($pid, $email, $password);
-    icopyright_set_up_new_account($fname, $lname, $pname, $url);
-    display_publication_welcome($pid);
+    if(is_numeric($pid)) {
+      icopyright_set_up_new_publication($pid, $email, $password);
+      icopyright_set_up_new_account($fname, $lname, $pname, $url);
+      display_publication_welcome($pid);
+    }
   }
   // Failure? That's OK, user will be sent to the registration page shortly
 }
