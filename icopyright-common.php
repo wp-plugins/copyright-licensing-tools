@@ -354,5 +354,12 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
   $rv->curl_error = curl_error($rs_ch);
   curl_close($rs_ch);
 
+  // A 200 code can carry an error message in the payload
+  if($rv->http_code == 200) {
+    $xml = @simplexml_load_string($rv->response);
+    $status = $xml->status;
+    $rv->http_code = (string)$status['code'];
+  }
+
   return $rv;
 }
