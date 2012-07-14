@@ -41,6 +41,11 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
 
+= 1.6.1 =
+1. Fix bug in common library for calculation of error code
+2. Do not display confusing welcome message if autoregistration fails
+3. Only test com link if publication has been registered
+
 = 1.6 =
 1. Automatic registration on activation
 2. Form fields to update account information added to admin settings page
