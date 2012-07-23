@@ -43,63 +43,6 @@ function icopyright_admin() {
   <?php settings_fields('icopyright_settings'); ?>
   <?php if(!empty($icopyright_pubid)) {?>
 
-<h3>Account:</h3>
-<p>
-  Indicate below where we should mail your revenue checks.
-</p>
-<table class="form-table">
-  <tbody>
-  <tr align="top">
-    <th scope="row">First Name</th>
-    <td><input type="text" name="icopyright_fname" style="width:150px;" value="<?php echo account_value_for_post('fname') ; ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row">Last Name</th>
-    <td><input type="text" name="icopyright_lname" style="width:150px;" value="<?php echo account_value_for_post('lname'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row">Site Name</th>
-    <td><input type="text" name="icopyright_site_name" style="width:200px;" value="<?php echo account_value_for_post('site_name'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row">Site URL</th>
-    <td><input type="text" name="icopyright_site_url" style="width:200px;" value="<?php echo account_value_for_post('site_url'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row">Address</th>
-    <td><input type="text" name="icopyright_address_line1" style="width:200px;" value="<?php echo account_value_for_post('address_line1'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row"></th>
-    <td><input type="text" name="icopyright_address_line2" style="width:200px;" value="<?php echo account_value_for_post('address_line2'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row"></th>
-    <td><input type="text" name="icopyright_address_line3" style="width:200px;" value="<?php echo account_value_for_post('address_line3'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row">City</th>
-    <td><input type="text" name="icopyright_address_city" style="width:200px;" value="<?php echo account_value_for_post('address_city'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row">State</th>
-    <td><input type="text" name="icopyright_address_state" style="width:50px;" value="<?php echo account_value_for_post('address_state'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row">Country</th>
-    <td><input type="text" name="icopyright_address_country" style="width:50px;" value="<?php echo account_value_for_post('address_country'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row">Postal Code</th>
-    <td><input type="text" name="icopyright_address_postal" style="width:100px;" value="<?php echo account_value_for_post('address_postal'); ?>"/></td>
-  </tr>
-  <tr align="top">
-    <th scope="row">Phone</th>
-    <td><input type="text" name="icopyright_address_phone" style="width:100px;" value="<?php echo account_value_for_post('address_phone'); ?>"/></td>
-  </tr>
-  </tbody>
-</table>
-
 <!--Deployment of iCopyright Toolbar Section Begin -->
 <br/>
 <h3><?php _e('Deployment of iCopyright Toolbar and Interactive Copyright Notice: ')?></h3>

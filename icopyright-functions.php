@@ -7,7 +7,6 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
   //check whether form has been submitted with errors
   //if there is errors change display form to block
   //so as to retain value for user to re-enter form for posting
-
   global $show_icopyright_register_form; // global value found in function icopyright_admin() in icopyright-admin.php
   if ($show_icopyright_register_form == 'true') {
     $display_form = 'style="display:block"';
@@ -89,8 +88,35 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
   echo $form;
 }
 
-
-
+/**
+ * Simple function to create and return the account form.
+ */
+function create_icopyright_account_form() {
+  $rv = '<h3>Account:</h3><p>Indicate below where we should mail your revenue checks.</p>';
+  $rv .= '<table class="form-table"><tbody><tr align="top">';
+  $rv .= make_account_row('First Name',150,'fname');
+  $rv .= make_account_row('Last Name',150,'lname');
+  $rv .= make_account_row('Site Name',200,'site_name');
+  $rv .= make_account_row('Site URL',200,'site_url');
+  $rv .= make_account_row('Address',200,'address_line1');
+  $rv .= make_account_row('',200,'address_line2');
+  $rv .= make_account_row('',200,'address_line3');
+  $rv .= make_account_row('City', 200, 'address_city');
+  $rv .= make_account_row('State', 50, 'address_state');
+  $rv .= make_account_row('Country', 50, 'address_country');
+  $rv .= make_account_row('Postal Code', 100, 'address_postal');
+  $rv .= make_account_row('Phone', 100, 'address_phone');
+  $rv .= '</tbody></table>';
+  return $rv;
+}
+function make_account_row($heading, $width, $field) {
+  $current_value = account_value_for_post($field);
+  $row = '<tr align="top">';
+  $row .= '<th scope="row">' . $heading . '</th>';
+  $row .= "<td><input type=\"text\" name=\"icopyright_${field}\" style=\"width: ${width}px;\" value=\"${current_value}\"/></td>";
+  $row .= '</tr>' . "\n";
+  return $row;
+}
 
 //WordPress Shortcodes to generate tool bars for content
 //functions to generate tool bars, reuseable for auto inclusion or manual inclusion.
