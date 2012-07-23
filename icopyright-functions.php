@@ -92,7 +92,7 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
  * Simple function to create and return the account form.
  */
 function create_icopyright_account_form() {
-  $rv = '<h3>Account:</h3><p>Indicate below where we should mail your revenue checks.</p>';
+  $rv = '<p>Indicate below where we should mail your revenue checks.</p>';
   $rv .= '<table class="form-table"><tbody><tr align="top">';
   $rv .= make_account_row('First Name',150,'fname');
   $rv .= make_account_row('Last Name',150,'lname');
@@ -117,6 +117,21 @@ function make_account_row($heading, $width, $field) {
   $row .= '</tr>' . "\n";
   return $row;
 }
+
+/**
+ * Given an argument that corresponds to an icopyright account variable, either returns the value from the post array
+ * (if possible), or from the iCopyright accounts system variable. This is useful in populating the account form.
+ * @param $parg
+ */
+function account_value_for_post($parg) {
+  if (isset($_POST["icopyright_$parg"]))
+    return stripslashes($_POST["icopyright_$parg"]);
+  else {
+    $icopyright_account = get_option('icopyright_account');
+    return $icopyright_account[$parg];
+  }
+}
+
 
 //WordPress Shortcodes to generate tool bars for content
 //functions to generate tool bars, reuseable for auto inclusion or manual inclusion.
@@ -376,10 +391,10 @@ function icopyright_add_custom_box() {
   if (function_exists('add_meta_box')) {
 
     add_meta_box('icopyright_sectionid', __('iCopyright Custom Field', 'icopyright_textdomain'),
-                 'icopyright_inner_custom_box', 'post', 'normal', 'high');
+      'icopyright_inner_custom_box', 'post', 'normal', 'high');
 
     add_meta_box('icopyright_sectionid', __('iCopyright Custom Field', 'icopyright_textdomain'),
-                 'icopyright_inner_custom_box', 'page', 'normal', 'high');
+      'icopyright_inner_custom_box', 'page', 'normal', 'high');
 
   }
 
@@ -390,7 +405,7 @@ function icopyright_inner_custom_box() {
 
   //Create icopyright_admin_nonce for verification
   echo '<input type="hidden" name="icopyright_noncename" id="icopyright_noncename" value="' .
-       wp_create_nonce('icopyright_admin_nonce') . '" />';
+    wp_create_nonce('icopyright_admin_nonce') . '" />';
 
   global $post;
   $content = $post->ID;
@@ -552,7 +567,7 @@ function icopyright_admin_defaults() {
     'share' => 'yes',
     'categories' => '',
     'use_category_filter' => 'no',
-    );
+  );
 }
 
 /**

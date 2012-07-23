@@ -43,6 +43,11 @@ function icopyright_admin() {
   <?php settings_fields('icopyright_settings'); ?>
   <?php if(!empty($icopyright_pubid)) {?>
 
+  <?php
+  // If there's no address on file yet, put the account form at the very front
+  if(!strlen($icopyright_account['address_line1'])) print '<h3>Account Settings:</h3>' . create_icopyright_account_form();
+  ?>
+
 <!--Deployment of iCopyright Toolbar Section Begin -->
 <br/>
 <h3><?php _e('Deployment of iCopyright Toolbar and Interactive Copyright Notice: ')?></h3>
@@ -389,6 +394,15 @@ function icopyright_admin() {
         jQuery("#toggle_advance_setting").val("Show Advanced Settings")
       }
     );
+    jQuery("#toggle_account_setting").toggle(function(){
+        jQuery("#account_setting").slideDown();
+        jQuery("#toggle_account_setting").val("Hide Account Settings");
+      },
+      function() {
+        jQuery("#account_setting").slideUp();
+        jQuery("#toggle_account_setting").val("Show Account Settings")
+      }
+    );
     jQuery("input.category-radio").change(function() {
       if(jQuery("input.category-radio:checked").val() == "yes") {
         jQuery("#icopyright-category-list").slideDown();
@@ -410,6 +424,18 @@ function icopyright_admin() {
   });
 
 </script>
+
+  <?php
+  // If there's no address on file yet, put the account form at the very front
+  if(strlen($icopyright_account['address_line1']) > 0):
+    ?>
+  <!-- Account Settings Begin -->
+  <h3><?php _e('Account Settings: ')?></h3>
+  <input type="button" id="toggle_account_setting" value="Show Account Settings" style="cursor:pointer">
+  <div id='account_setting' style="display:none">
+    <?php print create_icopyright_account_form() ?>
+  </div>
+    <?php endif; ?>
 
 <!-- Advanced Settings Begin -->
 <h3><?php _e('Advanced Settings: ')?></h3>
@@ -898,20 +924,6 @@ function icopyright_preregister() {
     }
   }
   // Failure? That's OK, user will be sent to the registration page shortly
-}
-
-/**
- * Given an argument that corresponds to an icopyright account variable, either returns the value from the post array
- * (if possible), or from the iCopyright accounts system variable. This is useful in populating the account form.
- * @param $parg
- */
-function account_value_for_post($parg) {
-  if (isset($_POST["icopyright_$parg"]))
-    print stripslashes($_POST["icopyright_$parg"]);
-  else {
-    $icopyright_account = get_option('icopyright_account');
-    print $icopyright_account[$parg];
-  }
 }
 
 /**
