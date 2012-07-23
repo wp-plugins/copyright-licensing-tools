@@ -1,5 +1,5 @@
 === iCopyright Toolbar ===
-Contributors: iCopyright, Inc.  
+Contributors: iCopyright Inc.
 Tags: icopyright, copyright, prints, reprints, eprint, e-print, email, post, republish, share, article tools, monetize, monetization, distribute, distribution, piracy, infringement, syndication, reuse, re-use, advertisement, ads, license, licensing
 Requires at least: 2.9.2
 Tested up to: 3.4.1
@@ -9,7 +9,7 @@ iCopyright adds article tools and an Interactive Copyright Notice to enable shar
 
 == Description ==
 
-The iCopyright Toolbar plugin adds article tools (print, email, share, and republish) and an Interactive Copyright Notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. Use the same solution many of the world's leading publishers use to protect and monetize their content. Automatic registration on activation. By activating the plugin, you indicate agreement with the [terms of use](http://license.icopyright.net/publisher/statichtml/CSA-Online-Plugin.pdf). By iCopyright, Inc.
+The iCopyright Toolbar plugin adds article tools (print, email, share, and republish) and an Interactive Copyright Notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. Use the same solution many of the world's leading publishers use to protect and monetize their content. Automatic registration on activation. By iCopyright Inc.
 
 == Installation ==
 
@@ -26,8 +26,6 @@ The iCopyright Toolbar plugin adds article tools (print, email, share, and repub
    2. Upload copyright-licensing-tools.zip file
    3. Once uploaded, click Activate Plugin link
    4. Configure the plugin through Settings
-
-When you activate the plugin, your site will be registered automatically.
 
 == Frequently Asked Questions ==
 
