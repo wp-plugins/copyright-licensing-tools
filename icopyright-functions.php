@@ -28,50 +28,34 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
 
   //form fields and inputs
   $form = "<div class=\"icopyright_registration\" id=\"icopyright_registration_form\" $display_form>";
-
   $form .= '<form name="icopyright_register_form" id="icopyright_register_form" method="post" action="" onsubmit="return validate_icopyright_form(this)">';
-
   $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
-
   $form .= '<h3>Registration Form</h3><p><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0 0 0 10px;text-decoration:none;">(If you already have a publication ID, click here to enter it under Show Advanced Settings.)</a></p>';
-
   $form .= '<p>If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-setup" target="_blank">help</a>.</p>';
-
   $form .= '<table class="widefat">';
 
   //fname
   $form .= "<tr><td colspan=\"2\"><h2>About You</h2></td></tr>";
   $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>First Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"fname\" id=\"fname\" value=\"$fname\"/></td></tr>";
-
-  //lname
   $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Last Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"lname\" value=\"$lname\"/></td></tr>";
 
-  //auto populate current user email
-  //since version 1.1.4
-
-  if (!isset($email)) { //check if email variable is not set, we use current user email
+  if (!strlen($email)) { //check if email variable is not set, we use current user email
     global $current_user;
     get_currentuserinfo();
     $email = $current_user->user_email;
   }
-
-  //email
   $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Email Address:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" id=\"email\" value=\"$email\"/></td></tr>";
-
-  //password
   $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Password:</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password\" id=\"password\" value=\"$password\"/></td></tr>";
-
-  //pname
   $form .= "<tr><td colspan=\"2\"><h2>About This Site</h2></td></tr>";
 
-  if (!isset($pname)) {
+  if (!strlen($pname)) {
     $pname = get_bloginfo('name');
   }
   $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Site Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"pname\" value=\"$pname\"/></td></tr>";
 
   //auto populate using WordPress site url
   //since version 1.1.4
-  if (!isset($url)) {
+  if (!strlen($url)) {
     $url = get_bloginfo('url') . "/";
   }
   //url
@@ -98,7 +82,7 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
     $form .= "<input type='hidden' name='blog_id' value='$blog_id'/>";
   }
 
-  $form .= '<br/><input type="hidden" name="submitted2" value="yes-post-me"/>
+  $form .= '<br/><input type="hidden" name="submitted2" value="submit-initial-registration"/>
 <input type="submit" name="submit" value="Submit" class="button-primary" id="registersubmit"/>';
   $form .= "</form>";
   $form .= "</div>";

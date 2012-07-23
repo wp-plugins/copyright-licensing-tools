@@ -22,7 +22,7 @@ function icopyright_admin() {
   if (isset($_POST['submitted']) == 'yes-update-me') {
     post_settings();
   }
-  if (isset($_POST['submitted2']) == 'yes-post-me') {
+  if (isset($_POST['submitted2']) == 'submit-initial-registration') {
     post_new_publisher();
   }
   $icopyright_admin = get_option('icopyright_admin');
@@ -51,51 +51,51 @@ function icopyright_admin() {
   <tbody>
   <tr align="top">
     <th scope="row">First Name</th>
-    <td><input type="text" name="icopyright_fname" style="width:150px;" value="<?php echo pvalue('fname') ; ?>"/></td>
+    <td><input type="text" name="icopyright_fname" style="width:150px;" value="<?php echo account_value_for_post('fname') ; ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Last Name</th>
-    <td><input type="text" name="icopyright_lname" style="width:150px;" value="<?php echo pvalue('lname'); ?>"/></td>
+    <td><input type="text" name="icopyright_lname" style="width:150px;" value="<?php echo account_value_for_post('lname'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Site Name</th>
-    <td><input type="text" name="icopyright_site_name" style="width:200px;" value="<?php echo pvalue('site_name'); ?>"/></td>
+    <td><input type="text" name="icopyright_site_name" style="width:200px;" value="<?php echo account_value_for_post('site_name'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Site URL</th>
-    <td><input type="text" name="icopyright_site_url" style="width:200px;" value="<?php echo pvalue('site_url'); ?>"/></td>
+    <td><input type="text" name="icopyright_site_url" style="width:200px;" value="<?php echo account_value_for_post('site_url'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Address</th>
-    <td><input type="text" name="icopyright_address_line1" style="width:200px;" value="<?php echo pvalue('address_line1'); ?>"/></td>
+    <td><input type="text" name="icopyright_address_line1" style="width:200px;" value="<?php echo account_value_for_post('address_line1'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row"></th>
-    <td><input type="text" name="icopyright_address_line2" style="width:200px;" value="<?php echo pvalue('address_line2'); ?>"/></td>
+    <td><input type="text" name="icopyright_address_line2" style="width:200px;" value="<?php echo account_value_for_post('address_line2'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row"></th>
-    <td><input type="text" name="icopyright_address_line3" style="width:200px;" value="<?php echo pvalue('address_line3'); ?>"/></td>
+    <td><input type="text" name="icopyright_address_line3" style="width:200px;" value="<?php echo account_value_for_post('address_line3'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">City</th>
-    <td><input type="text" name="icopyright_address_city" style="width:200px;" value="<?php echo pvalue('address_city'); ?>"/></td>
+    <td><input type="text" name="icopyright_address_city" style="width:200px;" value="<?php echo account_value_for_post('address_city'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">State</th>
-    <td><input type="text" name="icopyright_address_state" style="width:50px;" value="<?php echo pvalue('address_state'); ?>"/></td>
+    <td><input type="text" name="icopyright_address_state" style="width:50px;" value="<?php echo account_value_for_post('address_state'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Country</th>
-    <td><input type="text" name="icopyright_address_country" style="width:50px;" value="<?php echo pvalue('address_country'); ?>"/></td>
+    <td><input type="text" name="icopyright_address_country" style="width:50px;" value="<?php echo account_value_for_post('address_country'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Postal Code</th>
-    <td><input type="text" name="icopyright_address_postal" style="width:100px;" value="<?php echo pvalue('address_postal'); ?>"/></td>
+    <td><input type="text" name="icopyright_address_postal" style="width:100px;" value="<?php echo account_value_for_post('address_postal'); ?>"/></td>
   </tr>
   <tr align="top">
     <th scope="row">Phone</th>
-    <td><input type="text" name="icopyright_address_phone" style="width:100px;" value="<?php echo pvalue('address_phone'); ?>"/></td>
+    <td><input type="text" name="icopyright_address_phone" style="width:100px;" value="<?php echo account_value_for_post('address_phone'); ?>"/></td>
   </tr>
   </tbody>
 </table>
@@ -531,12 +531,12 @@ function icopyright_admin() {
   <?php
   if (empty($icopyright_pubid)) {
     //assign posted values
-    $fname = $_POST['fname'];
-    $lname = $_POST['lname'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $pname = $_POST['pname'];
-    $url = $_POST['url'];
+    $fname = stripslashes($_POST['fname']);
+    $lname = stripslashes($_POST['lname']);
+    $email = stripslashes($_POST['email']);
+    $password = stripslashes($_POST['password']);
+    $pname = stripslashes($_POST['pname']);
+    $url = stripslashes($_POST['url']);
     create_icopyright_register_form($fname, $lname, $email,$password,$pname,$url);
   }
 
@@ -872,25 +872,23 @@ function check_connectivity() {
  * Posts the new publisher (registration) form
  */
 function post_new_publisher() {
-  //assign posted values
-  $fname = $_POST['fname'];
-  $lname = $_POST['lname'];
-  $email = $_POST['email'];
-  $password = $_POST['password'];
-  $pname = $_POST['pname'];
-  $url = $_POST['url'];
-
-  //create post data string
-  $postdata = "fname=$fname&lname=$lname&email=$email&password=$password&pname=$pname&url=$url";
-  $useragent = ICOPYRIGHT_USERAGENT;
-  $rv = icopyright_post_new_publisher($postdata, $useragent, $email, $password);
+  $post = array(
+    'fname' => $_POST['fname'],
+    'lname' => $_POST['lname'],
+    'email' => $_POST['email'],
+    'password' => $_POST['password'],
+    'pname' => $_POST['pname'],
+    'url' => $_POST['url'],
+  );
+  $postdata = http_build_query($post);
+  $rv = icopyright_post_new_publisher($postdata, ICOPYRIGHT_USERAGENT, $post['email'], $post['password']);
   $xml = @simplexml_load_string($rv->response);
   if (icopyright_check_response($rv)) {
     // Success: store the publication ID that got sent as a variable and set up the publication
     $pid = (string)$xml->publication_id;
     if(is_numeric($pid)) {
-      icopyright_set_up_new_publication($pid, $email, $password);
-      icopyright_set_up_new_account($fname, $lname, $pname, $url);
+      icopyright_set_up_new_publication($pid, $post['email'], $post['password']);
+      icopyright_set_up_new_account($post['fname'], $post['lname'], $post['pname'], $post['url']);
       display_publication_welcome($pid);
       return;
     }
@@ -959,9 +957,14 @@ function icopyright_preregister() {
   // Failure? That's OK, user will be sent to the registration page shortly
 }
 
-function pvalue($parg) {
+/**
+ * Given an argument that corresponds to an icopyright account variable, either returns the value from the post array
+ * (if possible), or from the iCopyright accounts system variable. This is useful in populating the account form.
+ * @param $parg
+ */
+function account_value_for_post($parg) {
   if (isset($_POST["icopyright_$parg"]))
-    print $_POST["icopyright_$parg"];
+    print stripslashes($_POST["icopyright_$parg"]);
   else {
     $icopyright_account = get_option('icopyright_account');
     print $icopyright_account[$parg];
