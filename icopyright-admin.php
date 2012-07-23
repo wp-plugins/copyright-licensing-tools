@@ -8,6 +8,14 @@ add_action('admin_init', 'register_icopyright_options_parameter');
 //create admin settings page
 function icopyright_admin() {
 
+  $icopyright_admin = get_option('icopyright_admin');
+  $icopyright_pubid = $icopyright_admin['pub_id'];
+
+  if (!isset($_POST['tou']) && empty($icopyright_admin)) {
+    // User is just starting out; show him the terms of use form
+    print create_icopyright_tou_form(); return;
+  }
+
   // This page can be slow, so give a status message
   ob_implicit_flush(TRUE);
   ob_end_flush();
@@ -15,9 +23,12 @@ function icopyright_admin() {
   print '<h2 id="wait">Please wait...</h2>';
   ob_start();
 
-  $icopyright_admin = get_option('icopyright_admin');
-  if (empty($icopyright_admin)) {
+  if (isset($_POST['tou']) && isset($_POST['accept-tou']) && empty($icopyright_pubid)) {
+    // User accepted the TOU so mark it as such, and then preregister
+    $icopyright_admin['tou_accepted'] = TRUE;
+    update_option('icopyright_admin', $icopyright_admin);
     icopyright_preregister();
+    print '<pre>' . print_r($_POST, TRUE) . '</pre>';
   }
   if (isset($_POST['submitted']) == 'yes-update-me') {
     post_settings();
@@ -25,11 +36,9 @@ function icopyright_admin() {
   if (isset($_POST['submitted2']) == 'submit-initial-registration') {
     post_new_publisher();
   }
-  $icopyright_admin = get_option('icopyright_admin');
   $icopyright_account = get_option('icopyright_account');
   $icopyright_conductor_email = get_option('icopyright_conductor_email');
   $icopyright_conductor_password = get_option('icopyright_conductor_password');
-  $icopyright_pubid = $icopyright_admin['pub_id'];
   ?>
 
 	<div class="wrap" id="noneedtohide" style="display:none;" >
@@ -543,33 +552,6 @@ function icopyright_admin_scripts() {
   ?>
 <!-- icopyright admin javascript -->
 <script type="text/javascript">
-
-  //version 1.1.2
-  //added form validation for email and password in addition to tou validation
-  function validate_icopyright_form() {
-
-    var error_message = '';
-
-    //validate tou
-
-    if( !document.getElementById('tou').checked ) {
-      error_message += '<li>Terms of Use: You need to agree to the Terms of Use, before submitting for registration. You may view the terms <a href="<?php echo $icopyright_pdf_url; ?>" target="_blank">here.</a></li>';
-    }
-
-    if( error_message != '' ) {
-      document.getElementById('register_error_message').innerHTML = '<strong><p>The following fields needs your attention</p></strong><ol>'+error_message+'</ol>';
-      document.getElementById('register_error_message').style.display='block';
-      return false;
-    } else {
-      document.getElementById('register_error_message').style.display='none';
-
-      /* 2012.3.8 Begin */
-      document.getElementById('registersubmit').disabled = true;
-      /* 2012.3.8 End */
-
-      return true;
-    }
-  }
 
   function show_icopyright_form() {
     document.getElementById('icopyright_registration_form').style.display='block';

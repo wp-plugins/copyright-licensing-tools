@@ -1,6 +1,27 @@
 <?php
 //This file contains functions of icopyright plugin
 
+function create_icopyright_tou_form() {
+  //check if curl is loaded, if not display message and hide registration form.
+  $loaded_extension = get_loaded_extensions();
+  if (!in_array("curl", $loaded_extension)) {
+    print '<div id="curl_notice" class="updated fade"><p>A PHP extension (cURL extension), which is needed for this plugin to work, is not installed.</p></div>';
+    die();
+  }
+
+  //form fields and inputs
+  $form = '<div class="icopyright_tou" id="icopyright_tou">';
+  $form .= '<form name="icopyright_tou_form" id="icopyright_tou_form" method="post" action="" onsubmit="return validate_icopyright_form(this)">';
+  $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
+  $form .= '<h3>Accept Terms of Use</h3>';
+  $form .= '<p>To use this plugin, you must accept the <a href="' . ICOPYRIGHT_URL . 'publisher/statichtml/CSA-Online-Plugin.pdf" target="_blank">terms of use</a>.</p>';
+  $form .= '<input id="tou" name="tou" type="checkbox" value="true">&nbsp; I accept the terms of use.</input><br/><br/>';
+  $form .= '<input type="submit" name="accept-tou" value="Submit" class="button-primary"/>';
+  $form .= "</form>";
+  $form .= "</div>";
+  echo $form;
+}
+
 //function to dynamically create registration form!
 function create_icopyright_register_form($fname, $lname, $email, $password, $pname, $url) {
 
@@ -14,20 +35,9 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
     $display_form = 'style="display:none"';
   }
 
-  //check if curl is loaded, if not display message and hide registration form.
-  $loaded_extension = get_loaded_extensions();
-  if (!in_array("curl", $loaded_extension)) {
-    echo "<div id='curl_notice' class='updated fade'><p>A PHP extension ( cURL extension ), which is needed for our Registration Form to work, is not installed by your Hosting Provider. You will need to request for a Publication Id <a href='http://info.icopyright.com/publishers-sign-in-sign-up' target='_blank'>here.</a><a href='#' onclick='document.getElementById(\"curl_notice\").style.display=\"none\";document.getElementById(\"icopyright_option\").style.display=\"block\";' style='font-size:12px;text-decoration:none;'>(If you already have a publication ID, click here to enter and save it under Show Advanced Settings.)</a></p></div>";
-    $initial_js = "<script type=\"text/javascript\">\n";
-    $initial_js .= "document.getElementById('icopyright_option').style.display='none';";
-    $initial_js .= "</script>\n";
-    echo $initial_js;
-    die();
-  }
-
   //form fields and inputs
   $form = "<div class=\"icopyright_registration\" id=\"icopyright_registration_form\" $display_form>";
-  $form .= '<form name="icopyright_register_form" id="icopyright_register_form" method="post" action="" onsubmit="return validate_icopyright_form(this)">';
+  $form .= '<form name="icopyright_register_form" id="icopyright_register_form" method="post">';
   $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
   $form .= '<h3>Registration Form</h3><p><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0 0 0 10px;text-decoration:none;">(If you already have a publication ID, click here to enter it under Show Advanced Settings.)</a></p>';
   $form .= '<p>If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-setup" target="_blank">help</a>.</p>';
@@ -60,20 +70,7 @@ function create_icopyright_register_form($fname, $lname, $email, $password, $pna
   //url
   $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Site Address (URL):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"url\" value=\"$url\"/></td></tr>";
 
-  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Terms of Use:</label></td><td>I agree with the<a href='";
-  $form .= ICOPYRIGHT_URL . "publisher/statichtml/CSA-Online-Plugin.pdf";
-  $form .= "' target='_blank'> terms of use.</a> <input id=\"tou\" name=\"tou\" type=\"checkbox\" value=\"true\" style='border:none;'";
-
-  //get global value to determine whether form has been posted before.
-  //if true, we will check the checkbox.
-  //global variable set in icopyright-admin.php line 103
-  global $icopyright_tou_checked;
-  if ($icopyright_tou_checked == 'true') {
-    $form .= "checked=yes></td></tr>";
-  } else {
-    $form .= "></td></tr>";
-  }
-  $form .= '</table>';
+  $form .= '</td></tr></table>';
 
   //If this is multisite we post in blog id for feed as hidden variable.
   if (is_multisite()) {
