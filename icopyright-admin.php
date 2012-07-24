@@ -9,8 +9,6 @@ add_action('admin_init', 'register_icopyright_options_parameter');
 function icopyright_admin() {
 
   $icopyright_admin = get_option('icopyright_admin');
-  $icopyright_pubid = $icopyright_admin['pub_id'];
-
   if (!isset($_POST['tou']) && empty($icopyright_admin)) {
     // User is just starting out; show him the terms of use form
     print create_icopyright_tou_form(); return;
@@ -23,12 +21,12 @@ function icopyright_admin() {
   print '<h2 id="wait">Please wait...</h2>';
   ob_start();
 
+  $icopyright_pubid = $icopyright_admin['pub_id'];
   if (isset($_POST['tou']) && isset($_POST['accept-tou']) && empty($icopyright_pubid)) {
     // User accepted the TOU so mark it as such, and then preregister
     $icopyright_admin['tou_accepted'] = TRUE;
     update_option('icopyright_admin', $icopyright_admin);
     icopyright_preregister();
-    print '<pre>' . print_r($_POST, TRUE) . '</pre>';
   }
   if (isset($_POST['submitted']) == 'yes-update-me') {
     post_settings();
@@ -36,9 +34,13 @@ function icopyright_admin() {
   if (isset($_POST['submitted2']) == 'submit-initial-registration') {
     post_new_publisher();
   }
+
+  // Do a full load up of the settings for below
   $icopyright_account = get_option('icopyright_account');
   $icopyright_conductor_email = get_option('icopyright_conductor_email');
   $icopyright_conductor_password = get_option('icopyright_conductor_password');
+  $icopyright_admin = get_option('icopyright_admin');
+  $icopyright_pubid = $icopyright_admin['pub_id'];
   ?>
 
 	<div class="wrap" id="noneedtohide" style="display:none;" >
