@@ -209,7 +209,9 @@ function icopyright_interactive_notice() {
   //construct copyright notice
   $publish_date = $post->post_date;
   $date = explode('-', $publish_date);
-  $icx_copyright = "Copyright " . $date['0'] . " " . get_bloginfo();
+  $account_option = get_option('icopyright_account');
+  $pname = addslashes(empty($account_option['site_name']) ? get_bloginfo() : $account_option['site_name']);
+  $icx_copyright = "Copyright " . $date['0'] . " $pname";
 
   $server = icopyright_get_server();
 

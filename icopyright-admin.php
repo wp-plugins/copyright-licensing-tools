@@ -389,7 +389,10 @@ function icopyright_admin() {
         themeName: theme,
         background: background,
         publicationId: publication,
-        publicationName: '<?php print get_bloginfo() ?>'});
+        publicationName: '<?php
+          $account_option = get_option('icopyright_account');
+          print addslashes(empty($account_option['site_name']) ? get_bloginfo() : $account_option['site_name']);
+          ?>'});
     jQuery('#copyright-notice-preview').attr('src', noticeUrl);
   }
 
