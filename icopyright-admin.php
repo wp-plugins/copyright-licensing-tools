@@ -826,12 +826,12 @@ function check_connectivity() {
  */
 function post_new_publisher() {
   $post = array(
-    'fname' => $_POST['fname'],
-    'lname' => $_POST['lname'],
-    'email' => $_POST['email'],
-    'password' => $_POST['password'],
-    'pname' => $_POST['pname'],
-    'url' => $_POST['url'],
+    'fname' => stripslashes($_POST['fname']),
+    'lname' => stripslashes($_POST['lname']),
+    'email' => stripslashes($_POST['email']),
+    'password' => stripslashes($_POST['password']),
+    'pname' => stripslashes($_POST['pname']),
+    'url' => stripslashes($_POST['url']),
   );
   $postdata = http_build_query($post);
   $rv = icopyright_post_new_publisher($postdata, ICOPYRIGHT_USERAGENT, $post['email'], $post['password']);
