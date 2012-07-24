@@ -13,10 +13,10 @@ function create_icopyright_tou_form() {
   $form = '<div class="icopyright_tou" id="icopyright_tou">';
   $form .= '<form name="icopyright_tou_form" id="icopyright_tou_form" method="post" action="" onsubmit="return validate_icopyright_form(this)">';
   $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
-  $form .= '<h3>Accept Terms of Use</h3>';
-  $form .= '<p>To use this plugin, you must accept the <a href="' . ICOPYRIGHT_URL . 'publisher/statichtml/CSA-Online-Plugin.pdf" target="_blank">terms of use</a>.</p>';
-  $form .= '<input id="tou" name="tou" type="checkbox" value="true">&nbsp; I accept the terms of use.</input><br/><br/>';
-  $form .= '<input type="submit" name="accept-tou" value="Submit" class="button-primary"/>';
+  $form .= '<h3>iCopyright Toolbar</h3>';
+  $form .= '<p>I accept the <a href="' . ICOPYRIGHT_URL . 'publisher/statichtml/CSA-Online-Plugin.pdf" target="_blank">terms of use</a>.</p>';
+  $form .= '<input id="tou" name="tou" type="hidden" value="true"/>';
+  $form .= '<input type="submit" name="accept-tou" value="Agree" class="button-primary"/>';
   $form .= "</form>";
   $form .= "</div>";
   echo $form;
