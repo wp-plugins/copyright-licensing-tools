@@ -18,14 +18,16 @@ The iCopyright Toolbar plugin adds article tools (print, email, share, and repub
    1. Click 'Install Now' in search results row
    2. Click 'OK' to accept plugin installation
    3. Once installed, click Activate Plugin link
-   4. Configure the plugin through Settings
+   4. Click Accept to indicate acceptance of terms of use
+   5. Configure the plugin through Settings
 
 = or, install Plugin in .ZIP Format =
 
    1. Visit Plugins > Add New > Upload in WordPress admin
    2. Upload copyright-licensing-tools.zip file
    3. Once uploaded, click Activate Plugin link
-   4. Configure the plugin through Settings
+   4. Click Accept to indicate acceptance of terms of use
+   5. Configure the plugin through Settings
 
 == Frequently Asked Questions ==
 
