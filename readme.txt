@@ -41,6 +41,13 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
 
+= 1.6.2 =
+1. Allow users to update address from plugins page
+2. More explicit terms of use OK
+3. Add warning message if iCopyright system cannot communicate with plugin
+4. Use site name from iCopyright settings for interactive copyright notice
+5. Minor bug fixes
+
 = 1.6.1 =
 1. Fix bug in common library for calculation of error code
 2. Do not display confusing welcome message if autoregistration fails
