@@ -61,15 +61,16 @@ function icopyright_admin() {
 
 <!--Deployment of iCopyright Toolbar Section Begin -->
 <br/>
-<h3><?php _e('Deployment of iCopyright Toolbar and Interactive Copyright Notice: ')?></h3>
 <p>
   The following settings will determine how the iCopyright Toolbar and Interactive Copyright Notice appear on your content pages. If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress" target="_blank">help</a>.
 </p>
 
+<h3><?php _e('Deployment Mechanism: ')?></h3>
+
 <table class="form-table">
   <tbody>
   <tr align="top">
-    <th scope="row">Deployment Mechanism</th>
+    <th scope="row">&nbsp;</th>
     <td>
       <fieldset>
         <input name="icopyright_display" type="radio" value="auto"  onclick="hide_manual_option()" <?php $icopyright_display = $icopyright_admin['display']; if(empty($icopyright_display)||$icopyright_display=="auto"){echo "checked";}?> />
