@@ -486,7 +486,7 @@ function icopyright_admin() {
     </tr>
     <tr valign="top">
       <th scope="row">Conductor Feed URL</th>
-      <td><input type="text" name="icopyright_feed_url" style="width:300px;"
+      <td><input type="text" name="icopyright_feed_url" style="width:500px;"
                  value="<?php echo (isset($icopyright_admin['feed_url']) ? $icopyright_admin['feed_url'] : icopyright_get_default_feed_url()); ?>"/></td>
     </tr>
   </table>
