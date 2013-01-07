@@ -100,17 +100,19 @@ function create_icopyright_account_form() {
   $rv .= make_account_row('',200,'address_line3');
   $rv .= make_account_row('City', 200, 'address_city');
   $rv .= make_account_row('State', 50, 'address_state');
-  $rv .= make_account_row('Country', 50, 'address_country');
+  $rv .= make_account_row('Country', 50, 'address_country', 2);
   $rv .= make_account_row('Postal Code', 100, 'address_postal');
   $rv .= make_account_row('Phone', 100, 'address_phone');
   $rv .= '</tbody></table>';
   return $rv;
 }
-function make_account_row($heading, $width, $field) {
+function make_account_row($heading, $width, $field, $max = NULL) {
   $current_value = account_value_for_post($field);
   $row = '<tr align="top">';
   $row .= '<th scope="row">' . $heading . '</th>';
-  $row .= "<td><input type=\"text\" name=\"icopyright_${field}\" style=\"width: ${width}px;\" value=\"${current_value}\"/></td>";
+  $row .= "<td><input type=\"text\" name=\"icopyright_${field}\" style=\"width: ${width}px;\" ";
+  if(is_numeric($max)) $row .= "maxlength=\"$max\" size=\"$max\" ";
+  $row .= "value=\"${current_value}\"/></td>";
   $row .= '</tr>' . "\n";
   return $row;
 }
