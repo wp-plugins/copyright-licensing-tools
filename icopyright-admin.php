@@ -498,18 +498,17 @@ function icopyright_admin() {
   <input type="hidden" name="submitted" value="yes-update-me"/>
   <input type="submit" name="submit" value="Save Settings" class="button-primary"/>
 </p>
-<br />
-
-<!--visit conductor link-->
-  <?php if(!empty($icopyright_pubid )) { ?>
-<p>
-  <strong><a href="<?php echo ICOPYRIGHT_URL.'publisher/';?>" target="_blank"><?php _e('Log in to Conductor')?></a> to enable additional services, adjust further settings, and view usage reports.</strong>
-</p>
-<br/>
-  <?php } ?>
-
 </form>
 <br />
+
+<?php if(!empty($icopyright_pubid)) { ?>
+<h1>Enter my Conductor Console</h1>
+<?php print build_login_link('acidIndex.act', 'Search for Infringers'); ?>
+<?php print build_login_link('serviceGroups.act', 'Modify Services & Prices'); ?>
+<?php print build_login_link('publisherReports.act', 'View Reports'); ?>
+<?php print build_login_link('contentSyndicationFeedWizard.act', 'Subscribe to Syndication Feeds'); ?>
+<?php } ?>
+
 </div><!--end icopyright_option -->
 
   <?php
@@ -936,3 +935,22 @@ function check_errors($results) {
   }
   return $msg;
 }
+
+/**
+ * Builds a login link which, when pushed, will automatically log the user into WP. Password is
+ * sensitive so we include it here.
+ * @param $page string the page to direct to
+ * @param $text string the text to display
+ * @return string the HTML for the form
+ */
+function build_login_link($page, $text) {
+  $options = get_option('icopyright_admin');
+  $rv = '<form action="' . icopyright_get_server(TRUE) . '/publisher/signin.act" method="POST" name="signin">' . "\n";
+  $rv .= '  <input type="hidden" name="_publication" value="' . $options['pub_id'] . '">' . "\n";
+  $rv .= '  <input type="hidden" name="email" value="' . get_option('icopyright_conductor_email') . '">' . "\n";
+  $rv .= '  <input type="hidden" name="password" value="' . get_option('icopyright_conductor_password') . '">' . "\n";
+  $rv .= '  <input type="hidden" name="ru" value="' . $page . '">' . "\n";
+  $rv .= '  <input type="submit" name="signin" value="' . $text . '">'. "\n</form>\n";
+  return $rv;
+}
+
