@@ -551,7 +551,7 @@ function icopyright_admin_scripts() {
   #icopyright-logo	{ width:30px; height:30px; background-image:url('<?php echo ICOPYRIGHT_PLUGIN_URL; ?>/images/icopyright-logo.png'); background-repeat:no-repeat; }
   #icopyright-show-when td { padding: 0; }
   .awesome {
-    background: #21759B;
+    background: #666666;
     display: inline-block;
     padding: 5px 10px 6px;
     width: 120px; height: 60px;
@@ -561,8 +561,8 @@ function icopyright_admin_scripts() {
     line-height: 1.4;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    -moz-box-shadow: 0 1px 3px #1E6A8D;
-    -webkit-box-shadow: 0 1px 3px #1E6A8D;
+    -moz-box-shadow: 0 1px 3px #999;
+    -webkit-box-shadow: 0 1px 3px #999;
     text-shadow: 0 -1px 1px #222;
     border-bottom: 1px solid #222;
     position: relative;
