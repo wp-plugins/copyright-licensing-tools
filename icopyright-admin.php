@@ -502,13 +502,13 @@ function icopyright_admin() {
 <br />
 
 <?php if(!empty($icopyright_pubid)) { ?>
-<h1>Enter my Conductor Console</h1>
+<h2>Enter my Conductor Console</h2>
 <?php print build_login_link('acidIndex.act', 'Search for Infringers'); ?>
 <?php print build_login_link('serviceGroups.act', 'Modify Services & Prices'); ?>
 <?php print build_login_link('publisherReports.act', 'View Reports'); ?>
 <?php print build_login_link('contentSyndicationFeedWizard.act', 'Subscribe to Syndication Feeds'); ?>
+  <div style="clear:both;"></div><br/>
 <?php } ?>
-
 </div><!--end icopyright_option -->
 
   <?php
@@ -541,7 +541,7 @@ add_action('admin_menu', 'icopyright_admin_menu');
 //function to generate icopyright admin scripts
 function icopyright_admin_scripts() {
   ?>
-<!-- icopyright admin css -->
+<!-- icopyright admin css; thanks http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba -->
 <style type="text/css">
   .widefat	{ background: none; }
   .widefat tr td	{ border: none; height: 20px; }
@@ -550,6 +550,27 @@ function icopyright_admin_scripts() {
   .widefat tr.odd { background-color: #fff; }
   #icopyright-logo	{ width:30px; height:30px; background-image:url('<?php echo ICOPYRIGHT_PLUGIN_URL; ?>/images/icopyright-logo.png'); background-repeat:no-repeat; }
   #icopyright-show-when td { padding: 0; }
+  .awesome {
+    background: #21759B;
+    display: inline-block;
+    padding: 5px 10px 6px;
+    width: 120px; height: 60px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1.4;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 1px 3px #1E6A8D;
+    -webkit-box-shadow: 0 1px 3px #1E6A8D;
+    text-shadow: 0 -1px 1px #222;
+    border-bottom: 1px solid #222;
+    position: relative;
+    white-space: normal;
+    cursor: pointer;
+    float: left;
+    margin-right: 30px;
+  }
 </style>
 
   <?php
@@ -950,7 +971,7 @@ function build_login_link($page, $text) {
   $rv .= '  <input type="hidden" name="email" value="' . get_option('icopyright_conductor_email') . '">' . "\n";
   $rv .= '  <input type="hidden" name="password" value="' . get_option('icopyright_conductor_password') . '">' . "\n";
   $rv .= '  <input type="hidden" name="ru" value="' . $page . '">' . "\n";
-  $rv .= '  <input type="submit" name="signin" value="' . $text . '">'. "\n</form>\n";
+  $rv .= '  <input class="awesome" type="submit" name="signin" value="' . $text . '">'. "\n</form>\n";
   return $rv;
 }
 
