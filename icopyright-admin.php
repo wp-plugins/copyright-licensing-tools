@@ -143,7 +143,7 @@ function icopyright_admin() {
         <input name="icopyright_tools" type="radio" value="vertical" <?php if($icopyright_tools=="vertical"){echo "checked";}?> />
         <iframe id="vertical-article-tools-preview" style="border: 0;" scrolling="no" height="130" width="100"></iframe>
         <input name="icopyright_tools" type="radio" value="onebutton" <?php if($icopyright_tools=="onebutton"){echo "checked";}?> />
-        <iframe id="onebutton-article-tools-preview" style="border: 0;" scrolling="no" height="50" width="100"></iframe>
+        <iframe id="onebutton-article-tools-preview" style="border: 0;" scrolling="no" height="250" width="200"></iframe>
       </fieldset>
     </td>
   </tr>
@@ -374,7 +374,6 @@ function icopyright_admin() {
   // Function to update the previews with what the toolbars will look like with these settings
   function toolbarTouch() {
     if('<?php print $icopyright_admin['pub_id']; ?>' == '') return;
-    var orient = (jQuery('input:radio[name=icopyright_tools]:checked').val() == 'horizontal' ? 'horz' : 'vert');
     var theme = jQuery('#icopyright_article_tools_theme').val();
     var background = jQuery('input:radio[name=icopyright_background]:checked').val();
     var publication = '<?php print $icopyright_admin['pub_id']; ?>';
@@ -396,9 +395,9 @@ function icopyright_admin() {
         jQuery.param({
           theme: theme,
           background: background,
-          orientation: 'onebutton',
+          orientation: 'one-button',
           publication: publication});
-    jQuery('#onebutton-article-tools-preview').attr('src', url_v);
+    jQuery('#onebutton-article-tools-preview').attr('src', url_o);
     var noticeUrl = '<?php print icopyright_get_server() ?>/publisher/copyright-preview.jsp?' +
       jQuery.param({
         themeName: theme,
