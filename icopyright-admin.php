@@ -135,31 +135,15 @@ function icopyright_admin() {
 <table class="form-table">
   <tbody>
   <tr valign="top">
-    <th scope="row">Alignment</th>
-    <td>
-      <fieldset>
-        <input name="icopyright_align" type="radio" value="left" <?php $icopyright_align = $icopyright_admin['align']; if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> /> <?php _e('Left')?>
-        <br/>
-        <input name="icopyright_align" type="radio" value="right" <?php $icopyright_align = $icopyright_admin['align'];if($icopyright_align=="right"){echo "checked";}?> /> <?php _e('Right')?>
-      </fieldset>
-    </td>
-    <td rowspan="4">
-      <span class="description">Preview of Toolbar and Interactive Copyright Notice</span>
-      <fieldset style="height:140px;">
-        <iframe id="article-tools-preview" style="border: 0;" scrolling="no" ></iframe>
-      </fieldset>
-      <fieldset>
-        <iframe id="copyright-notice-preview" style="border: 0;" height="50" scrolling="no" ></iframe>
-      </fieldset>
-    </td>
-  </tr>
-  <tr valign="top">
-    <th scope="row">Orientation</th>
-    <td>
-      <fieldset>
-        <input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_admin['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> /> <?php _e('Horizontal')?>
-        <br/>
-        <input name="icopyright_tools" type="radio" value="vertical" <?php if($icopyright_tools=="vertical"){echo "checked";}?> /> <?php _e('Vertical')?>
+    <th scope="row">Toolbar Format</th>
+    <td valign="top">
+      <fieldset id="toolbar-format">
+        <input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = $icopyright_admin['tools']; if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> />
+        <iframe id="horizontal-article-tools-preview" style="border: 0;" scrolling="no" height="53" width="300"></iframe>
+        <input name="icopyright_tools" type="radio" value="vertical" <?php if($icopyright_tools=="vertical"){echo "checked";}?> />
+        <iframe id="vertical-article-tools-preview" style="border: 0;" scrolling="no" height="130" width="100"></iframe>
+        <input name="icopyright_tools" type="radio" value="onebutton" <?php if($icopyright_tools=="onebutton"){echo "checked";}?> />
+        <iframe id="onebutton-article-tools-preview" style="border: 0;" scrolling="no" height="50" width="100"></iframe>
       </fieldset>
     </td>
   </tr>
@@ -188,6 +172,24 @@ function icopyright_admin() {
         <input name="icopyright_background" type="radio" value="OPAQUE" <?php $icopyright_background = $icopyright_admin['background']; if(empty($icopyright_background)||$icopyright_background=="OPAQUE"){echo "checked";}?> /> <?php _e('Opaque')?>
         <br/>
         <input name="icopyright_background" type="radio" value="TRANSPARENT" <?php if($icopyright_background=="TRANSPARENT"){echo "checked";}?> /> <?php _e('Transparent')?>
+      </fieldset>
+    </td>
+  </tr>
+  <tr valign="top">
+    <th scope="row">Alignment</th>
+    <td>
+      <fieldset>
+        <input name="icopyright_align" type="radio" value="left" <?php $icopyright_align = $icopyright_admin['align']; if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> /> <?php _e('Left')?>
+        <br/>
+        <input name="icopyright_align" type="radio" value="right" <?php $icopyright_align = $icopyright_admin['align'];if($icopyright_align=="right"){echo "checked";}?> /> <?php _e('Right')?>
+      </fieldset>
+    </td>
+  </tr>
+  <tr valign="top">
+    <th scope="row">Preview of Interactive Copyright Notice (displayed below articles)</th>
+    <td>
+      <fieldset>
+        <iframe id="copyright-notice-preview" style="border: 0;" height="50" scrolling="no" ></iframe>
       </fieldset>
     </td>
   </tr>
@@ -376,15 +378,27 @@ function icopyright_admin() {
     var theme = jQuery('#icopyright_article_tools_theme').val();
     var background = jQuery('input:radio[name=icopyright_background]:checked').val();
     var publication = '<?php print $icopyright_admin['pub_id']; ?>';
-    var url = '<?php print icopyright_get_server() ?>/publisher/TouchToolbar.act?' +
+    var url_h = '<?php print icopyright_get_server() ?>/publisher/TouchToolbar.act?' +
       jQuery.param({
         theme: theme,
         background: background,
-        orientation: orient,
+        orientation: 'horz',
         publication: publication});
-    jQuery('#article-tools-preview').attr('src', url);
-    jQuery('#article-tools-preview').attr('height', (orient == 'horz' ? 53 : 130));
-    jQuery('#article-tools-preview').attr('width', (orient == 'horz' ? 300 : 100));
+    jQuery('#horizontal-article-tools-preview').attr('src', url_h);
+    var url_v = '<?php print icopyright_get_server() ?>/publisher/TouchToolbar.act?' +
+        jQuery.param({
+          theme: theme,
+          background: background,
+          orientation: 'vert',
+          publication: publication});
+    jQuery('#vertical-article-tools-preview').attr('src', url_v);
+    var url_o = '<?php print icopyright_get_server() ?>/publisher/TouchToolbar.act?' +
+        jQuery.param({
+          theme: theme,
+          background: background,
+          orientation: 'onebutton',
+          publication: publication});
+    jQuery('#onebutton-article-tools-preview').attr('src', url_v);
     var noticeUrl = '<?php print icopyright_get_server() ?>/publisher/copyright-preview.jsp?' +
       jQuery.param({
         themeName: theme,
@@ -431,9 +445,6 @@ function icopyright_admin() {
       toolbarTouch();
     });
     jQuery('input:radio[name=icopyright_background]').change(function () {
-      toolbarTouch();
-    });
-    jQuery('input:radio[name=icopyright_tools]').change(function () {
       toolbarTouch();
     });
   });
@@ -550,6 +561,8 @@ function icopyright_admin_scripts() {
   .widefat tr.odd { background-color: #fff; }
   #icopyright-logo	{ width:30px; height:30px; background-image:url('<?php echo ICOPYRIGHT_PLUGIN_URL; ?>/images/icopyright-logo.png'); background-repeat:no-repeat; }
   #icopyright-show-when td { padding: 0; }
+  #toolbar-format input { vertical-align: top; }
+  #toolbar-format iframe { vertical-align: top; margin-top: -10px;}
   .awesome {
     background: #666666;
     display: inline-block;
