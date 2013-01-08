@@ -136,28 +136,33 @@ function account_value_for_post($parg) {
 //functions to generate tool bars, reuseable for auto inclusion or manual inclusion.
 //Admin option to select toolbars and change auto to manual display
 
-//Generate Horizontal Toolbar from hosted script or directy
-function icopyright_horizontal_toolbar() {
-  if(!icopyright_post_passes_filters())
-    return;
-
+// Returns the common prefix for all the toolbars
+function icopyright_toolbar_common($comment, $script) {
   global $post;
   $post_id = $post->ID;
   $admin_option = get_option('icopyright_admin');
   $pub_id_no = $admin_option['pub_id'];
 
   // Build up the toolbar piece by piece
-  $toolbar = "\n<!-- iCopyright Horizontal Article Toolbar -->\n";
+  $toolbar = "\n<!-- iCopyright $comment Article Toolbar -->\n";
   $toolbar .= "<script type=\"text/javascript\">\n";
   $toolbar .= "var icx_publication_id = $pub_id_no;\n";
-  $toolbar .= "var icx_content_id = '$post_id';\n";
+  $toolbar .= "var icx_content_id = $post_id;\n";
   $toolbar .= "</script>\n";
-  $toolbar_script_url = ICOPYRIGHT_URL . 'rights/js/horz-toolbar.js'; //ICOPYRIGHT_URL constant defined in icopyright.php
+  $toolbar_script_url = ICOPYRIGHT_URL . "rights/js/$script"; //ICOPYRIGHT_URL constant defined in icopyright.php
   $toolbar .= "<script type=\"text/javascript\" src=\"$toolbar_script_url\"></script>\n";
-  $toolbar .= "<!--End of iCopyright Horizontal Article Toolbar -->\n";
+  $toolbar .= "<!-- End of iCopyright $comment Article Toolbar -->\n";
+  return $toolbar;
+}
 
+//Generate Horizontal Toolbar from hosted script
+function icopyright_horizontal_toolbar() {
+  if(!icopyright_post_passes_filters())
+    return;
+  $toolbar = icopyright_toolbar_common('Horizontal', 'horz-toolbar.js');
   // Wrap the toolbar with some styles
   $css = '.icx-toolbar-closure{clear: both;}';
+  $admin_option = get_option('icopyright_admin');
   if($admin_option['align'] == 'right') {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
     $css .= '.icx-toolbar-align-right{float: right;}';
@@ -171,23 +176,10 @@ function icopyright_horizontal_toolbar() {
 function icopyright_vertical_toolbar() {
   if(!icopyright_post_passes_filters())
     return;
-
-  global $post;
-  $post_id = $post->ID;
-  $admin_option = get_option('icopyright_admin');
-  $pub_id_no = $admin_option['pub_id'];
-
-  // Build up the toolbar piece by piece
-  $toolbar = "\n<!-- iCopyright Vertical Article Toolbar -->\n";
-  $toolbar .= "<script type=\"text/javascript\">\n";
-  $toolbar .= "var icx_publication_id = $pub_id_no;\n";
-  $toolbar .= "var icx_content_id = '$post_id';\n";
-  $toolbar .= "</script>\n";
-  $toolbar_script_url = ICOPYRIGHT_URL . 'rights/js/vert-toolbar.js'; //ICOPYRIGHT_URL constant defined in icopyright.php
-  $toolbar .= "<script type=\"text/javascript\" src=\"$toolbar_script_url\"></script>\n";
-  $toolbar .= "<!--End of iCopyright Vertical Article Toolbar -->\n";
+  $toolbar = icopyright_toolbar_common('Vertical', 'vert-toolbar.js');
 
   // Wrap the toolbar with some styles
+  $admin_option = get_option('icopyright_admin');
   $css = $admin_option['align'] == 'right' ? '.icx-toolbar{padding: 0 0 0 5px;}' : '.icx-toolbar{padding: 0 5px 0 0;}';
   if($admin_option['align'] == 'right') {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
@@ -197,6 +189,21 @@ function icopyright_vertical_toolbar() {
   return $toolbar;
 }
 
+//Generate One button from hosted script or directy
+function icopyright_onebutton_toolbar() {
+  if(!icopyright_post_passes_filters())
+    return;
+  $toolbar = icopyright_toolbar_common('OneButton', 'one-button-toolbar.js');
+
+  // Wrap the toolbar with some styles
+  $admin_option = get_option('icopyright_admin');
+  if($admin_option['align'] == 'right') {
+    $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
+    $css = '.icx-toolbar-align-right{float: right;}';
+    $toolbar .= '<style type="text/css">' . $css . '</style>';
+  }
+  return $toolbar;
+}
 
 //Generate iCopyright interactive notice
 function icopyright_interactive_notice() {
@@ -257,6 +264,13 @@ function icopyright_vertical_toolbar_shortcode($atts) {
 }
 add_shortcode('icopyright vertical toolbar', 'icopyright_vertical_toolbar_shortcode');
 
+// WordPress shortcode [icopyright_onebutton_toolbar]
+function icopyright_onebutton_toolbar_shortcode($atts) {
+  $ob_toolbar = icopyright_onebutton_toolbar();
+  return "<!--onebutton toolbar wrapper -->" . $ob_toolbar . "<!--end of wrapper -->";
+}
+add_shortcode('icopyright one button toolbar', 'icopyright_onebutton_toolbar_shortcode');
+
 //WordPress Shortcode [interactive copyright notice]
 function icopyright_interactive_copyright_notice_shortcode($atts) {
   $icn = icopyright_interactive_notice();
@@ -308,7 +322,12 @@ function auto_add_icopyright_toolbars($content) {
 
   // Build the toolbar and ICN if we need to display them
   if($show_toolbar) {
-    $pre = ($selected_toolbar == 'horizontal' ? icopyright_horizontal_toolbar() : icopyright_vertical_toolbar());
+    if($selected_toolbar == 'horizontal')
+      $pre = icopyright_horizontal_toolbar();
+    else if($selected_toolbar == 'vertical')
+      $pre = icopyright_vertical_toolbar();
+    else
+      $pre = icopyright_onebutton_toolbar();
   }
   if($show_icn) {
     $post = icopyright_interactive_notice();
