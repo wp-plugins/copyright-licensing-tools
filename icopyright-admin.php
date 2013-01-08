@@ -512,24 +512,35 @@ function icopyright_admin() {
 <br />
 
 <?php if(!empty($icopyright_pubid)) { ?>
-<h2>Enter my Conductor Console</h2>
-<?php print build_login_link('acidIndex.act', 'Search for Infringers'); ?>
-<?php print build_login_link('serviceGroups.act', 'Modify Services & Prices'); ?>
-<?php print build_login_link('publisherReports.act', 'View Reports'); ?>
-<?php print build_login_link('contentSyndicationFeedWizard.act', 'Subscribe to Syndication Feeds'); ?>
-  <div style="clear:both;"></div><br/>
+<table class="form-table">
+  <tbody>
+  <tr valign="top">
+    <th scope="row">
+      <h3>Enter My<br/> Conductor Console</h3>
+    </th>
+    <td valign="top">
+      <?php print build_login_link('acidIndex.act', 'Search for Infringers'); ?>
+      <?php print build_login_link('serviceGroups.act', 'Modify Services & Prices'); ?>
+      <?php print build_login_link('publisherReports.act', 'View Reports'); ?>
+      <?php print build_login_link('contentSyndicationFeedWizard.act', 'Subscribe to Syndication Feeds'); ?>
+      <div style="clear:both;"></div>
+    </td>
+  </tr>
+  </tbody>
+</table>
 <?php } ?>
+
 </div><!--end icopyright_option -->
 
   <?php
   if (empty($icopyright_pubid)) {
     //assign posted values
-    $fname = stripslashes($_POST['fname']);
-    $lname = stripslashes($_POST['lname']);
-    $email = stripslashes($_POST['email']);
-    $password = stripslashes($_POST['password']);
-    $pname = stripslashes($_POST['pname']);
-    $url = stripslashes($_POST['url']);
+    $fname = sanitize_text_field(stripslashes($_POST['fname']));
+    $lname = sanitize_text_field(stripslashes($_POST['lname']));
+    $email = sanitize_text_field(stripslashes($_POST['email']));
+    $password = sanitize_text_field(stripslashes($_POST['password']));
+    $pname = sanitize_text_field(stripslashes($_POST['pname']));
+    $url = sanitize_text_field(stripslashes($_POST['url']));
     create_icopyright_register_form($fname, $lname, $email,$password,$pname,$url);
   }
 
@@ -657,35 +668,35 @@ function post_settings() {
   check_admin_referer('icopyright_settings-options');
 
   //assign posted value
-  $icopyright_pubid = stripslashes($_POST['icopyright_pubid']);
-  $icopyright_display = stripslashes($_POST['icopyright_display']);
-  $icopyright_tools = stripslashes($_POST['icopyright_tools']);
-  $icopyright_display_on_pages = stripslashes($_POST['icopyright_display_on_pages']);
-  $icopyright_align = stripslashes($_POST['icopyright_align']);
-  $icopyright_show = stripslashes($_POST['icopyright_show']);
-  $icopyright_show_multiple = stripslashes($_POST['icopyright_show_multiple']);
-  $icopyright_ez_excerpt = stripslashes($_POST['icopyright_ez_excerpt']);
-  $icopyright_syndication = stripslashes($_POST['icopyright_syndication']);
-  $icopyright_share = stripslashes($_POST['icopyright_share']);
-  $icopyright_use_copyright_filter = stripslashes($_POST['icopyright_use_category_filter']);
-  $icopyright_conductor_email = stripslashes($_POST['icopyright_conductor_email']);
-  $icopyright_conductor_password = stripslashes($_POST['icopyright_conductor_password']);
-  $icopyright_theme = stripslashes($_POST['icopyright_article_tools_theme']);
-  $icopyright_background = stripslashes($_POST['icopyright_background']);
-  $icopyright_feed_url = stripslashes($_POST['icopyright_feed_url']);
+  $icopyright_pubid = sanitize_text_field(stripslashes($_POST['icopyright_pubid']));
+  $icopyright_display = sanitize_text_field(stripslashes($_POST['icopyright_display']));
+  $icopyright_tools = sanitize_text_field(stripslashes($_POST['icopyright_tools']));
+  $icopyright_display_on_pages = sanitize_text_field(stripslashes($_POST['icopyright_display_on_pages']));
+  $icopyright_align = sanitize_text_field(stripslashes($_POST['icopyright_align']));
+  $icopyright_show = sanitize_text_field(stripslashes($_POST['icopyright_show']));
+  $icopyright_show_multiple = sanitize_text_field(stripslashes($_POST['icopyright_show_multiple']));
+  $icopyright_ez_excerpt = sanitize_text_field(stripslashes($_POST['icopyright_ez_excerpt']));
+  $icopyright_syndication = sanitize_text_field(stripslashes($_POST['icopyright_syndication']));
+  $icopyright_share = sanitize_text_field(stripslashes($_POST['icopyright_share']));
+  $icopyright_use_copyright_filter = sanitize_text_field(stripslashes($_POST['icopyright_use_category_filter']));
+  $icopyright_conductor_email = sanitize_text_field(stripslashes($_POST['icopyright_conductor_email']));
+  $icopyright_conductor_password = sanitize_text_field(stripslashes($_POST['icopyright_conductor_password']));
+  $icopyright_theme = sanitize_text_field(stripslashes($_POST['icopyright_article_tools_theme']));
+  $icopyright_background = sanitize_text_field(stripslashes($_POST['icopyright_background']));
+  $icopyright_feed_url = sanitize_text_field(stripslashes($_POST['icopyright_feed_url']));
 
-  $icopyright_fname = stripslashes($_POST['icopyright_fname']);
-  $icopyright_lname = stripslashes($_POST['icopyright_lname']);
-  $icopyright_site_name = stripslashes($_POST['icopyright_site_name']);
-  $icopyright_site_url = stripslashes($_POST['icopyright_site_url']);
-  $icopyright_address_line1 = stripslashes($_POST['icopyright_address_line1']);
-  $icopyright_address_line2 = stripslashes($_POST['icopyright_address_line2']);
-  $icopyright_address_line3 = stripslashes($_POST['icopyright_address_line3']);
-  $icopyright_address_city = stripslashes($_POST['icopyright_address_city']);
-  $icopyright_address_state = stripslashes($_POST['icopyright_address_state']);
-  $icopyright_address_country = stripslashes($_POST['icopyright_address_country']);
-  $icopyright_address_postal = stripslashes($_POST['icopyright_address_postal']);
-  $icopyright_address_phone = stripslashes($_POST['icopyright_address_phone']);
+  $icopyright_fname = sanitize_text_field(stripslashes($_POST['icopyright_fname']));
+  $icopyright_lname = sanitize_text_field(stripslashes($_POST['icopyright_lname']));
+  $icopyright_site_name = sanitize_text_field(stripslashes($_POST['icopyright_site_name']));
+  $icopyright_site_url = sanitize_text_field(stripslashes($_POST['icopyright_site_url']));
+  $icopyright_address_line1 = sanitize_text_field(stripslashes($_POST['icopyright_address_line1']));
+  $icopyright_address_line2 = sanitize_text_field(stripslashes($_POST['icopyright_address_line2']));
+  $icopyright_address_line3 = sanitize_text_field(stripslashes($_POST['icopyright_address_line3']));
+  $icopyright_address_city = sanitize_text_field(stripslashes($_POST['icopyright_address_city']));
+  $icopyright_address_state = sanitize_text_field(stripslashes($_POST['icopyright_address_state']));
+  $icopyright_address_country = sanitize_text_field(stripslashes($_POST['icopyright_address_country']));
+  $icopyright_address_postal = sanitize_text_field(stripslashes($_POST['icopyright_address_postal']));
+  $icopyright_address_phone = sanitize_text_field(stripslashes($_POST['icopyright_address_phone']));
 
   //check publication id
   if (empty($icopyright_pubid)) {
@@ -862,12 +873,12 @@ function check_connectivity() {
  */
 function post_new_publisher() {
   $post = array(
-    'fname' => stripslashes($_POST['fname']),
-    'lname' => stripslashes($_POST['lname']),
-    'email' => stripslashes($_POST['email']),
-    'password' => stripslashes($_POST['password']),
-    'pname' => stripslashes($_POST['pname']),
-    'url' => stripslashes($_POST['url']),
+    'fname' => sanitize_text_field(stripslashes($_POST['fname'])),
+    'lname' => sanitize_text_field(stripslashes($_POST['lname'])),
+    'email' => sanitize_text_field(stripslashes($_POST['email'])),
+    'password' => sanitize_text_field(stripslashes($_POST['password'])),
+    'pname' => sanitize_text_field(stripslashes($_POST['pname'])),
+    'url' => sanitize_text_field(stripslashes($_POST['url'])),
   );
   $postdata = http_build_query($post);
   $rv = icopyright_post_new_publisher($postdata, ICOPYRIGHT_USERAGENT, $post['email'], $post['password']);
