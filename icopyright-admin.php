@@ -97,6 +97,7 @@ function icopyright_admin() {
           <ul>
             <li>[icopyright horizontal toolbar]</li>
             <li>[icopyright vertical toolbar]</li>
+            <li>[icopyright one button toolbar]</li>
             <li>[interactive copyright notice]</li>
           </ul>
           <p>
