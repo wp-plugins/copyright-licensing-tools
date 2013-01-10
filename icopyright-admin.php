@@ -520,10 +520,12 @@ function icopyright_admin() {
       <h3>Enter My<br/> Conductor Console</h3>
     </th>
     <td valign="top">
-      <?php print build_login_link('acidIndex.act', 'Search for Infringers'); ?>
-      <?php print build_login_link('serviceGroups.act', 'Modify Services & Prices'); ?>
-      <?php print build_login_link('publisherReports.act', 'View Reports'); ?>
-      <?php print build_login_link('contentSyndicationFeedWizard.act', 'Subscribe to Syndication Feeds'); ?>
+      <div id="enter-conductor-console">
+        <?php print build_login_link('acidIndex.act', 'search-infringers.png'); ?>
+        <?php print build_login_link('serviceGroups.act', 'modify-prices.png'); ?>
+        <?php print build_login_link('publisherReports.act', 'view-reports.png'); ?>
+        <?php print build_login_link('contentSyndicationFeedWizard.act', 'syndication-feeds.png'); ?>
+      </div>
       <div style="clear:both;"></div>
     </td>
   </tr>
@@ -563,7 +565,7 @@ add_action('admin_menu', 'icopyright_admin_menu');
 //function to generate icopyright admin scripts
 function icopyright_admin_scripts() {
   ?>
-<!-- icopyright admin css; thanks http://www.zurb.com/article/266/super-awesome-buttons-with-css3-and-rgba -->
+<!-- icopyright admin css -->
 <style type="text/css">
   .widefat	{ background: none; }
   .widefat tr td	{ border: none; height: 20px; }
@@ -574,27 +576,7 @@ function icopyright_admin_scripts() {
   #icopyright-show-when td { padding: 0; }
   #toolbar-format input { vertical-align: top; }
   #toolbar-format iframe { vertical-align: top; margin-top: -10px;}
-  .awesome {
-    background: #666666;
-    display: inline-block;
-    padding: 5px 10px 6px;
-    width: 120px; height: 60px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    line-height: 1.4;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-box-shadow: 0 1px 3px #999;
-    -webkit-box-shadow: 0 1px 3px #999;
-    text-shadow: 0 -1px 1px #222;
-    border-bottom: 1px solid #222;
-    position: relative;
-    white-space: normal;
-    cursor: pointer;
-    float: left;
-    margin-right: 30px;
-  }
+  #enter-conductor-console form { float: left; }
 </style>
 
   <?php
@@ -985,17 +967,18 @@ function check_errors($results) {
  * Builds a login link which, when pushed, will automatically log the user into WP. Password is
  * sensitive so we include it here.
  * @param $page string the page to direct to
- * @param $text string the text to display
+ * @param $img string image containing the button
  * @return string the HTML for the form
  */
-function build_login_link($page, $text) {
+function build_login_link($page, $img) {
   $options = get_option('icopyright_admin');
   $rv = '<form action="' . icopyright_get_server(TRUE) . '/publisher/signin.act" method="POST" name="signin">' . "\n";
   $rv .= '  <input type="hidden" name="_publication" value="' . $options['pub_id'] . '">' . "\n";
   $rv .= '  <input type="hidden" name="email" value="' . get_option('icopyright_conductor_email') . '">' . "\n";
   $rv .= '  <input type="hidden" name="password" value="' . get_option('icopyright_conductor_password') . '">' . "\n";
   $rv .= '  <input type="hidden" name="ru" value="' . $page . '">' . "\n";
-  $rv .= '  <input class="awesome" type="submit" name="signin" value="' . $text . '">'. "\n</form>\n";
+  $rv .= '  <input type="hidden" name="signin" value="signin">' . "\n";
+  $rv .= '  <input type="image" name="signin" src="' . plugin_dir_url() . 'copyright-licensing-tools/images/' . $img . '">'. "\n</form>\n";
   return $rv;
 }
 
