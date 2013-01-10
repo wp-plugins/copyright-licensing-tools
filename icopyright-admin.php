@@ -971,7 +971,7 @@ function check_errors($results) {
  */
 function build_login_link($page, $img) {
   $options = get_option('icopyright_admin');
-  $rv = '<form action="' . icopyright_get_server(TRUE) . '/publisher/signin.act" method="POST" name="signin">' . "\n";
+  $rv = '<form action="' . icopyright_get_server(TRUE) . '/publisher/signin.act" method="POST" name="signin" target="_blank">' . "\n";
   $rv .= '  <input type="hidden" name="_publication" value="' . $options['pub_id'] . '">' . "\n";
   $rv .= '  <input type="hidden" name="email" value="' . get_option('icopyright_conductor_email') . '">' . "\n";
   $rv .= '  <input type="hidden" name="password" value="' . get_option('icopyright_conductor_password') . '">' . "\n";
