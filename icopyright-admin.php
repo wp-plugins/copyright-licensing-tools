@@ -148,6 +148,10 @@ function icopyright_admin() {
       </fieldset>
     </td>
   </tr>
+  </tbody>
+</table>
+<table class="form-table" id="remaining-section">
+  <tbody>
   <tr valign="top">
     <th scope="row">Theme</th>
     <td>
@@ -576,6 +580,7 @@ function icopyright_admin_scripts() {
   #toolbar-format input { vertical-align: top; }
   #toolbar-format iframe { vertical-align: top; margin-top: -10px;}
   #enter-conductor-console form { float: left; }
+  #remaining-section { margin-top: -200px; }
 </style>
 
   <?php
