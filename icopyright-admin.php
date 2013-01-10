@@ -349,8 +349,7 @@ function icopyright_admin() {
             <span class="description">When EZ Excerpt is activated, any reader who tries to copy/paste
               a portion of your article will be presented with a box asking "Obtain a License?". If reader
               selects "yes" he or she will be offered the opportunity to license the excerpt for purposes of posting
-              on the reader's own website. For EZ Excerpt to be enabled, the display option selected above must
-              include the iCopyright Toolbar.</span>
+              on the reader's own website.</span>
     </td>
   </tr>
   <tr align="top">
