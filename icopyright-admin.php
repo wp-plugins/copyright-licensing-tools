@@ -335,7 +335,7 @@ function icopyright_admin() {
         <input name="icopyright_share" type="radio" value="no" <?php if(empty($icopyright_share)||$icopyright_share=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
       </fieldset>
             <span class="description">Share services make it easy for readers to share links to your articles using
-              Facebook, LinkedIn, Twitter, and Google+.</span>
+              Facebook, LinkedIn, Twitter, and Google+. Displayable in the four-button versions of the Toolbar only.</span>
     </td>
   </tr>
   <tr align="top">
