@@ -719,7 +719,7 @@ function post_settings() {
 
   if(empty($icopyright_display)) {
     icopyright_set_up_new_publication($icopyright_pubid, $icopyright_conductor_email, $icopyright_conductor_password);
-    display_publication_welcome($icopyright_pubid);
+    display_publication_welcome();
   } else {
     $results = array();
     $error_message = '';
@@ -822,18 +822,20 @@ function display_status_update($error_message) {
 /**
  * Simply spits out a welcome message
  */
-function display_publication_welcome($pid) {
-  $icopyright_conductor_url = ICOPYRIGHT_URL . "publisher/";
+function display_publication_welcome() {
+  $icopyright_conductor_url = ICOPYRIGHT_URL . "publisher/publisherMessages.act?type=welcome";
+  $form = build_login_link($icopyright_conductor_url, NULL, 'conductor-login');
   print '<div id="message" class="updated fade">';
-  print '<iframe src="http://info.icopyright.com/welcome-wp.php?pid=' . $pid . '" style="border: 0; height: 50px; width: 700px;" scrolling="no"></iframe>';
+  print $form;
+  print '<h2>Congratulations, your website is now live with iCopyright!</h2>';
   print '<p>';
   print 'Please review the default settings below and make any changes you wish. You may find it helpful to view the ';
   print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>. ';
-  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank">Conductor</a> ';
+  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank" id="welcome-anchor">Conductor</a> ';
   print 'account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.';
   print '</p>';
   print '</div>';
-  print '<script type="text/javascript">jQuery("#icopyright-warning").hide();</script>';
+  print '<script type="text/javascript">jQuery("#icopyright-warning").hide();jQuery("#welcome-anchor").click(function() { jQuery("#conductor-login").submit(); });</script>';
 }
 
 /**
@@ -972,17 +974,24 @@ function check_errors($results) {
  * sensitive so we include it here.
  * @param $page string the page to direct to
  * @param $img string image containing the button
+ * @param $id string CSS id for the form
  * @return string the HTML for the form
  */
-function build_login_link($page, $img) {
+function build_login_link($page, $img = NULL, $id = NULL) {
   $options = get_option('icopyright_admin');
-  $rv = '<form action="' . icopyright_get_server(TRUE) . '/publisher/signin.act" method="POST" name="signin" target="_blank">' . "\n";
+  $rv = '<form action="' . icopyright_get_server(TRUE) . '/publisher/signin.act" method="POST" name="signin" target="_blank"';
+  if($id != NULL) {
+    $rv .= " id=\"$id\"";
+  }
+  $rv .= ">\n";
   $rv .= '  <input type="hidden" name="_publication" value="' . $options['pub_id'] . '">' . "\n";
   $rv .= '  <input type="hidden" name="email" value="' . get_option('icopyright_conductor_email') . '">' . "\n";
   $rv .= '  <input type="hidden" name="password" value="' . get_option('icopyright_conductor_password') . '">' . "\n";
   $rv .= '  <input type="hidden" name="ru" value="' . $page . '">' . "\n";
   $rv .= '  <input type="hidden" name="signin" value="signin">' . "\n";
-  $rv .= '  <input type="image" name="signin" src="' . plugin_dir_url() . 'copyright-licensing-tools/images/' . $img . '">'. "\n</form>\n";
+  if($img != NULL) {
+    $rv .= '  <input type="image" name="signin" src="' . plugin_dir_url() . 'copyright-licensing-tools/images/' . $img . '">';
+  }
+  $rv .= "\n</form>\n";
   return $rv;
 }
-
