@@ -543,7 +543,7 @@ function icopyright_admin() {
     //assign posted values
     $fname = sanitize_text_field(stripslashes($_POST['fname']));
     $lname = sanitize_text_field(stripslashes($_POST['lname']));
-    $email = sanitize_text_field(stripslashes($_POST['email']));
+    $email = sanitize_email(stripslashes($_POST['email']));
     $password = sanitize_text_field(stripslashes($_POST['password']));
     $pname = sanitize_text_field(stripslashes($_POST['pname']));
     $url = sanitize_text_field(stripslashes($_POST['url']));
@@ -666,7 +666,7 @@ function post_settings() {
   $icopyright_syndication = sanitize_text_field(stripslashes($_POST['icopyright_syndication']));
   $icopyright_share = sanitize_text_field(stripslashes($_POST['icopyright_share']));
   $icopyright_use_copyright_filter = sanitize_text_field(stripslashes($_POST['icopyright_use_category_filter']));
-  $icopyright_conductor_email = sanitize_text_field(stripslashes($_POST['icopyright_conductor_email']));
+  $icopyright_conductor_email = sanitize_email(stripslashes($_POST['icopyright_conductor_email']));
   $icopyright_conductor_password = sanitize_text_field(stripslashes($_POST['icopyright_conductor_password']));
   $icopyright_theme = sanitize_text_field(stripslashes($_POST['icopyright_article_tools_theme']));
   $icopyright_background = sanitize_text_field(stripslashes($_POST['icopyright_background']));
@@ -835,7 +835,7 @@ function display_publication_welcome() {
   print 'account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.';
   print '</p>';
   print '</div>';
-  print '<script type="text/javascript">jQuery("#icopyright-warning").hide();jQuery("#welcome-anchor").click(function() { jQuery("#conductor-login").submit(); });</script>';
+  print '<script type="text/javascript">jQuery("#icopyright-warning").hide();jQuery("#welcome-anchor").click(function() { jQuery("#conductor-login").submit(); return false;});</script>';
 }
 
 /**
@@ -878,7 +878,7 @@ function post_new_publisher() {
     if(is_numeric($pid)) {
       icopyright_set_up_new_publication($pid, $post['email'], $post['password']);
       icopyright_set_up_new_account($post['fname'], $post['lname'], $post['pname'], $post['url']);
-      display_publication_welcome($pid);
+      display_publication_welcome();
       return;
     }
   }
@@ -940,7 +940,7 @@ function icopyright_preregister() {
     if(is_numeric($pid)) {
       icopyright_set_up_new_publication($pid, $email, $password);
       icopyright_set_up_new_account($fname, $lname, $pname, $url);
-      display_publication_welcome($pid);
+      display_publication_welcome();
     }
   }
   // Failure? That's OK, user will be sent to the registration page shortly
