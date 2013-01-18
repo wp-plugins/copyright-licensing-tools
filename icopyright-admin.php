@@ -990,7 +990,7 @@ function build_login_link($page, $img = NULL, $id = NULL) {
   $rv .= '  <input type="hidden" name="ru" value="' . $page . '">' . "\n";
   $rv .= '  <input type="hidden" name="signin" value="signin">' . "\n";
   if($img != NULL) {
-    $rv .= '  <input type="image" name="signin" src="' . plugin_dir_url() . 'copyright-licensing-tools/images/' . $img . '">';
+    $rv .= '  <input type="image" name="signin" src="' . plugin_dir_url(__FILE__) . 'images/' . $img . '">';
   }
   $rv .= "\n</form>\n";
   return $rv;
