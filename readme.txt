@@ -41,6 +41,10 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
 
+= 1.7.2 =
+1. Fix bug in rendering link buttons
+2. Style change so onebutton stands out more
+
 = 1.7.1 =
 1. Minor doc fix
 
