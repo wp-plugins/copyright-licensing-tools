@@ -196,12 +196,17 @@ function icopyright_onebutton_toolbar() {
   $toolbar = icopyright_toolbar_common('OneButton', 'one-button-toolbar.js');
 
   // Wrap the toolbar with some styles
+  $css = '.icx-toolbar-closure{clear:both;} .icx-toolbar{padding: 0 0 5px 0;}';
   $admin_option = get_option('icopyright_admin');
   if($admin_option['align'] == 'right') {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
-    $css = '.icx-toolbar-align-right{float: right;}';
-    $toolbar .= '<style type="text/css">' . $css . '</style>';
+    $css .= '.icx-toolbar-align-right{float: right;}';
   }
+  if($admin_option['display'] == 'auto') {
+    // In auto display, add a clear block afterwards to make sure that
+    $toolbar .= '<div class="icx-toolbar-closure"></div>';
+  }
+  $toolbar .= '<style type="text/css">' . $css . '</style>';
   return $toolbar;
 }
 
