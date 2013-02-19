@@ -556,15 +556,15 @@ function icopyright_post_passes_filters() {
 function icopyright_post_passes_category_filter($post_id) {
   // If the filter itself is not being used, then we always pass
   $setting = get_option('icopyright_admin');
-
   $use_filter = $setting['use_category_filter'];
   if($use_filter != 'yes') return TRUE;
 
+  // Which categories are we allowing through?
   $icopyright_categories = icopyright_selected_categories();
   if(count($icopyright_categories) == 0)
     return FALSE;
 
-  // There are categories, so check these
+  // There are categories that we allow through, so check these
   $post_categories = wp_get_post_categories($post_id);
   foreach($post_categories as $cat ) {
     if(in_array($cat, $icopyright_categories))
