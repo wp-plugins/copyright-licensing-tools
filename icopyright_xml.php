@@ -2,20 +2,13 @@
 /**
  * Feed Template for displaying iCopyright feed, modified from WordPress core file wp-includes/feed-rss2.php
  */
-//include wp-config
-$root = dirname(dirname(dirname(dirname(__FILE__))));
-if (file_exists($root . '/wp-load.php')) {
-  // WP 2.6
-  require_once($root . '/wp-load.php');
-} else {
-  // Before 2.6
-  require_once($root . '/wp-config.php');
-}
-//include $wpdb class
-require_once(ABSPATH . WPINC . '/wp-db.php');
 
-//function to format date
-function format_date($date) {
+/**
+ * Return date formatted into style preferred by iCopyright servers
+ * @param $date
+ * @return string
+ */
+function icopyright_format_date_for_feed($date) {
   $full_date = explode(' ', $date);
   $date = explode('-', $full_date[0]);
   $year = $date['0'];
@@ -24,12 +17,38 @@ function format_date($date) {
   return $month . '/' . $day . '/' . $year;
 }
 
+/**
+ * Returns the path for wp_config. Thanks to http://stackoverflow.com/questions/2354633/wordpress-root-directory
+ * @return bool|mixed|string
+ */
+function icopyright_get_wp_config_path() {
+  $base = dirname(__FILE__);
+  $path = FALSE;
+  if (@file_exists(dirname(dirname($base)) . "/wp-config.php")) {
+    $path = dirname(dirname($base));
+  } else {
+    if (@file_exists(dirname(dirname(dirname($base))) . "/wp-config.php")) {
+      $path = dirname(dirname(dirname($base)));
+    } else {
+      $path = FALSE;
+    }
+  }
+  if ($path != FALSE) {
+    $path = str_replace("\\", "/", $path);
+  }
+  return $path;
+}
+
+$root = icopyright_get_wp_config_path();
+require_once($root . '/wp-config.php');
+require_once(ABSPATH . WPINC . '/wp-db.php');
+
 //get id http queried from icopyright conductor
 $icopyright_post_id = $_GET['id']; //requested post id
 $icopyright_blog_id = $_GET['blog_id']; //requested blog id
 
 //check whether user disable article tools for post, if yes, we hide feed too.
-$hide_toolbar = get_post_meta($icopyright_post_id, 'icopyright_hide_toolbar', true);
+$hide_toolbar = get_post_meta($icopyright_post_id, 'icopyright_hide_toolbar', TRUE);
 if ($hide_toolbar == 'yes') {
   //stop script
   die();
@@ -69,38 +88,32 @@ $sql = $wpdb->prepare(
 $response = $wpdb->get_results($sql);
 
 foreach ($response as $res) {
-
-  //check post status, if other then 'publish' we hide the feed.
+  //check post status, if other then 'publish' then the content is not available to the public, so we hide the feed.
   if ($res->post_status !== 'publish') {
-    //stop script
     die();
   }
 
-  header('Content-Type: ' . feed_content_type('rss-http') . '; charset=' . get_option('blog_charset'), true);
-  $more = 1;
+  header('Content-Type: ' . feed_content_type('rss-http') . '; charset=' . get_option('blog_charset'), TRUE);
+  echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 
-  echo '<?xml version="1.0" encoding="UTF-8"?>';
-
-  // prepare some variable for the XML feed
+  // The author name
   $icx_author = $res->display_name;
 
-  // get the User Role
+  // get the User Role for the byline
   $user = new WP_User($res->post_author);
   if (!empty($user->roles) && is_array($user->roles)) {
     foreach ($user->roles as $role)
       $icx_byline = $role;
   }
 
-  // get copyrights
+  // get copyright date and year based on the date the content was published
   $publish_date = $res->post_date;
   $date = explode('-', $publish_date);
   $icx_copyright = $date['0'] . " " . get_bloginfo();
   $icx_pubyear = $date['0'];
 
   // get publication date
-  $icx_pubdate = format_date($publish_date);
-
-  // get heading
+  $icx_pubdate = icopyright_format_date_for_feed($publish_date);
   $icx_headline = $res->post_title;
 
   //get story from database
@@ -120,7 +133,7 @@ foreach ($response as $res) {
   //do all other shortcodes
   $icx_story_pro_2 = do_shortcode($icx_story_pro_1);
 
-  //assign final processed content to produce in feed.
+  //assign final processed content to produce in feed. Note iCopyright servers will sanitize this
   $icx_story = $icx_story_pro_2;
 
   //get url
@@ -129,33 +142,20 @@ foreach ($response as $res) {
   // get category
   $category = get_the_category($icopyright_post_id);
   $icx_section_raw = $category[0]->cat_name;
+  $icx_section = (strcasecmp($icx_section_raw, 'uncategorized') == 0) ? '' : $icx_section_raw;
 
-  //check, if category is Uncategorized or uncategorized
-  //we hide it from feed
-  switch ($icx_section_raw) {
-    case "Uncategorized":
-      $icx_section = '';
-      break;
-    case "uncategorized":
-      $icx_section = '';
-      break;
-    default:
-      $icx_section = $icx_section_raw;
-      break;
-  }
-
-  // Construct the XML feed output
+  // Construct the XML-ish feed output
   $xml = "<icx>\n";
-  $xml .= "<icx_authors>$icx_author</icx_authors>\n";
-  $xml .= "<icx_byline>$icx_byline</icx_byline>\n";
-  $xml .= "<icx_copyright>$icx_copyright</icx_copyright>\n";
-  $xml .= "<icx_deckheader></icx_deckheader>\n";
-  $xml .= "<icx_headline>$icx_headline</icx_headline>\n";
-  $xml .= "<icx_pubdate>$icx_pubdate</icx_pubdate>\n";
-  $xml .= "<icx_pubyear>$icx_pubyear</icx_pubyear>\n";
-  $xml .= "<icx_section>$icx_section</icx_section>\n";
-  $xml .= "<icx_story>$icx_story</icx_story>\n";
-  $xml .= "<icx_url>$icx_url</icx_url>\n";
+  $xml .= "  <icx_authors>$icx_author</icx_authors>\n";
+  $xml .= "  <icx_byline>$icx_byline</icx_byline>\n";
+  $xml .= "  <icx_copyright>$icx_copyright</icx_copyright>\n";
+  $xml .= "  <icx_deckheader></icx_deckheader>\n";
+  $xml .= "  <icx_headline>$icx_headline</icx_headline>\n";
+  $xml .= "  <icx_pubdate>$icx_pubdate</icx_pubdate>\n";
+  $xml .= "  <icx_pubyear>$icx_pubyear</icx_pubyear>\n";
+  $xml .= "  <icx_section>$icx_section</icx_section>\n";
+  $xml .= "  <icx_story>$icx_story</icx_story>\n";
+  $xml .= "  <icx_url>$icx_url</icx_url>\n";
   $xml .= "</icx>";
 
   echo $xml;
