@@ -69,15 +69,21 @@ register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
 function icopyright_activate() {
   update_option('icopyright_redirect_on_first_activation', 'true');
 }
+
+/**
+ * On first activation, redirect the user to the general options page
+ */
 function icopyright_redirect_on_activation() {
-  if (get_option('icopyright_redirect_on_first_activation') == 'true') {
-    update_option('icopyright_redirect_on_first_activation', 'false');
-    $icopyright_settings_url = admin_url() . "options-general.php?page=icopyright.php";
-    wp_redirect($icopyright_settings_url);
+  if (current_user_can('activate_plugins')) {
+    if (get_option('icopyright_redirect_on_first_activation') == 'true') {
+      delete_option('icopyright_redirect_on_first_activation');
+      $icopyright_settings_url = admin_url() . "options-general.php?page=icopyright.php";
+      wp_safe_redirect($icopyright_settings_url);
+    }
   }
 }
 register_activation_hook(__FILE__, 'icopyright_activate');
-add_action('init', 'icopyright_redirect_on_activation');
+add_action('admin_init', 'icopyright_redirect_on_activation');
 
 //admin warnings notice if empty publication id
 function icopyright_admin_warning() {
