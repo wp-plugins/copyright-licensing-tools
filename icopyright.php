@@ -90,14 +90,18 @@ function icopyright_admin_warning() {
   $check_admin_setting = get_option('icopyright_admin');
 
   //condition check to show admin warning, if publication id is empty and is not on settings page.
-  if ((empty($check_admin_setting['pub_id'])) && ($show_warning_message == true)) {
-    function icopyright_warning() {
-      echo "
-			<div id='icopyright-warning' class='updated fade'><p><strong>" . __('Copyright and Licensing Tools is almost ready.') . "</strong> " . sprintf(__('You must register or enter your Publication Id for it to work. <a href="%1$s">Please click to visit iCopyright Settings Page.</a>'), "options-general.php?page=icopyright.php") . "</p></div>
-			";
-    }
+  if ((empty($check_admin_setting['pub_id'])) && ($show_warning_message == TRUE)) {
     add_action('admin_notices', 'icopyright_warning');
   }
+}
+
+// Warning message about the tool not being ready yet
+function icopyright_warning() {
+  echo "<div id='icopyright-warning' class='updated fade'><p><strong>" .
+    __('The iCopyright Toolbar is almost ready.') .
+    "</strong> " .
+    sprintf(__('You must register or enter your Publication ID for it to work. <a href="%1$s">Visit iCopyright Settings Page.</a>'), "options-general.php?page=icopyright.php") .
+    "</p></div>";
 }
 
 add_action('init', 'icopyright_admin_warning');
