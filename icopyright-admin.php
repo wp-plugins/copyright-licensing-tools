@@ -11,7 +11,7 @@ function icopyright_admin() {
   $icopyright_admin = get_option('icopyright_admin');
   if (!isset($_POST['tou']) && empty($icopyright_admin)) {
     // User is just starting out; show him the terms of use form
-    print create_icopyright_tou_form(); return;
+    print icopyright_create_tou_form(); return;
   }
 
   // This page can be slow, so give a status message
@@ -29,10 +29,10 @@ function icopyright_admin() {
     icopyright_preregister();
   }
   if (isset($_POST['submitted']) == 'yes-update-me') {
-    post_settings();
+    icopyright_post_settings();
   }
   if (isset($_POST['submitted2']) == 'submit-initial-registration') {
-    post_new_publisher();
+    icopyright_post_registration_form();
   }
 
   // Do a full load up of the settings for below
@@ -47,7 +47,7 @@ function icopyright_admin() {
 		<h2><?php _e("iCopyright Settings"); ?></h2>
 <div id="icopyright_option" <?php if(empty($icopyright_pubid)){echo'style="display:none"';} ?> >
 
-  <?php check_connectivity() ?>
+  <?php icopyright_check_connectivity() ?>
 
 <form name="icopyrightform" id="icopyrightform" method="post" action="">
 
@@ -56,7 +56,7 @@ function icopyright_admin() {
 
   <?php
   // If there's no address on file yet, put the account form at the very front
-  if(!strlen($icopyright_account['address_line1'])) print '<h3>Account Settings:</h3>' . create_icopyright_account_form();
+  if(!strlen($icopyright_account['address_line1'])) print '<h3>Account Settings:</h3>' . icopyright_create_account_form();
   ?>
 
 <!--Deployment of iCopyright Toolbar Section Begin -->
@@ -462,7 +462,7 @@ function icopyright_admin() {
   <h3><?php _e('Account Settings: ')?></h3>
   <input type="button" id="toggle_account_setting" value="Show Account Settings" style="cursor:pointer">
   <div id='account_setting' style="display:none">
-    <?php print create_icopyright_account_form() ?>
+    <?php print icopyright_create_account_form() ?>
   </div>
     <?php endif; ?>
 
@@ -524,10 +524,10 @@ function icopyright_admin() {
     </th>
     <td valign="top">
       <div id="enter-conductor-console">
-        <?php print build_login_link('acidIndex.act', 'search-infringers.png'); ?>
-        <?php print build_login_link('serviceGroups.act', 'modify-prices.png'); ?>
-        <?php print build_login_link('publisherReports.act', 'view-reports.png'); ?>
-        <?php print build_login_link('contentSyndicationFeedWizard.act', 'syndication-feeds.png'); ?>
+        <?php print icopyright_graphical_link_to_conductor('acidIndex.act', 'search-infringers.png'); ?>
+        <?php print icopyright_graphical_link_to_conductor('serviceGroups.act', 'modify-prices.png'); ?>
+        <?php print icopyright_graphical_link_to_conductor('publisherReports.act', 'view-reports.png'); ?>
+        <?php print icopyright_graphical_link_to_conductor('contentSyndicationFeedWizard.act', 'syndication-feeds.png'); ?>
       </div>
       <div style="clear:both;"></div>
     </td>
@@ -547,7 +547,7 @@ function icopyright_admin() {
     $password = sanitize_text_field(stripslashes($_POST['password']));
     $pname = sanitize_text_field(stripslashes($_POST['pname']));
     $url = sanitize_text_field(stripslashes($_POST['url']));
-    create_icopyright_register_form($fname, $lname, $email,$password,$pname,$url);
+    icopyright_create_register_form($fname, $lname, $email,$password,$pname,$url);
   }
 
 }	//end of function icopyright_admin()
@@ -642,356 +642,4 @@ function icopyright_admin_footer_script() {
 
   <?php
   }
-}
-
-/**
- * Posts the changes made to the settings page
- */
-function post_settings() {
-  //assign error
-  $error_message = '';
-
-  //check nonce
-  check_admin_referer('icopyright_settings-options');
-
-  //assign posted value
-  $icopyright_pubid = sanitize_text_field(stripslashes($_POST['icopyright_pubid']));
-  $icopyright_display = sanitize_text_field(stripslashes($_POST['icopyright_display']));
-  $icopyright_tools = sanitize_text_field(stripslashes($_POST['icopyright_tools']));
-  $icopyright_display_on_pages = sanitize_text_field(stripslashes($_POST['icopyright_display_on_pages']));
-  $icopyright_align = sanitize_text_field(stripslashes($_POST['icopyright_align']));
-  $icopyright_show = sanitize_text_field(stripslashes($_POST['icopyright_show']));
-  $icopyright_show_multiple = sanitize_text_field(stripslashes($_POST['icopyright_show_multiple']));
-  $icopyright_ez_excerpt = sanitize_text_field(stripslashes($_POST['icopyright_ez_excerpt']));
-  $icopyright_syndication = sanitize_text_field(stripslashes($_POST['icopyright_syndication']));
-  $icopyright_share = sanitize_text_field(stripslashes($_POST['icopyright_share']));
-  $icopyright_use_copyright_filter = sanitize_text_field(stripslashes($_POST['icopyright_use_category_filter']));
-  $icopyright_conductor_email = sanitize_email(stripslashes($_POST['icopyright_conductor_email']));
-  $icopyright_conductor_password = sanitize_text_field(stripslashes($_POST['icopyright_conductor_password']));
-  $icopyright_theme = sanitize_text_field(stripslashes($_POST['icopyright_article_tools_theme']));
-  $icopyright_background = sanitize_text_field(stripslashes($_POST['icopyright_background']));
-  $icopyright_feed_url = sanitize_text_field(stripslashes($_POST['icopyright_feed_url']));
-
-  $icopyright_fname = sanitize_text_field(stripslashes($_POST['icopyright_fname']));
-  $icopyright_lname = sanitize_text_field(stripslashes($_POST['icopyright_lname']));
-  $icopyright_site_name = sanitize_text_field(stripslashes($_POST['icopyright_site_name']));
-  $icopyright_site_url = sanitize_text_field(stripslashes($_POST['icopyright_site_url']));
-  $icopyright_address_line1 = sanitize_text_field(stripslashes($_POST['icopyright_address_line1']));
-  $icopyright_address_line2 = sanitize_text_field(stripslashes($_POST['icopyright_address_line2']));
-  $icopyright_address_line3 = sanitize_text_field(stripslashes($_POST['icopyright_address_line3']));
-  $icopyright_address_city = sanitize_text_field(stripslashes($_POST['icopyright_address_city']));
-  $icopyright_address_state = sanitize_text_field(stripslashes($_POST['icopyright_address_state']));
-  $icopyright_address_country = sanitize_text_field(stripslashes($_POST['icopyright_address_country']));
-  $icopyright_address_postal = sanitize_text_field(stripslashes($_POST['icopyright_address_postal']));
-  $icopyright_address_phone = sanitize_text_field(stripslashes($_POST['icopyright_address_phone']));
-
-  //check publication id
-  if (empty($icopyright_pubid)) {
-    $error_message .= '<li>Empty Publication ID, Please key in Publication ID or sign up for one!</li>';
-  }
-
-  //check for numerical publication id when id is not empty
-  if (!empty($icopyright_pubid) && !is_numeric($icopyright_pubid)) {
-    $error_message .= '<li>Publication ID error, Please key in numerics only!</li>';
-  }
-
-  //check conductor email
-  if (empty($icopyright_conductor_email)) {
-    $error_message .= '<li>Empty Email Address, Please key in Conductor Login Email Address!</li>';
-  } else {
-    //update option
-    update_option('icopyright_conductor_email', $icopyright_conductor_email);
-  }
-
-  //check conductor password
-  if (empty($icopyright_conductor_password)) {
-    $error_message .= '<li>Empty Password, Please key in Conductor Login Password!</li>';
-  } else {
-    //update option
-    update_option('icopyright_conductor_password', $icopyright_conductor_password);
-  }
-  if(!empty($error_message)) return;
-
-  //do ez excerpt setting, after email address and password are updated for old users.
-  $conductor_password = get_option('icopyright_conductor_password');
-  $conductor_email = get_option('icopyright_conductor_email');
-  $user_agent = ICOPYRIGHT_USERAGENT;
-
-  if(empty($icopyright_display)) {
-    icopyright_set_up_new_publication($icopyright_pubid, $icopyright_conductor_email, $icopyright_conductor_password);
-    display_publication_welcome();
-  } else {
-    $results = array();
-    $error_message = '';
-
-    // Submit as appropriate
-    $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, ($icopyright_ez_excerpt == 'yes'), $user_agent, $conductor_email, $conductor_password);
-    $results['EZ Excerpt Setting'] = $ez_res;
-    $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, ($icopyright_syndication == 'yes'), $user_agent, $conductor_email, $conductor_password);
-    $results['Syndication Setting'] = $ez_res;
-    $share_res = icopyright_post_share_service($icopyright_pubid, ($icopyright_share == 'yes'), $user_agent, $conductor_email, $conductor_password);
-    $results['Sharing Setting'] = $ez_res;
-    $t_res = icopyright_post_toolbar_theme($icopyright_pubid, $icopyright_theme, $icopyright_background, $user_agent, $conductor_email, $conductor_password);
-    $results['Toolbar Setting'] = $ez_res;
-    $error_message = check_errors($results);
-
-    // Save publication info details
-    $i_res = icopyright_post_publication_info($icopyright_pubid, $icopyright_fname, $icopyright_lname,
-      $icopyright_site_name, $icopyright_site_url, $icopyright_feed_url,
-      $icopyright_address_line1, $icopyright_address_line2, $icopyright_address_line3, $icopyright_address_city,
-      $icopyright_address_state, $icopyright_address_postal, $icopyright_address_country, $icopyright_address_phone,
-      $user_agent, $conductor_email, $conductor_password
-    );
-    if (icopyright_check_response($i_res) != TRUE) {
-      // The update failed; let's pull out the errors and report them
-      $error_message .= '<li>Failed to update account information</li><ol>';
-      $responses = @simplexml_load_string($i_res->response);
-      foreach ($responses->status->messages->message as $m) {
-        $error_message .=  "<li>$m</li>";
-      }
-      $error_message .= '</ol>';
-    }
-
-    // Check selected categories input for sensibility
-    $selectedCategories = array();
-    $selectedCat = isset($_POST['selectedCat']) ? $_POST['selectedCat'] : array();
-    foreach($selectedCat as $catid) {
-      if(is_numeric($catid)) $selectedCategories[] = $catid;
-    }
-
-    // Save the icopyright admin settings.
-    $icopyright_admin = array('pub_id' => $icopyright_pubid,
-      'display' => $icopyright_display,
-      'tools' => $icopyright_tools,
-      'display_on_pages' => $icopyright_display_on_pages,
-      'align' => $icopyright_align,
-      'background' => $icopyright_background,
-      'theme' => $icopyright_theme,
-      'show' => $icopyright_show,
-      'show_multiple' => $icopyright_show_multiple,
-      'ez_excerpt' => $icopyright_ez_excerpt,
-      'syndication' => $icopyright_syndication,
-      'share' => $icopyright_share,
-      'categories' => implode(',', $selectedCategories),
-      'use_category_filter' => $icopyright_use_copyright_filter,
-      'feed_url' => $icopyright_feed_url,
-    );
-    // Save the account info also
-    $icopyright_account = array(
-      'fname' => $icopyright_fname,
-      'lname' => $icopyright_lname,
-      'site_name' => $icopyright_site_name,
-      'site_url' => $icopyright_site_url,
-      'address_line1' => $icopyright_address_line1,
-      'address_line2' => $icopyright_address_line2,
-      'address_line3' => $icopyright_address_line3,
-      'address_city' => $icopyright_address_city,
-      'address_state' => $icopyright_address_state,
-      'address_country' => $icopyright_address_country,
-      'address_postal' => $icopyright_address_postal,
-      'address_phone' => $icopyright_address_phone,
-    );
-
-    //check if no error, then update admin setting
-    if (empty($error_message)) {
-      //update array value icopyright admin into WordPress Database Options table
-      update_option('icopyright_admin', $icopyright_admin);
-      update_option('icopyright_account', $icopyright_account);
-    }
-  }
-  display_status_update($error_message);
-}
-
-
-/**
- * Given an error message, displays it on the page. If the error message is empty, then an OK message is shown.
- * @param $error_message
- */
-function display_status_update($error_message) {
-  print '<div id="message" class="updated fade">';
-  if(empty($error_message)) {
-    print '<p><strong>Options Updated.</strong></p>';
-  } else {
-    print '<p style="font-size: 14px; margin: 5px;"><strong>The options were not successfully updated.</strong></p>';
-    print '<ol>' . $error_message . '</ol>';
-  }
-  print '</div>';
-  print '<script type="text/javascript">jQuery("#icopyright-warning").hide();</script>';
-}
-
-/**
- * Simply spits out a welcome message
- */
-function display_publication_welcome() {
-  $icopyright_conductor_url = ICOPYRIGHT_URL . "publisher/publisherMessages.act?type=welcome";
-  $form = build_login_link($icopyright_conductor_url, NULL, 'conductor-login');
-  print '<div id="message" class="updated fade">';
-  print $form;
-  print '<h2>Congratulations, your website is now live with iCopyright!</h2>';
-  print '<p>';
-  print 'Please review the default settings below and make any changes you wish. You may find it helpful to view the ';
-  print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>. ';
-  print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank" id="welcome-anchor">Conductor</a> ';
-  print 'account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.';
-  print '</p>';
-  print '</div>';
-  print '<script type="text/javascript">jQuery("#icopyright-warning").hide();jQuery("#welcome-anchor").click(function() { jQuery("#conductor-login").submit(); return false;});</script>';
-}
-
-/**
- * Displays warning message if there is no connectivity
- */
-function check_connectivity() {
-  $icopyright_option = get_option('icopyright_admin');
-  $icopyright_pubid = $icopyright_option['pub_id'];
-  if(is_numeric($icopyright_pubid)) {
-    $email = get_option('icopyright_conductor_email');
-    $password = get_option('icopyright_conductor_password');
-    if(!icopyright_ping(ICOPYRIGHT_USERAGENT, $icopyright_pubid, $email, $password)) {
-      print '<div id="message" class="updated">';
-      print '<p><strong>WARNING</strong>: The iCopyright servers cannot communicate with this site. Services that require the link will be degraded.</p>';
-      print '<p>Check your Conductor Feed URL, in <em>Advanced Settings</em>.</p>';
-      print '</div>';
-
-    }
-  }
-}
-
-/**
- * Posts the new publisher (registration) form
- */
-function post_new_publisher() {
-  $post = array(
-    'fname' => sanitize_text_field(stripslashes($_POST['fname'])),
-    'lname' => sanitize_text_field(stripslashes($_POST['lname'])),
-    'email' => sanitize_text_field(stripslashes($_POST['email'])),
-    'password' => sanitize_text_field(stripslashes($_POST['password'])),
-    'pname' => sanitize_text_field(stripslashes($_POST['pname'])),
-    'url' => sanitize_text_field(stripslashes($_POST['url'])),
-  );
-  $postdata = http_build_query($post);
-  $rv = icopyright_post_new_publisher($postdata, ICOPYRIGHT_USERAGENT, $post['email'], $post['password']);
-  $xml = @simplexml_load_string($rv->response);
-  if (icopyright_check_response($rv)) {
-    // Success: store the publication ID that got sent as a variable and set up the publication
-    $pid = (string)$xml->publication_id;
-    if(is_numeric($pid)) {
-      icopyright_set_up_new_publication($pid, $post['email'], $post['password']);
-      icopyright_set_up_new_account($post['fname'], $post['lname'], $post['pname'], $post['url']);
-      display_publication_welcome();
-      return;
-    }
-  }
-
-  // Was there an error, or did the response not even go through?
-  if(empty($xml)) {
-    print '<div id="message" class="updated fade">';
-    print '<p><strong>Sorry! Publication ID Registration Service is not available. This may be due to API server maintenance. Please try again later.</strong></p>';
-    print '</div>';
-  } else {
-    // There was a failure for the post, as in problems with the form field elements
-    print '<div id="message" class="updated fade">';
-    print '<p><strong>The following fields needs your attention</strong></p>';
-    print '<ol>';
-    foreach ($xml->status->messages->message as $error_message) {
-      print '<li>' . $error_message . '</li>';
-    }
-    print '</ol></div>';
-
-    //check terms of agreement box, since the blogger had already checked and posted the form.
-    global $icopyright_tou_checked;
-    $icopyright_tou_checked = 'true';
-    global $show_icopyright_register_form;
-    $show_icopyright_register_form = 'true';
-  }
-}
-
-/**
- * Try to register for a new publication record, guessing some reasonable values for registration. We then send the
- * user to the general options page, which takes it from there.
- */
-function icopyright_preregister() {
-  // First time being activated, so set up with appropriate defaults
-  // Make some reasonable guesses about what to use; the user can change them later
-  global $current_user;
-  get_currentuserinfo();
-  $email = $current_user->user_email;
-  $fname = $current_user->user_firstname;
-  if(empty($fname)) $fname = 'Anonymous';
-  $lname = $current_user->user_lastname;
-  if(empty($lname)) $lname = 'User';
-  $pname = get_bloginfo('name');
-  $url = get_bloginfo('url') . "/";
-  $password = wp_generate_password(12, FALSE, FALSE);
-
-  $postdata = array(
-    'fname' => $fname,
-    'lname' => $lname,
-    'email' => $email,
-    'pname' => $pname,
-    'url' => $url,
-    'password' => $password,
-  );
-  $rv = icopyright_post_new_publisher(http_build_query($postdata), ICOPYRIGHT_USERAGENT, $email, $password);
-  if (icopyright_check_response($rv)) {
-    // Success: store the publication ID that got sent as a variable
-    $xml = @simplexml_load_string($rv->response);
-    $pid = (string)$xml->publication_id;
-    if(is_numeric($pid)) {
-      icopyright_set_up_new_publication($pid, $email, $password);
-      icopyright_set_up_new_account($fname, $lname, $pname, $url);
-      display_publication_welcome();
-    }
-  }
-  // Failure? That's OK, user will be sent to the registration page shortly
-}
-
-/**
- * Given an associative array of settings and results, returns an error message.
- * Returns NULL if there were no errors.
- * @param $results array map of setting => icopyright results
- * @return string message
- */
-function check_errors($results) {
-  $msg = NULL;
-  $unauthorized = FALSE;
-  foreach($results as $setting => $res) {
-    if(!icopyright_check_response($res)) {
-      $msg .= '<li>Failed to update ' . $setting . ' (' . $res->http_expl . ')</li>';
-      if($res->http_code == 401) $unauthorized = TRUE;
-    }
-  }
-  // Special case: unauthorized so just say that, no need to list everything
-  if($unauthorized) {
-    $msg = '<li>Your email address and password were not accepted, so no changes were made. ' .
-      'Use <em>Advanced Settings</em> below to make changes.</li>';
-  }
-  return $msg;
-}
-
-/**
- * Builds a login link which, when pushed, will automatically log the user into WP. Password is
- * sensitive so we include it here.
- * @param $page string the page to direct to
- * @param $img string image containing the button
- * @param $id string CSS id for the form
- * @return string the HTML for the form
- */
-function build_login_link($page, $img = NULL, $id = NULL) {
-  $options = get_option('icopyright_admin');
-  $rv = '<form action="' . icopyright_get_server(TRUE) . '/publisher/signin.act" method="POST" name="signin" target="_blank"';
-  if($id != NULL) {
-    $rv .= " id=\"$id\"";
-  }
-  $rv .= ">\n";
-  $rv .= '  <input type="hidden" name="_publication" value="' . $options['pub_id'] . '">' . "\n";
-  $rv .= '  <input type="hidden" name="email" value="' . get_option('icopyright_conductor_email') . '">' . "\n";
-  $rv .= '  <input type="hidden" name="password" value="' . get_option('icopyright_conductor_password') . '">' . "\n";
-  $rv .= '  <input type="hidden" name="ru" value="' . $page . '">' . "\n";
-  $rv .= '  <input type="hidden" name="signin" value="signin">' . "\n";
-  if($img != NULL) {
-    $rv .= '  <input type="image" name="signin" src="' . plugin_dir_url(__FILE__) . 'images/' . $img . '">';
-  }
-  $rv .= "\n</form>\n";
-  return $rv;
 }
