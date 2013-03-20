@@ -633,23 +633,12 @@ function icopyright_set_up_new_account($fname, $lname, $pname, $url) {
 
 
 /**
- * Returns the default feed URL for this publication, based on whether this is a singlesite or multisite installation
+ * Returns the default feed URL for this publication
  * @return string the default feed URL for this publication
  */
 function icopyright_get_default_feed_url() {
-  $plugin_feed_url = NULL;
-  $blog_id = $_POST['blog_id'];
-  if (!empty($blog_id)) {
-    //this is multisite, we use main blog url and sub blog id for feed.
-    $plugin_feed_url .= get_site_url(1) . "/wp-content/plugins/copyright-licensing-tools/icopyright_xml.php?blog_id=$blog_id&id=*";
-  } else {
-    //this is single site install, no need for blog id.
-    //post in old feed url structure.
-    $plugin_feed_url .= WP_PLUGIN_URL . "/copyright-licensing-tools/icopyright_xml.php?id=*";
-  }
-  return $plugin_feed_url;
+  return WP_PLUGIN_URL . "?feed=icopyright_feed?id=*";
 }
-
 
 /**
  * Posts the changes made to the settings page

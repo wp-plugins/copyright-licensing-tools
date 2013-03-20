@@ -28,11 +28,10 @@ define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.7.2");
 $icopyright_url = icopyright_get_server(TRUE) . "/";
 define("ICOPYRIGHT_URL", $icopyright_url);
 
-//include plugin admin page
+//include plugin admin, functions, feed
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-admin.php');
-
-//include plugin functions
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-functions.php');
+include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-feed.php');
 
 //The following filters seems to work only on default plugin page.
 //Therefore need to code it here.
