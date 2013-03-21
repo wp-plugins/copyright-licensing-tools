@@ -12,28 +12,28 @@ function icopyright_wp_feed_emit_feed() {
   // Load up the post
   $id = $_GET['id'];
   if (!is_numeric($id)) {
-    header('HTTP/1.0 404 Not Found');
-    return;
+    status_header(404);
+    die();
   }
   $feed_post = get_post($id);
 
   // If not published, emit nothing
   if ($feed_post->post_status != 'publish') {
-    header('HTTP/1.0 403 Forbidden');
-    return;
+    status_header(403);
+    die();
   }
 
   // If user has disabled the toolbar on this content, hide
   $hide_toolbar = get_post_meta($id, 'icopyright_hide_toolbar', true);
   if ($hide_toolbar == 'yes') {
-    header('HTTP/1.0 403 Forbidden');
-    return;
+    status_header(403);
+    die();
   }
 
   // Does this pass the category filter?
   if(!icopyright_post_passes_category_filter($id)) {
-    header('HTTP/1.0 403 Forbidden');
-    return;
+    status_header(403);
+    die();
   }
 
   // Author name and byline come from author and role
