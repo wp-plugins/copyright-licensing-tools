@@ -6,8 +6,8 @@
 function icopyright_migrate_options() {
     $icopyright_account = get_option('icopyright_account');
     $icopyright_admin = get_option('icopyright_admin');
-    $pubId = get_option('pub_id');
     if (!empty($icopyright_account)) {
+
         icopyright_migrate_option($icopyright_account, "fname");
         icopyright_migrate_option($icopyright_account, "lname");
         icopyright_migrate_option($icopyright_account, "site_name");
@@ -36,11 +36,10 @@ function icopyright_migrate_options() {
         icopyright_migrate_option($icopyright_admin, "ez_excerpt");
         icopyright_migrate_option($icopyright_admin, "syndication");
         icopyright_migrate_option($icopyright_admin, "feed_url");
+        add_option("icopyright_tou", "on");
 
         delete_option('icopyright_account');
         delete_option('icopyright_admin');
-    } else if (empty($pubId)) {
-        add_option("tou", "on");
     }
 }
 
@@ -52,7 +51,7 @@ function icopyright_migrate_options() {
  */
 function icopyright_migrate_option($array, $name) {
     if (!empty($array) && is_array($array) && array_key_exists($name, $array))
-        add_option($name, $array[$name]);
+        update_option($name, $array[$name]);
 }
 
 /**
@@ -81,10 +80,6 @@ function icopyright_make_account_row($width, $field, $max = NULL) {
  * Posts the changes made to the settings page
  */
 function icopyright_post_settings($input) {
-
-    //check nonce
-    // TODO What is this?
-    //check_admin_referer('icopyright_settings-options');
 
     //assign posted value
     $icopyright_pubid = sanitize_text_field(stripslashes($_POST['pub_id']));
@@ -203,7 +198,7 @@ function icopyright_create_tou_form() {
     $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
     $form .= '<h3>iCopyright Toolbar</h3>';
     $form .= '<p>I accept the <a href="' . ICOPYRIGHT_URL . 'publisher/statichtml/CSA-Online-Plugin.pdf" target="_blank">terms of use</a>.</p>';
-    $form .= '<input id="_wpnonce" name="_wpnonce" type="hidden" value="'.wp_create_nonce  ('icopyright_tou').'"/>';
+    $form .= '<input id="_wpnonce" name="_wpnonce" type="hidden" value="'.wp_create_nonce  ('icopyright-tou').'"/>';
     $form .= '<input id="tou" name="tou" type="hidden" value="true"/>';
     $form .= '<input type="submit" name="accept-tou" value="Agree" class="button-primary"/>';
     $form .= "</form>";
@@ -218,11 +213,11 @@ function icopyright_create_tou_form() {
 function icopyright_process_tou() {
 
     if (isset($_POST['tou']) && isset($_POST['accept-tou'])) {
-        $nonce=$_REQUEST['_wpnonce'];
+        $nonce=$_POST['_wpnonce'];
         if (! wp_verify_nonce($nonce, 'icopyright-tou') ) die('Security check');
 
         // User accepted the TOU so mark it as such, and then preregister
-        add_option("tou", "on");
+        add_option("icopyright_tou", "on");
         return icopyright_preregister();
     }
     return NULL;
@@ -303,7 +298,7 @@ function icopyright_graphical_link_to_conductor($page, $img = NULL, $id = NULL) 
         $rv .= " id=\"$id\"";
     }
     $rv .= ">\n";
-    $rv .= '  <input type="hidden" name="_publication" value="' . get_option('pub_id') . '">' . "\n";
+    $rv .= '  <input type="hidden" name="_publication" value="' . get_option('icopyright_pub_id') . '">' . "\n";
     $rv .= '  <input type="hidden" name="email" value="' . get_option('icopyright_conductor_email') . '">' . "\n";
     $rv .= '  <input type="hidden" name="password" value="' . get_option('icopyright_conductor_password') . '">' . "\n";
     $rv .= '  <input type="hidden" name="ru" value="' . $page . '">' . "\n";
@@ -323,10 +318,10 @@ function icopyright_graphical_link_to_conductor($page, $img = NULL, $id = NULL) 
  */
 function icopyright_set_up_new_publication($pid, $email, $password) {
     icopyright_admin_defaults();
-    update_option('pub_id', $pid);
+    update_option('icopyright_pub_id', $pid);
 
     $plugin_feed_url = icopyright_get_default_feed_url();
-    update_option('feed_url', $plugin_feed_url);
+    update_option('icopyright_feed_url', $plugin_feed_url);
     icopyright_post_update_feed_url($pid, $plugin_feed_url, ICOPYRIGHT_USERAGENT, $email, $password);
 
     update_option('icopyright_conductor_password', $password);
@@ -336,19 +331,19 @@ function icopyright_set_up_new_publication($pid, $email, $password) {
 //auto update admin setting with response publication id,
 //and other default values.
 function icopyright_admin_defaults() {
-    update_option('display', 'auto');
-    update_option('tools', 'horizontal');
-    update_option('align', 'right');
-    update_option('display_on_pages', 'yes');
-    update_option('theme', 'CLASSIC');
-    update_option('background', 'OPAQUE');
-    update_option('show', 'both');
-    update_option('show_multiple', 'notice');
-    update_option('ez_excerpt', 'yes');
-    update_option('syndication', 'yes');
-    update_option('share', 'yes');
-    update_option('categories', '');
-    update_option('use_category_filter', 'no');
+    update_option('icopyright_display', 'auto');
+    update_option('icopyright_tools', 'horizontal');
+    update_option('icopyright_align', 'right');
+    update_option('icopyright_display_on_pages', 'yes');
+    update_option('icopyright_theme', 'CLASSIC');
+    update_option('icopyright_background', 'OPAQUE');
+    update_option('icopyright_show', 'both');
+    update_option('icopyright_show_multiple', 'notice');
+    update_option('icopyright_ez_excerpt', 'yes');
+    update_option('icopyright_syndication', 'yes');
+    update_option('icopyright_share', 'yes');
+    update_option('icopyright_categories', '');
+    update_option('icopyright_use_category_filter', 'no');
 }
 
 /**
@@ -359,10 +354,10 @@ function icopyright_admin_defaults() {
  * @param $url
  */
 function icopyright_set_up_new_account($fname, $lname, $pname, $url) {
-    update_option('fname', $fname);
-    update_option('lname', $lname);
-    update_option('site_name', $pname);
-    update_option('site_url', $url);
+    update_option('icopyright_fname', $fname);
+    update_option('icopyright_lname', $lname);
+    update_option('icopyright_site_name', $pname);
+    update_option('icopyright_site_url', $url);
 }
 
 //function to dynamically create registration form!
@@ -428,7 +423,7 @@ function icopyright_create_register_form() {
     }
 
     $form .= '<br/><input type="hidden" name="submitted2" value="submit-initial-registration"/>';
-    $form .= '<input id="_wpnonce" name="_wpnonce" type="hidden" value="'.wp_create_nonce  ('icopyright_register').'"/>';
+    $form .= '<input id="_wpnonce" name="_wpnonce" type="hidden" value="'.wp_create_nonce  ('icopyright-register').'"/>';
     $form .= '<input type="submit" name="submit" value="Submit" class="button-primary" id="registersubmit"/>';
     $form .= "</form>";
     $form .= "</div>";
@@ -442,7 +437,7 @@ function icopyright_post_registration_form() {
     if (isset($_POST['submitted2']) == 'submit-initial-registration') {
 
         $nonce=$_REQUEST['_wpnonce'];
-        if (! wp_verify_nonce($nonce, 'icopyright-registration') ) die('Security check');
+        if (! wp_verify_nonce($nonce, 'icopyright-register') ) die('Security check');
 
         $post = array(
             'fname' => sanitize_text_field(stripslashes($_POST['fname'])),

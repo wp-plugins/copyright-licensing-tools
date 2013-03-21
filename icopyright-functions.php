@@ -9,7 +9,7 @@
 function icopyright_toolbar_common($comment, $script) {
   global $post;
   $post_id = $post->ID;
-  $pub_id_no = get_option('pub_id');
+  $pub_id_no = get_option('icopyright_pub_id');
 
   // Build up the toolbar piece by piece
   $toolbar = "\n<!-- iCopyright $comment Article Toolbar -->\n";
@@ -30,7 +30,7 @@ function icopyright_horizontal_toolbar() {
   $toolbar = icopyright_toolbar_common('Horizontal', 'horz-toolbar.js');
   // Wrap the toolbar with some styles
   $css = '.icx-toolbar-closure{clear: both;}';
-  if(get_option('align') == 'right') {
+  if(get_option('icopyright_align') == 'right') {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
     $css .= '.icx-toolbar-align-right{float: right;}';
   }
@@ -46,8 +46,8 @@ function icopyright_vertical_toolbar() {
   $toolbar = icopyright_toolbar_common('Vertical', 'vert-toolbar.js');
 
   // Wrap the toolbar with some styles
-  $css = get_option('align') == 'right' ? '.icx-toolbar{padding: 0 0 0 5px;}' : '.icx-toolbar{padding: 0 5px 0 0;}';
-  if(get_option('align') == 'right') {
+  $css = get_option('icopyright_align') == 'right' ? '.icx-toolbar{padding: 0 0 0 5px;}' : '.icx-toolbar{padding: 0 5px 0 0;}';
+  if(get_option('icopyright_align') == 'right') {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
     $css .= '.icx-toolbar-align-right{float: right;}';
   }
@@ -63,11 +63,11 @@ function icopyright_onebutton_toolbar() {
 
   // Wrap the toolbar with some styles
   $css = '.icx-toolbar-closure{clear:both;} .icx-toolbar{padding: 0 0 5px 0;}';
-  if(get_option('align') == 'right') {
+  if(get_option('icopyright_align') == 'right') {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
     $css .= '.icx-toolbar-align-right{float: right;}';
   }
-  if(get_option('display') == 'auto') {
+  if(get_option('icopyright_display') == 'auto') {
     // In auto display, add a clear block afterwards to make sure that
     $toolbar .= '<div class="icx-toolbar-closure"></div>';
   }
@@ -82,12 +82,12 @@ function icopyright_interactive_notice() {
 
   global $post;
   $post_id = $post->ID;
-  $pub_id_no = get_option('pub_id');
+  $pub_id_no = get_option('icopyright_pub_id');
 
   //construct copyright notice
   $publish_date = $post->post_date;
   $date = explode('-', $publish_date);
-  $site_name = get_option('site_name');
+  $site_name = get_option('icopyright_site_name');
   $pname = addslashes(empty($site_name) ? get_bloginfo() : $site_name);
   $icx_copyright = "Copyright " . $date['0'] . " $pname";
 
@@ -158,18 +158,18 @@ function auto_add_icopyright_toolbars($content) {
   //get settings from icopyright_admin option array
 
   // Do nothing if it isn't appropriate for us to add the content anyway
-  $display_status = get_option('display'); //deployment
+  $display_status = get_option('icopyright_display'); //deployment
   if(($display_status != 'auto') || is_feed() || is_attachment()) {
     return $content;
   }
-  $selected_toolbar = get_option('tools'); //toolbar selected
+  $selected_toolbar = get_option('icopyright_tools'); //toolbar selected
 
   //Single Post Display Option
   //valves includes, both, tools, notice.
   //both - means display both article tools and interactive copyright notice
   //tools - means display only article tools
   //notice - means displays only interactive copyright notice
-  $single_display_option = get_option('show');
+  $single_display_option = get_option('icopyright_show');
 
   //Multiple Post Display Option
   //valves includes, both, tools, notice.
@@ -177,7 +177,7 @@ function auto_add_icopyright_toolbars($content) {
   //tools - means display only article tools
   //notice - means displays only interactive copyright notice
   //nothing - means hide all article tools and interactive notice.
-  $multiple_display_option = get_option('show_multiple');
+  $multiple_display_option = get_option('icopyright_show_multiple');
 
   // What modes are we paying attention to?
   if(is_single() || is_page()) {
@@ -365,7 +365,7 @@ function icopyright_current_page_url() {
  * @return
  */
 function icopyright_selected_categories() {
-  $categories = get_option('categories');
+  $categories = get_option('icopyright_categories');
   if(strlen($categories) > 0) {
     return explode(',', $categories);
   } else {
@@ -384,7 +384,7 @@ function icopyright_post_passes_filters() {
   $post_id = $post->ID;
 
   // Is there even a configured publication ID? If not, no point in continuing
-  $pub_id_no = get_option('pub_id');
+  $pub_id_no = get_option('icopyright_pub_id');
   if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
     return FALSE;
   }
@@ -395,7 +395,7 @@ function icopyright_post_passes_filters() {
   }
   // If this is a page, check to see if we're supposed to be on pages
   if(is_page()) {
-    if(get_option('display_on_pages') != 'yes')
+    if(get_option('icopyright_display_on_pages') != 'yes')
       return FALSE;
   } else {
     // Does the post pass all the category filters? If not, then return false
@@ -416,7 +416,7 @@ function icopyright_post_passes_filters() {
  */
 function icopyright_post_passes_category_filter($post_id) {
   // If the filter itself is not being used, then we always pass
-  $use_filter = get_option('use_category_filter');
+  $use_filter = get_option('icopyright_use_category_filter');
   if($use_filter != 'yes') return TRUE;
 
   // Which categories are we allowing through?
@@ -464,7 +464,7 @@ function icopyright_display_status_update($error_message) {
  * Displays warning message if there is no connectivity
  */
 function icopyright_check_connectivity() {
-  $icopyright_pubid = get_option('pub_id');
+  $icopyright_pubid = get_option('icopyright_pub_id');
   if(is_numeric($icopyright_pubid)) {
     $email = get_option('icopyright_conductor_email');
     $password = get_option('icopyright_conductor_password');

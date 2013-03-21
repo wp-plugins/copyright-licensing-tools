@@ -97,7 +97,7 @@ function icopyright_admin_warning() {
 
   //compare current url with constructed settings url to determine if we are on settings page
   $show_warning_message = ($current_page_url != $icopyright_settings_url);
-  $pub_id = get_option('pub_id');
+  $pub_id = get_option('icopyright_pub_id');
 
   //condition check to show admin warning, if publication id is empty and is not on settings page.
   if ((empty($pub_id)) && ($show_warning_message == TRUE)) {

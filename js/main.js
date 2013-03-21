@@ -1,14 +1,3 @@
-function show_icopyright_form() {
-    document.getElementById('icopyright_registration_form').style.display='block';
-    document.getElementById('icopyright_option').style.display='none';
-    document.getElementById('fname').focus();
-}
-
-function hide_icopyright_form() {
-    document.getElementById('icopyright_registration_form').style.display='none';
-    document.getElementById('icopyright_option').style.display='block';
-}
-
 function show_manual_option() {
     jQuery('#M3').show();
 }
@@ -23,7 +12,7 @@ function hide_manual_option() {
 function toolbarTouch() {
     if(jQuery('#pub_id').html() == '') return;
     var theme = jQuery('#icopyright_article_tools_theme').val();
-    var background = jQuery('input:radio[name=background]:checked').val();
+    var background = jQuery('input:radio[name=icopyright_background]:checked').val();
     var publication = jQuery('#pub_id').html();
     var url_h = jQuery('#icopyright_server').html()+'/publisher/TouchToolbar.act?' +
         jQuery.param({

@@ -4,44 +4,44 @@
 // Field callbacks
 //
 function first_name_field_callback() {
-    icopyright_make_account_row(150, 'fname');
+    icopyright_make_account_row(150, 'icopyright_fname');
 }
 function last_name_field_callback() {
-    icopyright_make_account_row(150, 'lname');
+    icopyright_make_account_row(150, 'icopyright_lname');
 }
 function site_name_field_callback() {
-    icopyright_make_account_row(200, 'site_name');
+    icopyright_make_account_row(200, 'icopyright_site_name');
 }
 function site_url_field_callback() {
-    icopyright_make_account_row(200, 'site_url');
+    icopyright_make_account_row(200, 'icopyright_site_url');
 }
 function address_line1_field_callback() {
-    icopyright_make_account_row(200, 'address_line1');
+    icopyright_make_account_row(200, 'icopyright_address_line1');
 }
 function address_line2_field_callback() {
-    icopyright_make_account_row(200, 'address_line2');
+    icopyright_make_account_row(200, 'icopyright_address_line2');
 }
 function address_line3_field_callback() {
-    icopyright_make_account_row(200, 'address_line3');
+    icopyright_make_account_row(200, 'icopyright_address_line3');
 }
 function address_city_field_callback() {
-    icopyright_make_account_row(200, 'address_city');
+    icopyright_make_account_row(200, 'icopyright_address_city');
 }
 function address_state_field_callback() {
-    icopyright_make_account_row(50, 'address_state');
+    icopyright_make_account_row(50, 'icopyright_address_state');
 }
 function address_country_field_callback() {
-    icopyright_make_account_row(50, 'address_country');
+    icopyright_make_account_row(50, 'icopyright_address_country');
 }
 function address_postal_field_callback() {
-    icopyright_make_account_row(100, 'address_postal');
+    icopyright_make_account_row(100, 'icopyright_address_postal');
 }
 function address_phone_field_callback() {
-    icopyright_make_account_row(100, 'address_phone');
+    icopyright_make_account_row(100, 'icopyright_address_phone');
 }
 function display_field_callback() {
     ?>
-    <input name="display" type="radio" value="auto"  onclick="hide_manual_option()" <?php $icopyright_display = get_option('display'); if(empty($icopyright_display)||$icopyright_display=="auto"){echo "checked";}?> />
+    <input name="icopyright_display" type="radio" value="auto"  onclick="hide_manual_option()" <?php $icopyright_display = get_option('icopyright_display'); if(empty($icopyright_display)||$icopyright_display=="auto"){echo "checked";}?> />
     <?php _e('Automatic ')?><br/>
     <span class="description">
 		    <?php _e('iCopyright Toolbar and Interactive Copyright Notice will be automatically added into content of post')?>
@@ -49,13 +49,13 @@ function display_field_callback() {
 
     <br />
 
-    <input name="display" type="radio" value="manual" onclick="show_manual_option()" <?php $icopyright_display2 = get_option('display'); if($icopyright_display2=="manual"){echo "checked";}?>/>
+    <input name="icopyright_display" type="radio" value="manual" onclick="show_manual_option()" <?php $icopyright_display2 = get_option('icopyright_display'); if($icopyright_display2=="manual"){echo "checked";}?>/>
     <?php _e('Manual ')?><br/>
     <span class="description">
 		    <?php _e('Deploy iCopyright Toolbar and Interactive Copyright Notice into content of post, using WordPress shortcode')?>
 		</span>
 
-    <div id="M3" style="float:left;margin:0 50px 0 0;display:none;<?php $display5 = get_option('display'); if($display5=="manual"){echo "display:block;";}?>">
+    <div id="M3" style="float:left;margin:0 50px 0 0;display:none;<?php $display5 = get_option('icopyright_display'); if($display5=="manual"){echo "display:block;";}?>">
         <p>
             <strong><?php _e('Available WordPress Shortcodes: ')?></strong>
         </p>
@@ -91,11 +91,11 @@ function display_field_callback() {
 function tools_field_callback() {
     ?>
     <fieldset id="toolbar-format">
-        <input name="tools" type="radio" value="horizontal" <?php $icopyright_tools = get_option('tools'); if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> />
+        <input name="icopyright_tools" type="radio" value="horizontal" <?php $icopyright_tools = get_option('icopyright_tools'); if(empty($icopyright_tools)||$icopyright_tools=="horizontal"){echo "checked";}?> />
         <iframe id="horizontal-article-tools-preview" style="border: 0;" scrolling="no" height="53" width="300"></iframe>
-        <input name="tools" type="radio" value="vertical" <?php if($icopyright_tools=="vertical"){echo "checked";}?> />
+        <input name="icopyright_tools" type="radio" value="vertical" <?php if($icopyright_tools=="vertical"){echo "checked";}?> />
         <iframe id="vertical-article-tools-preview" style="border: 0;" scrolling="no" height="130" width="100"></iframe>
-        <input name="tools" type="radio" value="onebutton" <?php if($icopyright_tools=="onebutton"){echo "checked";}?> />
+        <input name="icopyright_tools" type="radio" value="onebutton" <?php if($icopyright_tools=="onebutton"){echo "checked";}?> />
         <iframe id="onebutton-article-tools-preview" style="border: 0;" scrolling="no" height="250" width="200"></iframe>
     </fieldset>
 <?php
@@ -103,10 +103,10 @@ function tools_field_callback() {
 function theme_field_callback() {
     ?>
     <fieldset>
-        <select name="theme" class="form-select" id="icopyright_article_tools_theme" >
+        <select name="icopyright_theme" class="form-select" id="icopyright_article_tools_theme" >
             <?php
             $themes = icopyright_theme_options();
-            $icopyright_theme = get_option('theme'); if(empty($icopyright_theme)) $icopyright_theme = 'CLASSIC';
+            $icopyright_theme = get_option('icopyright_theme'); if(empty($icopyright_theme)) $icopyright_theme = 'CLASSIC';
             foreach($themes as $option => $name) {
                 print "<option value=\"$option\"";
                 if($option == $icopyright_theme) print ' selected="selected"';
@@ -120,18 +120,18 @@ function theme_field_callback() {
 function background_field_callback() {
     ?>
     <fieldset>
-        <input name="background" type="radio" value="OPAQUE" <?php $icopyright_background = get_option('background'); if(empty($icopyright_background)||$icopyright_background=="OPAQUE"){echo "checked";}?> /> <?php _e('Opaque')?>
+        <input name="icopyright_background" type="radio" value="OPAQUE" <?php $icopyright_background = get_option('icopyright_background'); if(empty($icopyright_background)||$icopyright_background=="OPAQUE"){echo "checked";}?> /> <?php _e('Opaque')?>
         <br/>
-        <input name="background" type="radio" value="TRANSPARENT" <?php if($icopyright_background=="TRANSPARENT"){echo "checked";}?> /> <?php _e('Transparent')?>
+        <input name="icopyright_background" type="radio" value="TRANSPARENT" <?php if($icopyright_background=="TRANSPARENT"){echo "checked";}?> /> <?php _e('Transparent')?>
     </fieldset>
 <?php
 }
 function align_field_callback() {
     ?>
     <fieldset>
-        <input name="align" type="radio" value="left" <?php $icopyright_align = get_option('align'); if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> /> <?php _e('Left')?>
+        <input name="icopyright_align" type="radio" value="left" <?php $icopyright_align = get_option('icopyright_align'); if(empty($icopyright_align)||$icopyright_align=="left"){echo "checked";}?> /> <?php _e('Left')?>
         <br/>
-        <input name="align" type="radio" value="right" <?php $icopyright_align = get_option('align');if($icopyright_align=="right"){echo "checked";}?> /> <?php _e('Right')?>
+        <input name="icopyright_align" type="radio" value="right" <?php $icopyright_align = get_option('icopyright_align');if($icopyright_align=="right"){echo "checked";}?> /> <?php _e('Right')?>
     </fieldset>
 
 <?php
@@ -157,10 +157,10 @@ function show_preview_callback() {
             <tbody>
             <tr class="show-both">
                 <td style="text-align: center;">
-                    <input name="show" type="radio" value="both" <?php $icopyright_show = get_option('show'); if(empty($icopyright_show)||$icopyright_show=="both"){echo "checked";}?> />
+                    <input name="icopyright_show" type="radio" value="both" <?php $icopyright_show = get_option('icopyright_show'); if(empty($icopyright_show)||$icopyright_show=="both"){echo "checked";}?> />
                 </td>
                 <td style="text-align: center;">
-                    <input name="show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = get_option('show_multiple'); if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> />
+                    <input name="icopyright_show_multiple" type="radio" value="both" <?php $icopyright_show_multiple = get_option('icopyright_show_multiple'); if(empty($icopyright_show_multiple)||$icopyright_show_multiple=="both"){echo "checked";}?> />
                 </td>
                 <td>
                     Show both iCopyright Toolbar and Interactive Copyright Notice
@@ -168,10 +168,10 @@ function show_preview_callback() {
             </tr>
             <tr class="show-toolbar">
                 <td style="text-align: center;">
-                    <input name="show" type="radio" value="tools" <?php $icopyright_show = get_option('show');if($icopyright_show=="tools"){echo "checked";}?> />
+                    <input name="icopyright_show" type="radio" value="tools" <?php $icopyright_show = get_option('icopyright_show');if($icopyright_show=="tools"){echo "checked";}?> />
                 </td>
                 <td style="text-align: center;">
-                    <input name="show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = get_option('show_multiple');if($icopyright_show_multiple=="tools"){echo "checked";}?> />
+                    <input name="icopyright_show_multiple" type="radio" value="tools" <?php $icopyright_show_multiple = get_option('icopyright_show_multiple');if($icopyright_show_multiple=="tools"){echo "checked";}?> />
                 </td>
                 <td>
                     Show only iCopyright Toolbar
@@ -179,10 +179,10 @@ function show_preview_callback() {
             </tr>
             <tr class="show-icn">
                 <td style="text-align: center;">
-                    <input name="show" type="radio" value="notice" <?php $icopyright_show = get_option('show');if($icopyright_show=="notice"){echo "checked";}?> />
+                    <input name="icopyright_show" type="radio" value="notice" <?php $icopyright_show = get_option('icopyright_show');if($icopyright_show=="notice"){echo "checked";}?> />
                 </td>
                 <td style="text-align: center;">
-                    <input name="show_multiple" type="radio" value="notice" <?php $icopyright_show_multiple = get_option('show_multiple');if($icopyright_show_multiple=="notice"){echo "checked";}?> />
+                    <input name="icopyright_show_multiple" type="radio" value="notice" <?php $icopyright_show_multiple = get_option('icopyright_show_multiple');if($icopyright_show_multiple=="notice"){echo "checked";}?> />
                 </td>
                 <td>
                     Show only Interactive Copyright Notice
@@ -193,7 +193,7 @@ function show_preview_callback() {
                     &nbsp;
                 </td>
                 <td style="text-align: center;">
-                    <input name="show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = get_option('show_multiple');if($icopyright_show_multiple=="nothing"){echo "checked";}?> />
+                    <input name="icopyright_show_multiple" type="radio" value="nothing" <?php $icopyright_show_multiple = get_option('icopyright_show_multiple');if($icopyright_show_multiple=="nothing"){echo "checked";}?> />
                 </td>
                 <td>
                     Show nothing
@@ -208,19 +208,19 @@ function show_preview_callback() {
 function display_on_pages_field_callback() {
     ?>
         <fieldset>
-            <input id="display_on_pages" name="display_on_pages" type="checkbox" <?php if(get_option('display_on_pages') == 'yes') print 'checked="checked"'; ?> value="yes">
+            <input id="display_on_pages" name="icopyright_display_on_pages" type="checkbox" <?php if(get_option('icopyright_display_on_pages') == 'yes') print 'checked="checked"'; ?> value="yes">
             <label for="display_on_pages">Display tools on pages as well as posts</label>
         </fieldset>
     <?php
 }
 
 function use_category_filter_field_callback() {
-    $use_filter = get_option('use_category_filter');
+    $use_filter = get_option('icopyright_use_category_filter');
     ?>
     <fieldset>
-        <input class="category-radio" name="use_category_filter" type="radio" value="no" <?php if($use_filter!="yes"){echo "checked";}?> /> <?php _e('Apply tools to all posts')?>
+        <input class="category-radio" name="icopyright_use_category_filter" type="radio" value="no" <?php if($use_filter!="yes"){echo "checked";}?> /> <?php _e('Apply tools to all posts')?>
         <br />
-        <input class="category-radio" name="use_category_filter" type="radio" value="yes" <?php if($use_filter=="yes"){echo "checked";}?> /> <?php _e('Apply tools only to selected categories')?>
+        <input class="category-radio" name="icopyright_use_category_filter" type="radio" value="yes" <?php if($use_filter=="yes"){echo "checked";}?> /> <?php _e('Apply tools only to selected categories')?>
         <br/>
     </fieldset>
 <?php
@@ -238,7 +238,7 @@ function categories_field_callback() {
 
         foreach( $systemCategories as $cat ) {
             $checked = (in_array($cat->term_id, $selectedCategories) ? 'checked' : '');
-            echo '<li><input id="'.$cat->term_id.'" type="checkbox" name="categories[]" value="'.$cat->term_id.'" '.$checked.' /><label style="margin-left: 5px;" for="'.$cat->term_id.'">'.$cat->name.'</label></li>';
+            echo '<li><input id="'.$cat->term_id.'" type="checkbox" name="icopyright_categories[]" value="'.$cat->term_id.'" '.$checked.' /><label style="margin-left: 5px;" for="'.$cat->term_id.'">'.$cat->name.'</label></li>';
         }
         echo '</ul></div>';
         ?>
@@ -247,14 +247,14 @@ function categories_field_callback() {
 }
 
 function share_field_callback() {
-    $icopyright_share = get_option('share');
+    $icopyright_share = get_option('icopyright_share');
     $check_email = get_option('icopyright_conductor_email');
     $check_password = get_option('icopyright_conductor_password');
     ?>
         <fieldset>
-            <input name="share" type="radio" value="yes" <?php if($icopyright_share=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
+            <input name="icopyright_share" type="radio" value="yes" <?php if($icopyright_share=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
             <br/>
-            <input name="share" type="radio" value="no" <?php if(empty($icopyright_share)||$icopyright_share=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
+            <input name="icopyright_share" type="radio" value="no" <?php if(empty($icopyright_share)||$icopyright_share=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
         </fieldset>
         <span class="description">Share services make it easy for readers to share links to your articles using
                   Facebook, LinkedIn, Twitter, and Google+. Displayable in the four-button versions of the Toolbar only.</span>
@@ -266,9 +266,9 @@ function ez_excerpt_field_callback() {
     $check_password = get_option('icopyright_conductor_password');
     ?>
         <fieldset>
-            <input name="ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = get_option('ez_excerpt'); if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
+            <input name="icopyright_ez_excerpt" type="radio" value="yes" <?php $icopyright_ez_excerpt = get_option('icopyright_ez_excerpt'); if(empty($icopyright_ez_excerpt)||$icopyright_ez_excerpt=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
             <br/>
-            <input name="ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = get_option('ez_excerpt'); if($icopyright_ez_excerpt2=="no"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
+            <input name="icopyright_ez_excerpt" type="radio" value="no" <?php $icopyright_ez_excerpt2 = get_option('icopyright_ez_excerpt'); if($icopyright_ez_excerpt2=="no"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
         </fieldset>
         <span class="description">When EZ Excerpt is activated, any reader who tries to copy/paste
                   a portion of your article will be presented with a box asking "Obtain a License?". If reader
@@ -282,9 +282,9 @@ function syndication_field_callback() {
     $check_password = get_option('icopyright_conductor_password');
     ?>
         <fieldset>
-            <input name="syndication" type="radio" value="yes" <?php $icopyright_syndication = get_option('syndication'); if(empty($icopyright_syndication)||$icopyright_syndication=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
+            <input name="icopyright_syndication" type="radio" value="yes" <?php $icopyright_syndication = get_option('icopyright_syndication'); if(empty($icopyright_syndication)||$icopyright_syndication=="yes"){echo "checked";}?> <?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('On ')?>
             <br/>
-            <input name="syndication" type="radio" value="no" <?php $icopyright_syndication2 = get_option('syndication'); if($icopyright_syndication2=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
+            <input name="icopyright_syndication" type="radio" value="no" <?php $icopyright_syndication2 = get_option('icopyright_syndication'); if($icopyright_syndication2=="no"){echo "checked";}?><?php if(empty($check_email) || empty($check_password)){echo 'disabled';}?>/> <?php _e('Off ')?>
         </fieldset>
         <span class="description">The Syndication Feed service enables other websites to subscribe to a feed
                   of your content and pay you based on the number of times your articles are viewed on their site at
@@ -295,7 +295,7 @@ function syndication_field_callback() {
 
 function pub_id_field_callback() {
     ?>
-        <input type="text" name="pub_id" style="width:200px" value="<?php $icopyright_pubid = sanitize_text_field(stripslashes(get_option('pub_id'))); echo $icopyright_pubid; ?>"/>
+        <input type="text" name="icopyright_pub_id" style="width:200px" value="<?php $icopyright_pubid = sanitize_text_field(stripslashes(get_option('icopyright_pub_id'))); echo $icopyright_pubid; ?>"/>
     <?php
 }
 
@@ -312,9 +312,9 @@ function conductor_password_field_callback() {
 }
 
 function feed_url_field_callback() {
-    $feedUrl = sanitize_text_field(stripslashes(get_option('feed_url')));
+    $feedUrl = sanitize_text_field(stripslashes(get_option('icopyright_feed_url')));
     ?>
-        <input type="text" name="feed_url" style="width:500px;"
+        <input type="text" name="icopyright_feed_url" style="width:500px;"
            value="<?php echo (!empty($feedUrl) ? $feedUrl : icopyright_get_default_feed_url()); ?>"/>
     <?php
 }
