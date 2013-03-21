@@ -36,15 +36,9 @@ function icopyright_wp_feed_emit_feed() {
     die();
   }
 
-  // Author name and byline come from author and role
-  $icx_byline = '';
+  // Author name comes from the public item
   $user = new WP_User($feed_post->post_author);
-  $icx_author = $user->name;
-  if (!empty($user->roles) && is_array($user->roles)) {
-    foreach ($user->roles as $role) {
-      $icx_byline = $role;
-    }
-  }
+  $icx_author = $user->data->display_name;
 
   // get copyright date and year based on the date the content was published
   $publish_date = $feed_post->post_date;
@@ -74,7 +68,6 @@ function icopyright_wp_feed_emit_feed() {
   $xml = '<?xml version="1.0" encoding="UTF-8"?>';
   $xml .= "<icx>\n";
   $xml .= "  <icx_authors>$icx_author</icx_authors>\n";
-  $xml .= "  <icx_byline>$icx_byline</icx_byline>\n";
   $xml .= "  <icx_copyright>$icx_copyright</icx_copyright>\n";
   $xml .= "  <icx_headline>$icx_headline</icx_headline>\n";
   $xml .= "  <icx_pubdate>$icx_pubdate</icx_pubdate>\n";
