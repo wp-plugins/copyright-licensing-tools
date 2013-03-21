@@ -60,16 +60,11 @@ function icopyright_onebutton_toolbar() {
   if(!icopyright_post_passes_filters())
     return;
   $toolbar = icopyright_toolbar_common('OneButton', 'one-button-toolbar.js');
-
   // Wrap the toolbar with some styles
-  $css = '.icx-toolbar-closure{clear:both;} .icx-toolbar{padding: 0 0 5px 0;}';
+  $css = '.icx-toolbar{padding: 0 0 5px 0;}';
   if(get_option('icopyright_align') == 'right') {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
-    $css .= '.icx-toolbar-align-right{float: right;}';
-  }
-  if(get_option('icopyright_display') == 'auto') {
-    // In auto display, add a clear block afterwards to make sure that
-    $toolbar .= '<div class="icx-toolbar-closure"></div>';
+    $css .= ' .icx-toolbar-align-right{float: right;}';
   }
   $toolbar .= '<style type="text/css">' . $css . '</style>';
   return $toolbar;
