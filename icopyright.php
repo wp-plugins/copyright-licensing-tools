@@ -20,7 +20,7 @@ define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.7.2");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v1.8.0");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php
@@ -67,6 +67,11 @@ register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
  */
 function icopyright_activate() {
   update_option('icopyright_redirect_on_first_activation', 'true');
+
+    //
+    // Migrate old options
+    //
+    icopyright_migrate_options();
 }
 
 /**
@@ -76,7 +81,7 @@ function icopyright_redirect_on_activation() {
   if (current_user_can('activate_plugins')) {
     if (get_option('icopyright_redirect_on_first_activation') == 'true') {
       delete_option('icopyright_redirect_on_first_activation');
-      $icopyright_settings_url = admin_url() . "options-general.php?page=icopyright.php";
+      $icopyright_settings_url = admin_url() . "options-general.php?page=copyright-licensing-tools";
       wp_safe_redirect($icopyright_settings_url);
     }
   }
@@ -87,15 +92,15 @@ add_action('admin_init', 'icopyright_redirect_on_activation');
 //admin warnings notice if empty publication id
 function icopyright_admin_warning() {
   //setup admin url to icopyright settings page
-  $icopyright_settings_url = admin_url() . "options-general.php?page=icopyright.php";
+  $icopyright_settings_url = admin_url() . "options-general.php?page=copyright-licensing-tools";
   $current_page_url = icopyright_current_page_url();
 
   //compare current url with constructed settings url to determine if we are on settings page
   $show_warning_message = ($current_page_url != $icopyright_settings_url);
-  $check_admin_setting = get_option('icopyright_admin');
+  $pub_id = get_option('pub_id');
 
   //condition check to show admin warning, if publication id is empty and is not on settings page.
-  if ((empty($check_admin_setting['pub_id'])) && ($show_warning_message == TRUE)) {
+  if ((empty($pub_id)) && ($show_warning_message == TRUE)) {
     add_action('admin_notices', 'icopyright_warning');
   }
 }
@@ -105,7 +110,7 @@ function icopyright_warning() {
   echo "<div id='icopyright-warning' class='updated fade'><p><strong>" .
     __('The iCopyright Toolbar is almost ready.') .
     "</strong> " .
-    sprintf(__('You must register or enter your Publication ID for it to work. <a href="%1$s">Visit iCopyright Settings Page.</a>'), "options-general.php?page=icopyright.php") .
+    sprintf(__('You must register or enter your Publication ID for it to work. <a href="%1$s">Visit iCopyright Settings Page.</a>'), "options-general.php?page=copyright-licensing-tools") .
     "</p></div>";
 }
 
