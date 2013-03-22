@@ -296,6 +296,7 @@ function syndication_field_callback() {
 function pub_id_field_callback() {
     ?>
         <input type="text" name="icopyright_pub_id" style="width:200px" value="<?php $icopyright_pubid = sanitize_text_field(stripslashes(get_option('icopyright_pub_id'))); echo $icopyright_pubid; ?>"/>
+        <span class="description" id="no_pub_id_message">Click <a href="/wp-admin/options-general.php?page=copyright-licensing-tools&show-registration-form=1">here</a> to register your publication</span>
     <?php
 }
 

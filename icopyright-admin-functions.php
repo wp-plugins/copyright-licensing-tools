@@ -362,28 +362,12 @@ function icopyright_set_up_new_account($fname, $lname, $pname, $url) {
 
 //function to dynamically create registration form!
 function icopyright_create_register_form() {
-    $fname = sanitize_text_field(stripslashes($_POST['fname']));
-    $lname = sanitize_text_field(stripslashes($_POST['lname']));
-    $email = sanitize_email(stripslashes($_POST['email']));
-    $password = sanitize_text_field(stripslashes($_POST['password']));
-    $pname = sanitize_text_field(stripslashes($_POST['pname']));
-    $url = sanitize_text_field(stripslashes($_POST['url']));
-
-    //check whether form has been submitted with errors
-    //if there is errors change display form to block
-    //so as to retain value for user to re-enter form for posting
-    global $show_icopyright_register_form; // global value found in function icopyright_admin() in icopyright-admin.php
-    if ($show_icopyright_register_form == 'true') {
-        $display_form = 'style="display:block"';
-    } else {
-        $display_form = 'style="display:none"';
-    }
 
     //form fields and inputs
-    $form = "<div class=\"icopyright_registration\" id=\"icopyright_registration_form\" $display_form>";
+    $form = "<div class=\"icopyright_registration\" id=\"icopyright_registration_form\">";
     $form .= '<form name="icopyright_register_form" id="icopyright_register_form" method="post">';
     $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
-    $form .= '<h3>Registration Form</h3><p><a href="#" onclick="hide_icopyright_form()" style="font-size:12px;margin:0 0 0 10px;text-decoration:none;">(If you already have a publication ID, click here to enter it under Show Advanced Settings.)</a></p>';
+    $form .= '<h3>Registration Form</h3><p><a href="/wp-admin/options-general.php?page=copyright-licensing-tools" style="font-size:12px;margin:0 0 0 10px;text-decoration:none;">(If you already have a publication ID, click here to enter it under Show Advanced Settings.)</a></p>';
     $form .= '<p>If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-setup" target="_blank">help</a>.</p>';
     $form .= '<table class="widefat">';
 
@@ -392,25 +376,21 @@ function icopyright_create_register_form() {
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>First Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"fname\" id=\"fname\" value=\"$fname\"/></td></tr>";
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Last Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"lname\" value=\"$lname\"/></td></tr>";
 
-    if (!strlen($email)) { //check if email variable is not set, we use current user email
-        global $current_user;
-        get_currentuserinfo();
-        $email = $current_user->user_email;
-    }
+    global $current_user;
+    get_currentuserinfo();
+    $email = $current_user->user_email;
+
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Email Address:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" id=\"email\" value=\"$email\"/></td></tr>";
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Password:</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password\" id=\"password\" value=\"$password\"/></td></tr>";
     $form .= "<tr><td colspan=\"2\"><h2>About This Site</h2></td></tr>";
 
-    if (!strlen($pname)) {
-        $pname = get_bloginfo('name');
-    }
+    $pname = get_bloginfo('name');
+
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Site Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"pname\" value=\"$pname\"/></td></tr>";
 
     //auto populate using WordPress site url
     //since version 1.1.4
-    if (!strlen($url)) {
-        $url = get_bloginfo('url') . "/";
-    }
+    $url = get_bloginfo('url') . "/";
     //url
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Site Address (URL):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"url\" value=\"$url\"/></td></tr>";
 
