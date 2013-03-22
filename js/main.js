@@ -80,4 +80,16 @@ jQuery(document).ready(function() {
     jQuery('input:radio[name=icopyright_background]').change(function () {
         toolbarTouch();
     });
+
+    jQuery("input[name='icopyright_pub_id']").keyup(function() {
+        if(jQuery(this).val() != "") {
+            jQuery("#no_pub_id_message").hide();
+        } else {
+            jQuery("#no_pub_id_message").show();
+        }
+    })
+
+    if(jQuery("input[name='icopyright_pub_id']").val() != "") {
+        jQuery("#no_pub_id_message").hide();
+    }
 });
