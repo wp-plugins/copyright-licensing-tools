@@ -45,7 +45,7 @@ function icopyright_options_page() {
         ?>
             <div id="curl_notice" class="updated fade"><p>A PHP extension (cURL extension), which is needed for this plugin to work, is not installed.</p></div>
         <?php
-    } else if (($touResult != NULL && $touResult == 'FAILURE') || ($registrationResult != NULL && $registrationResult == 'FAILURE') || !empty($_GET['show-registration-form'])) {
+    } else if (($touResult != NULL && $touResult == 'FAILURE') || ($registrationResult != NULL && $registrationResult == 'FAILURE') || ($registrationResult != 'SUCCESS' && !empty($_GET['show-registration-form']))) {
         //
         // Show register form
         //

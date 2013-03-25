@@ -362,6 +362,11 @@ function icopyright_set_up_new_account($fname, $lname, $pname, $url) {
 
 //function to dynamically create registration form!
 function icopyright_create_register_form() {
+    $fname = sanitize_text_field(stripslashes($_POST['fname']));
+    $lname = sanitize_text_field(stripslashes($_POST['lname']));
+    $email = sanitize_text_field(stripslashes($_POST['email']));
+    $pname = sanitize_text_field(stripslashes($_POST['pname']));
+    $url = sanitize_text_field(stripslashes($_POST['url']));
 
     //form fields and inputs
     $form = "<div class=\"icopyright_registration\" id=\"icopyright_registration_form\">";
@@ -378,19 +383,22 @@ function icopyright_create_register_form() {
 
     global $current_user;
     get_currentuserinfo();
-    $email = $current_user->user_email;
+    if (empty($email))
+        $email = $current_user->user_email;
 
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Email Address:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" id=\"email\" value=\"$email\"/></td></tr>";
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Password:</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password\" id=\"password\" value=\"$password\"/></td></tr>";
     $form .= "<tr><td colspan=\"2\"><h2>About This Site</h2></td></tr>";
 
-    $pname = get_bloginfo('name');
+    if (empty($pname))
+        $pname = get_bloginfo('name');
 
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Site Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"pname\" value=\"$pname\"/></td></tr>";
 
     //auto populate using WordPress site url
     //since version 1.1.4
-    $url = get_bloginfo('url') . "/";
+    if (empty($url))
+        $url = get_bloginfo('url') . "/";
     //url
     $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Site Address (URL):</label></td><td><input style=\"width:300px\" type=\"text\" name=\"url\" value=\"$url\"/></td></tr>";
 
