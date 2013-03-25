@@ -54,8 +54,36 @@ function icopyright_settings_link($links, $file) {
 
 //function to delete option during uninstallation
 function icopyright_remove_settings() {
-  delete_option('icopyright_admin');
-  delete_option('icopyright_account');
+
+    delete_option("icopyright_fname");
+    delete_option("icopyright_lname");
+    delete_option("icopyright_site_name");
+    delete_option("icopyright_site_url");
+    delete_option("icopyright_address_line1");
+    delete_option("icopyright_address_line2");
+    delete_option("icopyright_address_line3");
+    delete_option("icopyright_address_city");
+    delete_option("icopyright_address_state");
+    delete_option("icopyright_address_country");
+    delete_option("icopyright_address_postal");
+    delete_option("icopyright_address_phone");
+
+    delete_option("icopyright_pub_id");
+    delete_option("icopyright_display");
+    delete_option("icopyright_tools");
+    delete_option("icopyright_theme");
+    delete_option("icopyright_background");
+    delete_option("icopyright_align");
+    delete_option("icopyright_show");
+    delete_option("icopyright_show_multiple");
+    delete_option("icopyright_display_on_pages");
+    delete_option("icopyright_use_category_filter");
+    delete_option("icopyright_categories");
+    delete_option("icopyright_share");
+    delete_option("icopyright_ez_excerpt");
+    delete_option("icopyright_syndication");
+    delete_option("icopyright_feed_url");
+  delete_option('icopyright_tou');
   delete_option('icopyright_conductor_password');
   delete_option('icopyright_conductor_email');
   delete_option('icopyright_redirect_on_first_activation');

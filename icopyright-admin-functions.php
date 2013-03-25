@@ -51,7 +51,7 @@ function icopyright_migrate_options() {
  */
 function icopyright_migrate_option($array, $name) {
     if (!empty($array) && is_array($array) && array_key_exists($name, $array))
-        update_option($name, $array[$name]);
+        update_option('icopyright_'.$name, $array[$name]);
 }
 
 /**
