@@ -45,7 +45,7 @@ function icopyright_options_page() {
         ?>
             <div id="curl_notice" class="updated fade"><p>A PHP extension (cURL extension), which is needed for this plugin to work, is not installed.</p></div>
         <?php
-    } else if (($touResult != NULL && $touResult == 'FAILURE') || ($registrationResult != NULL && $registrationResult == 'FAILURE') || ($registrationResult != 'SUCCESS' && !empty($_GET['show-registration-form']))) {
+    } else if (($touResult != NULL && $touResult == 'FAILURE') || ($registrationResult != NULL && $registrationResult == 'FAILURE') || !empty($_GET['show-registration-form'])) {
         //
         // Show register form
         //
@@ -111,7 +111,15 @@ function icopyright_options_page() {
 // Section callbacks
 //
 function account_settings_section_callback() {
-    echo('<p>Indicate below where we should mail your revenue checks.</p>');
+    $address = get_option('icopyright_address_line1');
+    if (!empty($address)) {
+        ?>
+            <input type="button" id="toggle_account_setting" value="Show Account Settings" style="cursor:pointer">
+        <?php
+    }
+    ?>
+        <p>Indicate below where we should mail your revenue checks.</p>
+    <?php
 }
 function deployment_mechanism_section_callback() {
     ?>
@@ -135,43 +143,10 @@ function advanced_section_callback() {
 add_action( 'admin_init', 'icopyright_admin_init' );
 function icopyright_admin_init() {
 
-    add_settings_section( 'account-settings', 'Account Settings:', 'account_settings_section_callback', 'copyright-licensing-tools' );
-
-    add_settings_field( 'icopyright_fname', 'First Name', 'first_name_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_fname');
-
-    add_settings_field( 'icopyright_lname', 'Last Name', 'last_name_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_lname');
-
-    add_settings_field( 'icopyright_site_name', 'Site Name', 'site_name_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_site_name');
-
-    add_settings_field( 'icopyright_site_url', 'Site URL', 'site_url_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_site_url');
-
-    add_settings_field( 'icopyright_address_line1', 'Address', 'address_line1_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_address_line1');
-
-    add_settings_field( 'icopyright_address_line2', '', 'address_line2_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_address_line2');
-
-    add_settings_field( 'icopyright_address_line3', '', 'address_line3_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_address_line3');
-
-    add_settings_field( 'icopyright_address_city', 'City', 'address_city_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_address_city');
-
-    add_settings_field( 'icopyright_address_state', 'State', 'address_state_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_address_state');
-
-    add_settings_field( 'icopyright_address_country', 'Country', 'address_country_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_address_country');
-
-    add_settings_field( 'icopyright_address_postal', 'Postal Code', 'address_postal_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_address_postal');
-
-    add_settings_field( 'icopyright_address_phone', 'Phone', 'address_phone_field_callback', 'copyright-licensing-tools', 'account-settings' );
-    register_setting( 'icopyright-settings-group', 'icopyright_address_phone');
+    $address = get_option('icopyright_address_line1');
+    if (empty($address)) {
+        add_account_settings_section();
+    }
 
     add_settings_section( 'deployment-mechanism', 'Deployment Mechanism:', 'deployment_mechanism_section_callback', 'copyright-licensing-tools' );
 
@@ -220,6 +195,10 @@ function icopyright_admin_init() {
     add_settings_field( 'icopyright_syndication', 'Syndication', 'syndication_field_callback', 'copyright-licensing-tools', 'service-settings' );
     register_setting( 'icopyright-settings-group', 'icopyright_syndication');
 
+    if (!empty($address)) {
+        add_account_settings_section();
+    }
+
     add_settings_section( 'advanced-settings', 'Advanced Settings:', 'advanced_section_callback', 'copyright-licensing-tools' );
 
     add_settings_field( 'icopyright_pub_id', 'Publication ID', 'pub_id_field_callback', 'copyright-licensing-tools', 'advanced-settings' );
@@ -233,6 +212,46 @@ function icopyright_admin_init() {
 
     add_settings_field( 'icopyright_feed_url', 'Conductor Feed URL', 'feed_url_field_callback', 'copyright-licensing-tools', 'advanced-settings' );
     register_setting( 'icopyright-settings-group', 'icopyright_feed_url', 'icopyright_post_settings');
+}
+
+function add_account_settings_section() {
+    add_settings_section( 'account-settings', 'Account Settings:', 'account_settings_section_callback', 'copyright-licensing-tools' );
+
+    add_settings_field( 'icopyright_fname', 'First Name', 'first_name_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_fname');
+
+    add_settings_field( 'icopyright_lname', 'Last Name', 'last_name_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_lname');
+
+    add_settings_field( 'icopyright_site_name', 'Site Name', 'site_name_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_site_name');
+
+    add_settings_field( 'icopyright_site_url', 'Site URL', 'site_url_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_site_url');
+
+    add_settings_field( 'icopyright_address_line1', 'Address', 'address_line1_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_address_line1');
+
+    add_settings_field( 'icopyright_address_line2', '', 'address_line2_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_address_line2');
+
+    add_settings_field( 'icopyright_address_line3', '', 'address_line3_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_address_line3');
+
+    add_settings_field( 'icopyright_address_city', 'City', 'address_city_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_address_city');
+
+    add_settings_field( 'icopyright_address_state', 'State', 'address_state_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_address_state');
+
+    add_settings_field( 'icopyright_address_country', 'Country', 'address_country_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_address_country');
+
+    add_settings_field( 'icopyright_address_postal', 'Postal Code', 'address_postal_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_address_postal');
+
+    add_settings_field( 'icopyright_address_phone', 'Phone', 'address_phone_field_callback', 'copyright-licensing-tools', 'account-settings' );
+    register_setting( 'icopyright-settings-group', 'icopyright_address_phone');
 }
 
 //

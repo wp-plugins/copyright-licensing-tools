@@ -194,7 +194,7 @@ function icopyright_create_tou_form() {
 
     //form fields and inputs
     $form = '<div class="icopyright_tou" id="icopyright_tou">';
-    $form .= '<form name="icopyright_tou_form" id="icopyright_tou_form" method="post" action="" onsubmit="return validate_icopyright_form(this)">';
+    $form .= '<form name="icopyright_tou_form" id="icopyright_tou_form" method="post" action="/wp-admin/options-general.php?page=copyright-licensing-tools" onsubmit="return validate_icopyright_form(this)">';
     $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
     $form .= '<h3>iCopyright Toolbar</h3>';
     $form .= '<p>I accept the <a href="' . ICOPYRIGHT_URL . 'publisher/statichtml/CSA-Online-Plugin.pdf" target="_blank">terms of use</a>.</p>';
@@ -370,9 +370,9 @@ function icopyright_create_register_form() {
 
     //form fields and inputs
     $form = "<div class=\"icopyright_registration\" id=\"icopyright_registration_form\">";
-    $form .= '<form name="icopyright_register_form" id="icopyright_register_form" method="post">';
+    $form .= '<form name="icopyright_register_form" id="icopyright_register_form" method="post" action="/wp-admin/options-general.php?page=copyright-licensing-tools">';
     $form .= "<div id='register_error_message' class='updated faded' style='display:none;'></div>";
-    $form .= '<h3>Registration Form</h3><p><a href="/wp-admin/options-general.php?page=copyright-licensing-tools" style="font-size:12px;margin:0 0 0 10px;text-decoration:none;">(If you already have a publication ID, click here to enter it under Show Advanced Settings.)</a></p>';
+    $form .= '<h3>Registration Form</h3><p><a href="/wp-admin/options-general.php?page=copyright-licensing-tools#toggle_advance_setting" style="font-size:12px;margin:0 0 0 10px;text-decoration:none;">(If you already have a publication ID, click here to enter it under Show Advanced Settings.)</a></p>';
     $form .= '<p>If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-setup" target="_blank">help</a>.</p>';
     $form .= '<table class="widefat">';
 

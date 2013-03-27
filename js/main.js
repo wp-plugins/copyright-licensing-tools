@@ -68,6 +68,20 @@ jQuery(document).ready(function() {
     );
     jQuery("#toggle_advance_setting").next().hide();
 
+    jQuery("#toggle_account_setting").toggle(function(){
+            jQuery(this).next().show();
+            jQuery(this).next().next().show();
+            jQuery("#toggle_account_setting").val("Hide Account Settings");
+        },
+        function() {
+            jQuery(this).next().hide();
+            jQuery(this).next().next().hide();
+            jQuery("#toggle_account_setting").val("Show Account Settings")
+        }
+    );
+    jQuery("#toggle_account_setting").next().hide();
+    jQuery("#toggle_account_setting").next().next().hide();
+
     categoryListDisplay();
     jQuery("input.category-radio").change(function() {
         categoryListDisplay();
