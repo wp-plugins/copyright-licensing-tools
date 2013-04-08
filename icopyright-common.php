@@ -294,7 +294,7 @@ function icopyright_post_service($sid, $pid, $value, $useragent, $email, $passwo
  */
 function icopyright_make_header($email, $password) {
   $header_encode = base64_encode("$email:$password");
-  return array("Authorization: Basic $header_encode");
+  return array('Authorization' => 'Basic '.$header_encode);
 }
 
 /**
@@ -313,56 +313,60 @@ function icopyright_make_header($email, $password) {
  * @return object results of the post as specified
  */
 function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
-  $rs_ch = curl_init(icopyright_get_server(TRUE) . $url);
-  curl_setopt($rs_ch, CURLOPT_SSL_VERIFYPEER, false);
 
-  // If the server is locked down (for testing, for example) use auth tokens
-  if ((ICOPYRIGHT_AUTH_USER != NULL) && (ICOPYRIGHT_AUTH_PASSWORD != NULL)) {
-    $token = ICOPYRIGHT_AUTH_USER . ':' . ICOPYRIGHT_AUTH_PASSWORD;
-    curl_setopt($rs_ch, CURLOPT_USERPWD, $token);
-    curl_setopt($rs_ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-  }
-  if($postdata != NULL) {
-    curl_setopt($rs_ch, CURLOPT_POST, 1);
-    curl_setopt($rs_ch, CURLOPT_POSTFIELDS, $postdata);
-  }
-  // Very unlikely we will need to follow, but set if we can
-  if (ini_get('open_basedir') == '' && ini_get('safe_mode' == 'Off')) {
-    curl_setopt($rs_ch, CURLOPT_FOLLOWLOCATION, 1);
-  }
-  curl_setopt($rs_ch, CURLOPT_HEADER, 0);
-  if ($headers != NULL) {
-    curl_setopt($rs_ch, CURLOPT_HTTPHEADER, $headers);
-  }
-  curl_setopt($rs_ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($rs_ch, CURLOPT_TIMEOUT, 60);
-  if ($useragent != NULL) {
-    curl_setopt($rs_ch, CURLOPT_USERAGENT, $useragent);
-  }
+    //Default: method: POST, timeout: 5, redirection: 5, httpversion: 1.0, blocking: true, headers: array(), body: null, cookies: array()
+    $args = array();
+    $args['method'] = 'POST';
+    $args['timeout'] = 60;
+    $args['redirection'] = 5;
+    $args['httpversion'] = '1.0';
+    $args['blocking'] = true;
 
-  // Fetch the respopnse
-  $rv = new stdClass();
-  $full_response = curl_exec($rs_ch);
-  $rv->response = str_replace('ns0:', '', $full_response);
-  $rv->http_code = curl_getinfo($rs_ch, CURLINFO_HTTP_CODE);
-  // A 200 code can carry an error message in the payload
-  if($rv->http_code == 200) {
-    $xml = @simplexml_load_string($rv->response);
-    $status = $xml->status;
-    $rv->http_code = (string)$status['code'];
-  }
+    if ($headers == NULL)
+        $headers = array();
 
-  $responses = array(
-    100 => 'Continue', 101 => 'Switching Protocols',
-    200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content',
-    300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Found', 303 => 'See Other', 304 => 'Not Modified', 305 => 'Use Proxy', 307 => 'Temporary Redirect',
-    400 => 'Bad Request', 401 => 'Unauthorized', 402 => 'Payment Required', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 406 => 'Not Acceptable', 407 => 'Proxy Authentication Required', 408 => 'Request Time-out', 409 => 'Conflict', 410 => 'Gone', 411 => 'Length Required', 412 => 'Precondition Failed', 413 => 'Request Entity Too Large', 414 => 'Request-URI Too Large', 415 => 'Unsupported Media Type', 416 => 'Requested range not satisfiable', 417 => 'Expectation Failed',
-    500 => 'Internal Server Error', 501 => 'Not Implemented', 502 => 'Bad Gateway', 503 => 'Service Unavailable', 504 => 'Gateway Time-out', 505 => 'HTTP Version not supported'
-  );
-  $rv->http_expl = $responses[$rv->http_code];
-  $rv->curl_errno = curl_errno($rs_ch);
-  $rv->curl_error = curl_error($rs_ch);
-  curl_close($rs_ch);
+    if($postdata != NULL) {
+        $args['body'] = $postdata;
+    } else {
+        $args['body'] = NULL;
+    }
 
-  return $rv;
+    // Very unlikely we will need to follow, but set if we can
+    if (ini_get('open_basedir') == '' && ini_get('safe_mode' == 'Off')) {
+        $args['redirection'] = 1;
+    }
+
+    if ($useragent != NULL) {
+        $args['user-agent'] = $useragent;
+    }
+
+    $args['headers'] = $headers;
+    $args['cookies'] = array();
+
+    $response = wp_remote_post( icopyright_get_server(TRUE) . $url, $args);
+
+    // Fetch the respopnse
+    $rv = new stdClass();
+
+    $rv->response = $response['body'];
+    $rv->http_code = $response['response']['code'];
+
+    // A 200 code can carry an error message in the payload
+    if($rv->http_code == 200) {
+        $xml = @simplexml_load_string($rv->response);
+        $status = $xml->status;
+        $rv->http_code = (string)$status['code'];
+    }
+
+    $responses = array(
+        100 => 'Continue', 101 => 'Switching Protocols',
+        200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content',
+        300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Found', 303 => 'See Other', 304 => 'Not Modified', 305 => 'Use Proxy', 307 => 'Temporary Redirect',
+        400 => 'Bad Request', 401 => 'Unauthorized', 402 => 'Payment Required', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 406 => 'Not Acceptable', 407 => 'Proxy Authentication Required', 408 => 'Request Time-out', 409 => 'Conflict', 410 => 'Gone', 411 => 'Length Required', 412 => 'Precondition Failed', 413 => 'Request Entity Too Large', 414 => 'Request-URI Too Large', 415 => 'Unsupported Media Type', 416 => 'Requested range not satisfiable', 417 => 'Expectation Failed',
+        500 => 'Internal Server Error', 501 => 'Not Implemented', 502 => 'Bad Gateway', 503 => 'Service Unavailable', 504 => 'Gateway Time-out', 505 => 'HTTP Version not supported'
+    );
+
+    $rv->http_expl = $responses[$rv->http_code];
+
+    return $rv;
 }

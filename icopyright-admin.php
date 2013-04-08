@@ -37,15 +37,7 @@ function icopyright_options_page() {
     wp_enqueue_script( 'icopyright-admin-js', plugins_url( 'js/main.js', __FILE__ ) );
 
     $tou = get_option('icopyright_tou');
-    $loaded_extension = get_loaded_extensions();
-    if (!in_array("curl", $loaded_extension)) {
-        //
-        // cURL extension must be enabled.
-        //
-        ?>
-            <div id="curl_notice" class="updated fade"><p>A PHP extension (cURL extension), which is needed for this plugin to work, is not installed.</p></div>
-        <?php
-    } else if (($touResult != NULL && $touResult == 'FAILURE') || ($registrationResult != NULL && $registrationResult == 'FAILURE') || !empty($_GET['show-registration-form'])) {
+    if (($touResult != NULL && $touResult == 'FAILURE') || ($registrationResult != NULL && $registrationResult == 'FAILURE') || !empty($_GET['show-registration-form'])) {
         //
         // Show register form
         //
