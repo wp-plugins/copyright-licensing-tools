@@ -321,6 +321,7 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
     $args['redirection'] = 5;
     $args['httpversion'] = '1.0';
     $args['blocking'] = true;
+    $args['sslverify'] = false;
 
     if ($headers == NULL)
         $headers = array();
@@ -343,30 +344,34 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
     $args['headers'] = $headers;
     $args['cookies'] = array();
 
-    $response = wp_remote_post( icopyright_get_server(TRUE) . $url, $args);
-
     // Fetch the respopnse
     $rv = new stdClass();
 
-    $rv->response = $response['body'];
-    $rv->http_code = $response['response']['code'];
+    $response = wp_remote_post( icopyright_get_server(TRUE) . $url, $args);
+    if( is_wp_error( $response ) ) {
+        $rv->http_expl = $response->get_error_message();
+    } else {
 
-    // A 200 code can carry an error message in the payload
-    if($rv->http_code == 200) {
-        $xml = @simplexml_load_string($rv->response);
-        $status = $xml->status;
-        $rv->http_code = (string)$status['code'];
+        $rv->response = $response['body'];
+        $rv->http_code = $response['response']['code'];
+
+        // A 200 code can carry an error message in the payload
+        if($rv->http_code == 200) {
+            $xml = @simplexml_load_string($rv->response);
+            $status = $xml->status;
+            $rv->http_code = (string)$status['code'];
+        }
+
+        $responses = array(
+            100 => 'Continue', 101 => 'Switching Protocols',
+            200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content',
+            300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Found', 303 => 'See Other', 304 => 'Not Modified', 305 => 'Use Proxy', 307 => 'Temporary Redirect',
+            400 => 'Bad Request', 401 => 'Unauthorized', 402 => 'Payment Required', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 406 => 'Not Acceptable', 407 => 'Proxy Authentication Required', 408 => 'Request Time-out', 409 => 'Conflict', 410 => 'Gone', 411 => 'Length Required', 412 => 'Precondition Failed', 413 => 'Request Entity Too Large', 414 => 'Request-URI Too Large', 415 => 'Unsupported Media Type', 416 => 'Requested range not satisfiable', 417 => 'Expectation Failed',
+            500 => 'Internal Server Error', 501 => 'Not Implemented', 502 => 'Bad Gateway', 503 => 'Service Unavailable', 504 => 'Gateway Time-out', 505 => 'HTTP Version not supported'
+        );
+
+        $rv->http_expl = $responses[$rv->http_code];
     }
-
-    $responses = array(
-        100 => 'Continue', 101 => 'Switching Protocols',
-        200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content',
-        300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Found', 303 => 'See Other', 304 => 'Not Modified', 305 => 'Use Proxy', 307 => 'Temporary Redirect',
-        400 => 'Bad Request', 401 => 'Unauthorized', 402 => 'Payment Required', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 406 => 'Not Acceptable', 407 => 'Proxy Authentication Required', 408 => 'Request Time-out', 409 => 'Conflict', 410 => 'Gone', 411 => 'Length Required', 412 => 'Precondition Failed', 413 => 'Request Entity Too Large', 414 => 'Request-URI Too Large', 415 => 'Unsupported Media Type', 416 => 'Requested range not satisfiable', 417 => 'Expectation Failed',
-        500 => 'Internal Server Error', 501 => 'Not Implemented', 502 => 'Bad Gateway', 503 => 'Service Unavailable', 504 => 'Gateway Time-out', 505 => 'HTTP Version not supported'
-    );
-
-    $rv->http_expl = $responses[$rv->http_code];
 
     return $rv;
 }
