@@ -39,7 +39,7 @@ function icopyright_get_server($secure = FALSE) {
  * @return boolean true if the link is established; false if not
  */
 function icopyright_ping($useragent, $pid, $email, $password) {
-  $res = icopyright_post("/api/xml/publication/ping/$pid", NULL, $useragent, icopyright_make_header($email, $password));
+  $res = icopyright_post("/api/xml/publication/ping/$pid", NULL, $useragent, icopyright_make_header($email, $password), 'GET');
   return icopyright_check_response($res);
 }
 
@@ -308,13 +308,15 @@ function icopyright_make_header($email, $password) {
  *      the user agent doing the requesting -- should be the plugin and version number
  * @param $headers
  *      headers to include for authentication, if any
+ * @param $method
+ *      the HTTP method -- defaults to post of course
  * @return object results of the post as specified
  */
-function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
+function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL, $method = 'POST') {
 
-    //Default: method: POST, timeout: 5, redirection: 5, httpversion: 1.0, blocking: true, headers: array(), body: null, cookies: array()
+    //Default: timeout: 5, redirection: 5, httpversion: 1.0, blocking: true, headers: array(), body: null, cookies: array()
     $args = array();
-    $args['method'] = 'POST';
+    $args['method'] = $method;
     $args['timeout'] = 60;
     $args['redirection'] = 5;
     $args['httpversion'] = '1.0';
