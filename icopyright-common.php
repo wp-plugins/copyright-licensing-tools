@@ -372,4 +372,4 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
     }
 
     return $rv;
-}Sor
+}
