@@ -436,7 +436,7 @@ function icopyright_post_passes_category_filter($post_id) {
  * @return string the default feed URL for this publication
  */
 function icopyright_get_default_feed_url() {
-  return site_url() . "/?feed=icopyright_feed?id=*";
+  return site_url() . "/?feed=icopyright_feed&id=*";
 }
 
 /**
