@@ -7,73 +7,72 @@ function hide_manual_option() {
 }
 
 
-
 // Function to update the previews with what the toolbars will look like with these settings
 function toolbarTouch() {
-    if(jQuery('#pub_id').html() == '') return;
+    if (jQuery('#pub_id').html() == '') return;
     var theme = jQuery('#icopyright_article_tools_theme').val();
     var background = jQuery('input:radio[name=icopyright_background]:checked').val();
     var publication = jQuery('#pub_id').html();
-    var url_h = jQuery('#icopyright_server').html()+'/publisher/TouchToolbar.act?' +
+    var url_h = jQuery('#icopyright_server').html() + '/publisher/TouchToolbar.act?' +
         jQuery.param({
-            theme: theme,
-            background: background,
-            orientation: 'horz',
-            publication: publication});
+            theme:theme,
+            background:background,
+            orientation:'horz',
+            publication:publication});
     jQuery('#horizontal-article-tools-preview').attr('src', url_h);
-    var url_v = jQuery('#icopyright_server').html()+'/publisher/TouchToolbar.act?' +
+    var url_v = jQuery('#icopyright_server').html() + '/publisher/TouchToolbar.act?' +
         jQuery.param({
-            theme: theme,
-            background: background,
-            orientation: 'vert',
-            publication: publication});
+            theme:theme,
+            background:background,
+            orientation:'vert',
+            publication:publication});
     jQuery('#vertical-article-tools-preview').attr('src', url_v);
-    var url_o = jQuery('#icopyright_server').html()+'/publisher/TouchToolbar.act?' +
+    var url_o = jQuery('#icopyright_server').html() + '/publisher/TouchToolbar.act?' +
         jQuery.param({
-            theme: theme,
-            background: background,
-            orientation: 'one-button',
-            publication: publication});
+            theme:theme,
+            background:background,
+            orientation:'one-button',
+            publication:publication});
     jQuery('#onebutton-article-tools-preview').attr('src', url_o);
-    var noticeUrl = jQuery('#icopyright_server').html()+'/publisher/copyright-preview.jsp?' +
+    var noticeUrl = jQuery('#icopyright_server').html() + '/publisher/copyright-preview.jsp?' +
         jQuery.param({
-            themeName: theme,
-            background: background,
-            publicationId: publication,
-            publicationName: jQuery('#site_name').html()
+            themeName:theme,
+            background:background,
+            publicationId:publication,
+            publicationName:jQuery('#site_name').html()
         });
     jQuery('#copyright-notice-preview').attr('src', noticeUrl);
 }
 
 function categoryListDisplay() {
 
-    if(jQuery("input.category-radio:checked").val() == "yes") {
+    if (jQuery("input.category-radio:checked").val() == "yes") {
         jQuery("#icopyright-category-list").parents("tr").show();
     } else {
         jQuery("#icopyright-category-list").parents("tr").hide();
     }
 }
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     jQuery("h2#wait").hide();
     jQuery("div#noneedtohide").show();
-    jQuery("#toggle_advance_setting").toggle(function(){
+    jQuery("#toggle_advance_setting").toggle(function () {
             jQuery(this).next().show();
             jQuery("#toggle_advance_setting").val("Hide Advanced Settings");
         },
-        function() {
+        function () {
             jQuery(this).next().hide();
             jQuery("#toggle_advance_setting").val("Show Advanced Settings")
         }
     );
     jQuery("#toggle_advance_setting").next().hide();
 
-    jQuery("#toggle_account_setting").toggle(function(){
+    jQuery("#toggle_account_setting").toggle(function () {
             jQuery(this).next().show();
             jQuery(this).next().next().show();
             jQuery("#toggle_account_setting").val("Hide Account Settings");
         },
-        function() {
+        function () {
             jQuery(this).next().hide();
             jQuery(this).next().next().hide();
             jQuery("#toggle_account_setting").val("Show Account Settings")
@@ -83,7 +82,7 @@ jQuery(document).ready(function() {
     jQuery("#toggle_account_setting").next().next().hide();
 
     categoryListDisplay();
-    jQuery("input.category-radio").change(function() {
+    jQuery("input.category-radio").change(function () {
         categoryListDisplay();
     });
 
@@ -95,15 +94,15 @@ jQuery(document).ready(function() {
         toolbarTouch();
     });
 
-    jQuery("input[name='icopyright_pub_id']").keyup(function() {
-        if(jQuery(this).val() != "") {
+    jQuery("input[name='icopyright_pub_id']").keyup(function () {
+        if (jQuery(this).val() != "") {
             jQuery("#no_pub_id_message").hide();
         } else {
             jQuery("#no_pub_id_message").show();
         }
     })
 
-    if(jQuery("input[name='icopyright_pub_id']").val() != "") {
+    if (jQuery("input[name='icopyright_pub_id']").val() != "") {
         jQuery("#no_pub_id_message").hide();
     }
 });

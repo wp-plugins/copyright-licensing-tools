@@ -9,8 +9,6 @@
 // auth_user and auth_password are for servers that are locked down with HTTP basic authentication.
 define('ICOPYRIGHT_SERVER', 'license.icopyright.net');
 define('ICOPYRIGHT_PORT', 80);
-define('ICOPYRIGHT_AUTH_USER', '');
-define('ICOPYRIGHT_AUTH_PASSWORD', '');
 
 /**
  * Return the iCopyright server and port that is handling the various services
@@ -374,4 +372,4 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL) {
     }
 
     return $rv;
-}
+}Sor
