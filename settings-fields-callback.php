@@ -283,6 +283,8 @@ function show_preview_callback() {
 <?php
 }
 
+function show_multiple_callback() {}
+
 function display_on_pages_field_callback() {
   ?>
 <fieldset>
