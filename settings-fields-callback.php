@@ -352,7 +352,7 @@ function share_field_callback() {
          value="no" <?php if (empty($icopyright_share) || $icopyright_share == "no") {
     echo "checked";
   }?><?php if (empty($check_email) || empty($check_password)) {
-    echo 'disabled';
+    echo ' disabled';
   }?>/> <?php _e('Off ')?>
 </fieldset>
 <span class="description">Share services make it easy for readers to share links to your articles using

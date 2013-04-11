@@ -223,6 +223,8 @@ function icopyright_process_tou() {
       die('Security check');
     }
 
+    icopyright_admin_defaults();
+
     // User accepted the TOU so mark it as such, and then preregister
     add_option("icopyright_tou", "on");
     return icopyright_preregister();
@@ -328,7 +330,6 @@ function icopyright_graphical_link_to_conductor($page, $img = NULL, $id = NULL) 
  * @param $password
  */
 function icopyright_set_up_new_publication($pid, $email, $password) {
-  icopyright_admin_defaults();
   update_option('icopyright_pub_id', $pid);
 
   $plugin_feed_url = icopyright_get_default_feed_url();
