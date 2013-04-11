@@ -402,7 +402,7 @@ function icopyright_post_passes_category_filter($post_id) {
   if($use_filter != 'yes') return TRUE;
 
   // Which categories are we allowing through?
-  $icopyright_categories = icopyright_selected_categories();
+  $icopyright_categories = get_option('icopyright_categories');
   if(count($icopyright_categories) == 0)
     return FALSE;
 

@@ -31,7 +31,10 @@ function icopyright_migrate_options() {
     icopyright_migrate_option($icopyright_admin, "show_multiple");
     icopyright_migrate_option($icopyright_admin, "display_on_pages");
     icopyright_migrate_option($icopyright_admin, "use_category_filter");
-    icopyright_migrate_option($icopyright_admin, "categories");
+
+    if (!empty($icopyright_admin) && is_array($icopyright_admin) && array_key_exists('categories', $icopyright_admin))
+      update_option('icopyright_categories', explode(',',$icopyright_admin['categories']));
+
     icopyright_migrate_option($icopyright_admin, "share");
     icopyright_migrate_option($icopyright_admin, "ez_excerpt");
     icopyright_migrate_option($icopyright_admin, "syndication");
@@ -400,7 +403,7 @@ function icopyright_create_register_form() {
   }
 
   $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Email Address:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" id=\"email\" value=\"$email\"/></td></tr>";
-  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Password:</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password\" id=\"password\" value=\"$password\"/></td></tr>";
+  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Password:</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password\" id=\"password\" value=\"\"/></td></tr>";
   $form .= "<tr><td colspan=\"2\"><h2>About This Site</h2></td></tr>";
 
   if (empty($pname)) {
