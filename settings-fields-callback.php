@@ -323,12 +323,12 @@ function categories_field_callback() {
 
   <?php
   echo '<div id="icopyright-category-list" style="font-size:10px;"><span class="description">Select categories on which to display the Article Tools.</span>';
-  $selectedCategories = icopyright_selected_categories();
+  $selectedCategories = get_option('icopyright_categories');
   echo '<ul>';
 
   foreach ($systemCategories as $cat) {
     $checked = (in_array($cat->term_id, $selectedCategories) ? 'checked' : '');
-    echo '<li><input id="' . $cat->term_id . '" type="checkbox" name="icopyright_categories[]" value="' . $cat->term_id . '" ' . $checked . ' /><label style="margin-left: 5px;" for="' . $cat->term_id . '">' . $cat->name . '</label></li>';
+    echo '<li><input id="cat_' . $cat->term_id . '" type="checkbox" name="icopyright_categories[]" value="' . $cat->term_id . '" ' . $checked . ' /><label style="margin-left: 5px;" for="cat_' . $cat->term_id . '">' . $cat->name . '</label></li>';
   }
   echo '</ul></div>';
   ?>

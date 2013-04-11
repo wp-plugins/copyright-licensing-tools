@@ -356,19 +356,6 @@ function icopyright_current_page_url() {
 }
 
 /**
- * Returns an array of categories that the tools should be placed on. Can be empty but will never be null.
- * @return
- */
-function icopyright_selected_categories() {
-  $categories = get_option('icopyright_categories');
-  if(strlen($categories) > 0) {
-    return explode(',', $categories);
-  } else {
-    return array();
-  }
-}
-
-/**
  * Returns true if the post passes all the various filters and the article tools are eligible to be placed here.
  * The filters include such things as (a) the user not explicitly turning them off for a post; (b) the category
  *
