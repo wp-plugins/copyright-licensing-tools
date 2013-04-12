@@ -96,11 +96,6 @@ register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
  */
 function icopyright_activate() {
   update_option('icopyright_redirect_on_first_activation', 'true');
-
-  //
-  // Migrate old options
-  //
-  icopyright_migrate_options();
 }
 
 /**
@@ -145,5 +140,5 @@ function icopyright_warning() {
 }
 
 add_action('init', 'icopyright_admin_warning');
-
+add_action('init', 'icopyright_migrate_options');
 ?>
