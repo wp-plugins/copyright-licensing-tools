@@ -65,3 +65,20 @@
 #toolbar-format {
   margin-bottom: -200px;
 }
+
+#enter-conductor-console input[type="image"] {
+  width: 225px;
+}
+
+#enter-conductor-console {
+  overflow: hidden;
+}
+
+#enter-conductor-console form {
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+#enter-conductor-console form#icx-enter-discovery {
+  margin-left: 110px;
+}

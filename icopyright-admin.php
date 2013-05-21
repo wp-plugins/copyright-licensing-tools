@@ -77,10 +77,12 @@ function icopyright_options_page() {
           </th>
           <td valign="top">
             <div id="enter-conductor-console">
-              <?php print icopyright_graphical_link_to_conductor('acidIndex.act', 'search-infringers.png'); ?>
-              <?php print icopyright_graphical_link_to_conductor('serviceGroups.act', 'modify-prices.png'); ?>
-              <?php print icopyright_graphical_link_to_conductor('publisherReports.act', 'view-reports.png'); ?>
-              <?php print icopyright_graphical_link_to_conductor('contentSyndicationFeedWizard.act', 'syndication-feeds.png'); ?>
+              <?php print icopyright_graphical_link_to_conductor('acidIndex.act', 'enter-discovery.jpg', 'icx-enter-discovery'); ?>
+              <?php print icopyright_graphical_link_to_conductor('pricingOptimizer.act', 'enter-price-optimizer.jpg', 'icx-enter-price-optimizer'); ?>
+              <div class="clear"></div>
+              <?php print icopyright_graphical_link_to_conductor('serviceGroups.act', 'modify-services-and-prices.jpg', 'icx-modify-services-prices'); ?>
+              <?php print icopyright_graphical_link_to_conductor('publisherReports.act', 'view-reports.jpg', 'icx-view-reports'); ?>
+              <?php print icopyright_graphical_link_to_conductor('contentSyndicationFeedWizard.act', 'subscribe-to-syndication-feeds.jpg', 'icx-subscribe-to-syndication-feeds'); ?>
             </div>
             <div style="clear:both;"></div>
           </td>
