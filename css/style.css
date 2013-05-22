@@ -72,6 +72,7 @@
 
 #enter-conductor-console {
   overflow: hidden;
+  min-width: 760px;
 }
 
 #enter-conductor-console form {

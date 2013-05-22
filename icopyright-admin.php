@@ -34,7 +34,7 @@ function icopyright_options_page() {
   //
   // Add JS and CSS
   //
-  wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__));
+  wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.0.0');  // Update the version when the style changes.  Refreshes cache.
   wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__));
 
   $tou = get_option('icopyright_tou');
