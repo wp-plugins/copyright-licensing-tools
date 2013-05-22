@@ -6,7 +6,6 @@
 
 // Which iCopyright server should we talk to via REST? The standard is license.icopyright.net, port 80,
 // but you can target alternate infrastructures (normally for debugging purposes) by changing these variables.
-// auth_user and auth_password are for servers that are locked down with HTTP basic authentication.
 define('ICOPYRIGHT_SERVER', 'license.icopyright.net');
 define('ICOPYRIGHT_PORT', 80);
 
