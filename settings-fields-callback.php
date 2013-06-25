@@ -582,7 +582,7 @@ function categories_field_callback() {
 
   <?php
   echo '<div id="icopyright-category-list" style="font-size:10px;"><span class="description">Select categories on which to display the Article Tools.</span>';
-  $selectedCategories = get_option('icopyright_categories');
+  $selectedCategories = get_option('icopyright_categories', array());
   echo '<ul>';
 
   foreach ($systemCategories as $cat) {
