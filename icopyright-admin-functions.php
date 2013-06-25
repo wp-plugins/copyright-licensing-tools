@@ -455,6 +455,8 @@ function icopyright_post_registration_form() {
       'pname' => sanitize_text_field(stripslashes($_POST['pname'])),
       'url' => sanitize_text_field(stripslashes($_POST['url'])),
     );
+    if(strlen($post['fname']) == 0) $post['fname'] = 'Anonymous';
+    if(strlen($post['lname']) == 0) $post['lname'] = 'User';
     $postdata = http_build_query($post);
     $rv = icopyright_post_new_publisher($postdata, ICOPYRIGHT_USERAGENT, $post['email'], $post['password']);
     $xml = @simplexml_load_string($rv->response);
