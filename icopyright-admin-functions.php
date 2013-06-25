@@ -65,8 +65,8 @@ function icopyright_migrate_option($array, $name) {
  * @param $field
  * @param null $max
  */
-function icopyright_make_account_row($width, $field, $max = NULL) {
-  $current_value = get_option($field);
+function icopyright_make_account_row($width, $field, $max = NULL, $display = NULL) {
+  $current_value = (isset($display) ? $display : get_option($field));
   ?>
 <input type="text" name="<?php echo($field);?>" style="width: <?php echo($width); ?>px;"
   <?php

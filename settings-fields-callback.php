@@ -4,11 +4,13 @@
 // Field callbacks
 //
 function first_name_field_callback() {
-  icopyright_make_account_row(150, 'icopyright_fname');
+  $fname = get_option('icopyright_fname');
+  icopyright_make_account_row(150, 'icopyright_fname', NULL, ($fname == 'Anonymous' ? '' : $fname));
 }
 
 function last_name_field_callback() {
-  icopyright_make_account_row(150, 'icopyright_lname');
+  $lname = get_option('icopyright_lname');
+  icopyright_make_account_row(150, 'icopyright_lname', NULL, ($lname == 'User' ? '' : $lname));
 }
 
 function site_name_field_callback() {

@@ -112,11 +112,10 @@ function account_settings_section_callback() {
   $address = get_option('icopyright_address_line1');
   if (!empty($address)) {
     ?>
-  <input type="button" id="toggle_account_setting" value="Show Account Settings" style="cursor:pointer">
+  <input type="button" id="toggle_account_setting" value="Show Address" style="cursor:pointer">
   <?php
   }
   ?>
-<p>Indicate below where we should mail your revenue checks.</p>
 <?php
 }
 
@@ -227,7 +226,7 @@ function icopyright_admin_init() {
 }
 
 function add_account_settings_section() {
-  add_settings_section('account-settings', 'Account Settings:', 'account_settings_section_callback', 'copyright-licensing-tools');
+  add_settings_section('account-settings', 'Send Revenue Checks To:', 'account_settings_section_callback', 'copyright-licensing-tools');
 
   add_settings_field('icopyright_fname', 'First Name', 'first_name_field_callback', 'copyright-licensing-tools', 'account-settings');
   register_setting('icopyright-settings-group', 'icopyright_fname');
