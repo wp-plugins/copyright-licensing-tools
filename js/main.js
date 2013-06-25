@@ -70,12 +70,12 @@ jQuery(document).ready(function () {
     jQuery("#toggle_account_setting").toggle(function () {
             jQuery(this).next().show();
             jQuery(this).next().next().show();
-            jQuery("#toggle_account_setting").val("Hide Account Settings");
+            jQuery("#toggle_account_setting").val("Hide Address");
         },
         function () {
             jQuery(this).next().hide();
             jQuery(this).next().next().hide();
-            jQuery("#toggle_account_setting").val("Show Account Settings")
+            jQuery("#toggle_account_setting").val("Show Address")
         }
     );
     jQuery("#toggle_account_setting").next().hide();
