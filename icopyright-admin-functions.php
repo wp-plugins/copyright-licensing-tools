@@ -111,23 +111,23 @@ function icopyright_post_settings($input) {
 
   //check publication id
   if (empty($icopyright_pubid)) {
-    add_settings_error('icopyright', '', 'Empty Publication ID, Please key in Publication ID or sign up for one!', 'icopyright-hide');
+    add_settings_error('icopyright', '', 'Please enter a Publication ID, or sign up for one.', 'icopyright-hide');
     add_settings_error('icopyright', '', '', 'icopyright-hide');
   }
 
   //check for numerical publication id when id is not empty
   if (!empty($icopyright_pubid) && !is_numeric($icopyright_pubid)) {
-    add_settings_error('icopyright', '', 'Publication ID error, Please key in numerics only!', 'icopyright-hide');
+    add_settings_error('icopyright', '', 'Please use numbers only for the Publication ID.', 'icopyright-hide');
   }
 
   //check conductor email
   if (empty($icopyright_conductor_email)) {
-    add_settings_error('icopyright', '', 'Empty Email Address, Please key in Conductor Login Email Address!', 'icopyright-hide');
+    add_settings_error('icopyright', '', 'Please enter your Conductor Email Address.', 'icopyright-hide');
   }
 
   //check conductor password
   if (empty($icopyright_conductor_password)) {
-    add_settings_error('icopyright', '', 'Empty Password, Please key in Conductor Login Password!', 'icopyright-hide');
+    add_settings_error('icopyright', '', 'Please enter your Conductor Password.', 'icopyright-hide');
   }
   if (!empty($error_message)) {
     return $input;
