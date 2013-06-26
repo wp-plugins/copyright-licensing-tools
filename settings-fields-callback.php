@@ -44,6 +44,7 @@ function address_state_field_callback() {
 function address_country_field_callback() {
   $field = 'icopyright_address_country';
   $current_value = sanitize_text_field(stripslashes(get_option($field)));
+  if(empty($current_value)) $current_value = 'US';
   $countries = array(
     "AF" => "Afghanistan",
     "AX" => "Åland Islands",
