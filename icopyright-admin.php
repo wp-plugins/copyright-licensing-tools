@@ -111,12 +111,10 @@ function icopyright_options_page() {
 function account_settings_section_callback() {
   $address = get_option('icopyright_address_line1');
   if (!empty($address)) {
-    ?>
-  <input type="button" id="toggle_account_setting" value="Show Address" style="cursor:pointer">
-  <?php
+    print '<input type="button" id="toggle_account_setting" value="Show Address" style="cursor:pointer; margin-top: 1em;">';
+  } else {
+    print '<h3>Send Revenue Checks To:</h3>';
   }
-  ?>
-<?php
 }
 
 function deployment_mechanism_section_callback() {
@@ -141,7 +139,7 @@ function service_section_callback() {
 
 function advanced_section_callback() {
   ?>
-<input type="button" id="toggle_advance_setting" value="Show Advanced Settings" style="cursor:pointer">
+<input type="button" id="toggle_advance_setting" value="Show Advanced Settings" style="cursor:pointer; display: block; margin-top: 1em;">
 <?php
 }
 
@@ -210,7 +208,7 @@ function icopyright_admin_init() {
     add_account_settings_section();
   }
 
-  add_settings_section('advanced-settings', 'Advanced Settings:', 'advanced_section_callback', 'copyright-licensing-tools');
+  add_settings_section('advanced-settings', '', 'advanced_section_callback', 'copyright-licensing-tools');
 
   add_settings_field('icopyright_pub_id', 'Publication ID', 'pub_id_field_callback', 'copyright-licensing-tools', 'advanced-settings');
   register_setting('icopyright-settings-group', 'icopyright_pub_id');
@@ -226,7 +224,7 @@ function icopyright_admin_init() {
 }
 
 function add_account_settings_section() {
-  add_settings_section('account-settings', 'Send Revenue Checks To:', 'account_settings_section_callback', 'copyright-licensing-tools');
+  add_settings_section('account-settings', '', 'account_settings_section_callback', 'copyright-licensing-tools');
 
   add_settings_field('icopyright_fname', 'First Name', 'first_name_field_callback', 'copyright-licensing-tools', 'account-settings');
   register_setting('icopyright-settings-group', 'icopyright_fname');
