@@ -11,6 +11,14 @@ function icopyright_wp_feed_add_feed() {
 function icopyright_wp_feed_emit_feed() {
   // Load up the post
   $id = $_GET['id'];
+
+  // Is this a heartbeat check?
+  if (!empty($id) && strcasecmp($id, "heartbeat") == 0) {
+    echo("icopyright-useragent:".ICOPYRIGHT_USERAGENT);
+    return;
+  }
+
+  // Validate that the id is a number.
   if (!is_numeric($id)) {
     status_header(404);
     die();
