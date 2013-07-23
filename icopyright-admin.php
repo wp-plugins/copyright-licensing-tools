@@ -32,6 +32,11 @@ function icopyright_options_page() {
   icopyright_check_connectivity();
 
   //
+  // Update settings
+  //
+  icopyright_update_settings();
+
+  //
   // Add JS and CSS
   //
   wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.0.0');  // Update the version when the style changes.  Refreshes cache.

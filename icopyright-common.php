@@ -43,6 +43,66 @@ function icopyright_ping($useragent, $pid, $email, $password) {
 }
 
 /**
+ * Fetch a Publication's settings:
+ *
+ * fname   member's first name
+ * lname   member's last name
+ * pname   publication's name
+ * purl    publication's URL
+ * furl    publication's feed URL pattern.  Must contain at least one asterisk denoting the article ID, i.e. <em>http://foo.com/article?id=*</em>
+ * line1   publisher's address line 1
+ * line2   publisher's address line 2
+ * line3   publisher's address line 3
+ * city    publisher's city
+ * state   publisher's state
+ * postal  publisher's postal code
+ * country publisher's country code
+ * phone   publisher's phone number
+ *
+ * @param $useragent
+ *      string the user agent string
+ * @param $pid
+ *      integer the publication ID
+ * @param $email
+ *      string the email address of a registrar
+ * @param $password
+ *      string the password of that registrar
+ * @return an array of settings.
+ */
+function icopyright_get_publication_settings($useragent, $pid, $email, $password) {
+  $res = icopyright_post("/api/xml/publication/settings/$pid", NULL, $useragent, icopyright_make_header($email, $password), 'GET');
+  $output = array();
+  if (icopyright_check_response($res)) {
+    $output['success'] = true;
+    $xml = @simplexml_load_string($res->response);
+    $output['fname'] = (string)$xml->fname;
+    $output['lname'] = (string)$xml->lname;
+    $output['pname'] = (string)$xml->pname;
+    $output['purl'] = (string)$xml->purl;
+    $output['furl'] = (string)$xml->furl;
+    $output['line1'] = (string)$xml->line1;
+    $output['line2'] = (string)$xml->line2;
+    $output['line3'] = (string)$xml->line3;
+    $output['city'] = (string)$xml->city;
+    $output['state'] = (string)$xml->state;
+    $output['postal'] = (string)$xml->postal;
+    $output['country'] = (string)$xml->country;
+    $output['phone'] = (string)$xml->phone;
+
+  } else {
+    $output['success'] = false;
+    $xml = @simplexml_load_string($res->response);
+    if ($xml) {
+      $output['error'] = $res->response;
+    } else {
+      $output['error'] = $res->http_expl;
+    }
+  }
+
+  return $output;
+}
+
+/**
  * Given a RESTful request to add a publisher, post it to iCopyright's servers
  *
  * @param  $postdata

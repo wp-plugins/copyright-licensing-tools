@@ -443,6 +443,56 @@ function icopyright_display_status_update($error_message) {
 }
 
 /**
+ * Fetch the publication settings from the server and update the WP options.
+ */
+function icopyright_update_settings() {
+  if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    //
+    // Only perform this update every 5 minutes.
+    //
+    $prevUpdate = get_option('icopyright_update_settings_time');
+    $now = time();
+    if (($now - $prevUpdate) < (60*5))
+      return;
+
+    //
+    // Perform update
+    //
+    $icopyright_pubid = get_option('icopyright_pub_id');
+    if(is_numeric($icopyright_pubid)) {
+      $email = get_option('icopyright_conductor_email');
+      $password = get_option('icopyright_conductor_password');
+
+      //
+      // Get the settings.
+      //
+      $settings = icopyright_get_publication_settings(ICOPYRIGHT_USERAGENT, $icopyright_pubid, $email, $password);
+      if ($settings['success']) {
+        update_option("icopyright_fname", $settings['fname']);
+        update_option("icopyright_lname", $settings['lname']);
+        update_option("icopyright_site_name", $settings['pname']);
+        update_option("icopyright_site_url", $settings['purl']);
+        update_option('icopyright_address_line1', $settings['line1']);
+        update_option('icopyright_address_line2', $settings['line2']);
+        update_option('icopyright_address_line3', $settings['line3']);
+        update_option('icopyright_address_city', $settings['city']);
+        update_option('icopyright_address_state', $settings['state']);
+        update_option('icopyright_address_country', $settings['country']);
+        update_option('icopyright_address_postal', $settings['postal']);
+        update_option('icopyright_address_phone', $settings['phone']);
+        update_option('icopyright_feed_url', $settings['furl']);
+        update_option('icopyright_update_settings_time', time());
+      } else {
+        print '<div id="message" class="updated">';
+        print '<p><strong>WARNING</strong>: Unable to sync settings with iCopyright servers.</p>';
+        print '<p><em>'.$settings['error'].'</em>.</p>';
+        print '</div>';
+      }
+    }
+  }
+}
+
+/**
  * Displays warning message if there is no connectivity
  */
 function icopyright_check_connectivity() {
