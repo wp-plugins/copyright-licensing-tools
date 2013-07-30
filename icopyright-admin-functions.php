@@ -108,6 +108,18 @@ function icopyright_post_settings($input) {
   $icopyright_address_country = sanitize_text_field(stripslashes($_POST['icopyright_address_country']));
   $icopyright_address_postal = sanitize_text_field(stripslashes($_POST['icopyright_address_postal']));
   $icopyright_address_phone = sanitize_text_field(stripslashes($_POST['icopyright_address_phone']));
+  $icopyright_pricing_optimizer_opt_in = $_POST['icopyright_pricing_optimizer_opt_in'];
+  $icopyright_pricing_optimizer_apply_automatically = $_POST['icopyright_pricing_optimizer_apply_automatically'];
+
+  if (isset($_POST['icopyright_pricing_optimizer_showing']) && is_null($icopyright_pricing_optimizer_opt_in)) {
+    $icopyright_pricing_optimizer_opt_in = "false";
+    update_option('icopyright_pricing_optimizer_opt_in', 'false');
+  }
+
+  if (isset($_POST['icopyright_pricing_optimizer_showing']) && is_null($icopyright_pricing_optimizer_apply_automatically)) {
+    $icopyright_pricing_optimizer_apply_automatically = "false";
+    update_option('icopyright_pricing_optimizer_apply_automatically', 'false');
+  }
 
   //check publication id
   if (empty($icopyright_pubid)) {
@@ -158,7 +170,7 @@ function icopyright_post_settings($input) {
       $icopyright_site_name, $icopyright_site_url, $icopyright_feed_url,
       $icopyright_address_line1, $icopyright_address_line2, $icopyright_address_line3, $icopyright_address_city,
       $icopyright_address_state, $icopyright_address_postal, $icopyright_address_country, $icopyright_address_phone,
-      $user_agent, $conductor_email, $conductor_password
+      $user_agent, $conductor_email, $conductor_password, $icopyright_pricing_optimizer_opt_in, $icopyright_pricing_optimizer_apply_automatically
     );
     if (icopyright_check_response($i_res) != TRUE) {
       // The update failed; let's pull out the errors and report them
@@ -360,6 +372,9 @@ function icopyright_admin_defaults() {
   update_option('icopyright_share', 'yes');
   update_option('icopyright_categories', '');
   update_option('icopyright_use_category_filter', 'no');
+  update_option('icopyright_pricing_optimizer_opt_in', 'true');
+  update_option('icopyright_pricing_optimizer_apply_automatically', 'true');
+  update_option('icopyright_created_date', time());
 }
 
 /**
@@ -447,6 +462,8 @@ function icopyright_post_registration_form() {
     if (!wp_verify_nonce($nonce, 'icopyright-register')) {
       die('Security check');
     }
+
+    icopyright_admin_defaults();
 
     $post = array(
       'fname' => sanitize_text_field(stripslashes($_POST['fname'])),

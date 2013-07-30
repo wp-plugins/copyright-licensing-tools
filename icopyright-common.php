@@ -88,6 +88,9 @@ function icopyright_get_publication_settings($useragent, $pid, $email, $password
     $output['postal'] = (string)$xml->postal;
     $output['country'] = (string)$xml->country;
     $output['phone'] = (string)$xml->phone;
+    $output['createdDate'] = (string)$xml->createdDate;
+    $output['pricingOptimizerOptIn'] = (string)$xml->pricingOptimizerOptIn;
+    $output['pricingOptimizerApplyAutomatically'] = (string)$xml->pricingOptimizerApplyAutomatically;
 
   } else {
     $output['success'] = false;
@@ -150,7 +153,7 @@ function icopyright_post_new_publisher($postdata, $useragent, $email, $password)
  * @return object
  */
 function icopyright_post_publication_info($pid, $fname, $lname, $name, $pub_url, $feed_url, $line1, $line2, $line3, $city, $state, $postal, $country,
-                                             $phone, $useragent, $email, $password) {
+                                             $phone, $useragent, $email, $password, $icopyright_pricing_optimizer_opt_in, $icopyright_pricing_optimizer_apply_automatically) {
   $post = array(
     'fname' => $fname,
     'lname' => $lname,
@@ -165,6 +168,8 @@ function icopyright_post_publication_info($pid, $fname, $lname, $name, $pub_url,
     'postal' => $postal,
     'country' => $country,
     'phone' => $phone,
+    'pricingOptimizerOptIn' => is_null($icopyright_pricing_optimizer_opt_in) ? 'N/A' : ''.$icopyright_pricing_optimizer_opt_in,
+    'pricingOptimizerApplyAutomatically' => is_null($icopyright_pricing_optimizer_apply_automatically) ? 'N/A' : ''.$icopyright_pricing_optimizer_apply_automatically
   );
   $postdata = http_build_query($post);
   $url = "/api/xml/publication/update/$pid";

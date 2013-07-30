@@ -672,6 +672,45 @@ function syndication_field_callback() {
 <?php
 }
 
+function pricing_optimizer_apply_automatically_field_callback() {
+
+}
+
+function pricing_optimizer_opt_in_field_callback() {
+  $check_email = get_option('icopyright_conductor_email');
+  $check_password = get_option('icopyright_conductor_password');
+
+  $icopyright_pricing_optimizer_opt_in = get_option('icopyright_pricing_optimizer_opt_in');
+  $icopyright_pricing_optimizer_apply_automatically = get_option('icopyright_pricing_optimizer_apply_automatically');
+  $icopyright_created_date = get_option('icopyright_created_date')+(3*24*60*60);
+  $autoPriceOptimizerDate = date("m/d/Y", $icopyright_created_date)
+  ?>
+  <input type="hidden" name="icopyright_pricing_optimizer_showing" value="true"/>
+  <fieldset>
+    <input name="icopyright_pricing_optimizer_opt_in" type="checkbox"
+          value="true" <?php if ($icopyright_pricing_optimizer_opt_in == "true") echo('checked="checked"'); ?> <?php if (empty($check_email) || empty($check_password)) echo(' disabled="disabled"');?>/> <?php _e('Start Price Optimizer on '.$autoPriceOptimizerDate.' and')?>
+    <br/>
+    <input class="price_optimizer_radio" name="icopyright_pricing_optimizer_apply_automatically" value="false" type="radio" <?php if ($icopyright_pricing_optimizer_apply_automatically != "true") echo('checked="checked"'); ?> <?php if (empty($check_email) || empty($check_password) || $icopyright_pricing_optimizer_opt_in == "false") echo(' disabled="disabled"');?>/> <?php _e('Show me the results so I can decide what prices to implement'); ?>
+    <br/>
+    <input class="price_optimizer_radio" name="icopyright_pricing_optimizer_apply_automatically" value="true" type="radio" <?php if ($icopyright_pricing_optimizer_apply_automatically == "true") echo('checked="checked"'); ?> <?php if (empty($check_email) || empty($check_password) || $icopyright_pricing_optimizer_opt_in == "false") echo(' disabled="disabled"');?>/> <?php _e('Automatically implement the pricing found to be the profitable by Pricing Optimizer'); ?>
+  </fieldset>
+  <span class="description">
+    Price Optimizer runs a 10 week live test of different Instant License prices to determine which prices generate the most revenue.
+  </span>
+  <script type="text/javascript">
+    jQuery(document).ready(function() {
+      jQuery("input[name='icopyright_pricing_optimizer_opt_in']").change(function() {
+        if (jQuery("input[name='icopyright_pricing_optimizer_opt_in']").is(":checked")) {
+          jQuery(".price_optimizer_radio").removeAttr("disabled");
+        } else {
+          jQuery(".price_optimizer_radio").attr("disabled", "disabled");
+        }
+      });
+    });
+  </script>
+<?php
+}
+
 function pub_id_field_callback() {
   ?>
 <input type="text" name="icopyright_pub_id" style="width:200px"

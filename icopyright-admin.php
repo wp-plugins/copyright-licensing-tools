@@ -34,7 +34,9 @@ function icopyright_options_page() {
   //
   // Update settings
   //
-  icopyright_update_settings();
+  if ($touResult == NULL && $registrationResult == NULL) {
+    icopyright_update_settings();
+  }
 
   //
   // Add JS and CSS
@@ -208,6 +210,15 @@ function icopyright_admin_init() {
 
   add_settings_field('icopyright_syndication', 'Syndication', 'syndication_field_callback', 'copyright-licensing-tools', 'service-settings');
   register_setting('icopyright-settings-group', 'icopyright_syndication');
+
+  $icopyright_pricing_optimizer_opt_in = get_option('icopyright_pricing_optimizer_opt_in');
+  if ($icopyright_pricing_optimizer_opt_in != FALSE) {
+    add_settings_field('icopyright_pricing_optimizer_opt_in', 'Price Optimizer', 'pricing_optimizer_opt_in_field_callback', 'copyright-licensing-tools', 'service-settings');
+    register_setting('icopyright-settings-group', 'icopyright_pricing_optimizer_opt_in');
+
+    add_settings_field('icopyright_pricing_optimizer_apply_automatically', '', 'pricing_optimizer_apply_automatically_field_callback', 'copyright-licensing-tools', 'service-settings');
+    register_setting('icopyright-settings-group', 'icopyright_pricing_optimizer_apply_automatically');
+  }
 
   if (!empty($address)) {
     add_account_settings_section();

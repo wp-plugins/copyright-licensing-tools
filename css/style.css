@@ -83,3 +83,7 @@
 #enter-conductor-console form#icx-enter-discovery {
   margin-left: 110px;
 }
+
+input[type="radio"].price_optimizer_radio {
+  margin-left: 20px;
+}

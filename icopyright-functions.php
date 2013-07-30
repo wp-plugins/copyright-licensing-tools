@@ -481,6 +481,14 @@ function icopyright_update_settings() {
         update_option('icopyright_address_postal', $settings['postal']);
         update_option('icopyright_address_phone', $settings['phone']);
         update_option('icopyright_feed_url', $settings['furl']);
+        if (!isset($settings['pricingOptimizerOptIn']) || is_null($settings['pricingOptimizerOptIn']) || strcmp($settings['pricingOptimizerOptIn'], 'null') == 0) {
+          delete_option('icopyright_pricing_optimizer_opt_in');
+          delete_option('icopyright_pricing_optimizer_apply_automatically');
+        } else {
+          update_option('icopyright_pricing_optimizer_opt_in', $settings['pricingOptimizerOptIn']);
+          update_option('icopyright_pricing_optimizer_apply_automatically', $settings['pricingOptimizerApplyAutomatically']);
+        }
+        update_option('icopyright_created_date', $settings['createdDate']);
         update_option('icopyright_update_settings_time', time());
       } else {
         print '<div id="message" class="updated">';
