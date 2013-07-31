@@ -117,8 +117,8 @@ function icopyright_post_settings($input) {
   }
 
   if (isset($_POST['icopyright_pricing_optimizer_showing']) && is_null($icopyright_pricing_optimizer_apply_automatically)) {
-    $icopyright_pricing_optimizer_apply_automatically = "false";
-    update_option('icopyright_pricing_optimizer_apply_automatically', 'false');
+    $icopyright_pricing_optimizer_apply_automatically = $_POST['icopyright_pricing_optimizer_apply_automatically2'];
+    update_option('icopyright_pricing_optimizer_apply_automatically', $icopyright_pricing_optimizer_apply_automatically);
   }
 
   //check publication id

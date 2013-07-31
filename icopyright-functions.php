@@ -481,7 +481,7 @@ function icopyright_update_settings() {
         update_option('icopyright_address_postal', $settings['postal']);
         update_option('icopyright_address_phone', $settings['phone']);
         update_option('icopyright_feed_url', $settings['furl']);
-        if (!isset($settings['pricingOptimizerOptIn']) || is_null($settings['pricingOptimizerOptIn']) || strcmp($settings['pricingOptimizerOptIn'], 'null') == 0) {
+        if (!isset($settings['pricingOptimizerOptIn']) || strcmp($settings['pricingOptimizerOptIn'], '') == 0) {
           delete_option('icopyright_pricing_optimizer_opt_in');
           delete_option('icopyright_pricing_optimizer_apply_automatically');
         } else {

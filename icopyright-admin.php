@@ -32,13 +32,6 @@ function icopyright_options_page() {
   icopyright_check_connectivity();
 
   //
-  // Update settings
-  //
-  if ($touResult == NULL && $registrationResult == NULL) {
-    icopyright_update_settings();
-  }
-
-  //
   // Add JS and CSS
   //
   wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.0.0');  // Update the version when the style changes.  Refreshes cache.
@@ -155,6 +148,11 @@ function advanced_section_callback() {
 //
 add_action('admin_init', 'icopyright_admin_init');
 function icopyright_admin_init() {
+
+  //
+  // Update settings
+  //
+  icopyright_update_settings();
 
   $address = get_option('icopyright_address_line1');
   if (empty($address)) {

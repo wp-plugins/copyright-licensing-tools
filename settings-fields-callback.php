@@ -694,6 +694,7 @@ function pricing_optimizer_opt_in_field_callback() {
     <br/>
     <input class="price_optimizer_radio" name="icopyright_pricing_optimizer_apply_automatically" value="true" type="radio" <?php if ($icopyright_pricing_optimizer_apply_automatically == "true") echo('checked="checked"'); ?> <?php if (empty($check_email) || empty($check_password) || $icopyright_pricing_optimizer_opt_in == "false") echo(' disabled="disabled"');?>/> <?php _e('Automatically implement the pricing found to be the profitable by Pricing Optimizer'); ?>
   </fieldset>
+  <input type="hidden" name="icopyright_pricing_optimizer_apply_automatically2" value="<?php echo(($icopyright_pricing_optimizer_apply_automatically == "true") ? 'true' : 'false'); ?>"/>
   <span class="description">
     Price Optimizer runs a 10 week live test of different Instant License prices to determine which prices generate the most revenue.
   </span>
@@ -705,6 +706,9 @@ function pricing_optimizer_opt_in_field_callback() {
         } else {
           jQuery(".price_optimizer_radio").attr("disabled", "disabled");
         }
+      });
+      jQuery("input[name='icopyright_pricing_optimizer_apply_automatically']").change(function() {
+        jQuery("input[name='icopyright_pricing_optimizer_apply_automatically2']").val(jQuery("input[name='icopyright_pricing_optimizer_apply_automatically']:checked").val());
       });
     });
   </script>
