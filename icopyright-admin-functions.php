@@ -360,7 +360,7 @@ function icopyright_set_up_new_publication($pid, $email, $password) {
 //and other default values.
 function icopyright_admin_defaults() {
   update_option('icopyright_display', 'auto');
-  update_option('icopyright_tools', 'horizontal');
+  update_option('icopyright_tools', 'onebutton');
   update_option('icopyright_align', 'right');
   update_option('icopyright_display_on_pages', 'yes');
   update_option('icopyright_theme', 'CLASSIC');
