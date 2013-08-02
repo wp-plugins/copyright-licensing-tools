@@ -91,6 +91,9 @@ function icopyright_get_publication_settings($useragent, $pid, $email, $password
     $output['createdDate'] = (string)$xml->createdDate;
     $output['pricingOptimizerOptIn'] = (string)$xml->pricingOptimizerOptIn;
     $output['pricingOptimizerApplyAutomatically'] = (string)$xml->pricingOptimizerApplyAutomatically;
+    $output['ezExcerpt'] =(string)$xml->ezExcerpt;
+    $output['background'] = (string)$xml->background;
+    $output['theme'] = (string)$xml->theme;
 
   } else {
     $output['success'] = false;
