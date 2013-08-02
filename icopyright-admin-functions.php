@@ -174,11 +174,11 @@ function icopyright_post_settings($input) {
     );
     if (icopyright_check_response($i_res) != TRUE) {
       // The update failed; let's pull out the errors and report them
-      add_settings_error('icopyright', '', 'Failed to update account information', 'icopyright-hide');
+      add_settings_error('icopyright', '', 'Due to the following errors, your changes have not been properly submitted to iCopyright.', 'icopyright-hide');
       $xml = @simplexml_load_string($i_res->response);
       //add_settings_error( 'icopyright', '', implode("|",$xml), 'icopyright-hide' );
       foreach ($xml->status->messages->message as $m) {
-        add_settings_error('icopyright', '', (string) $m, 'icopyright-hide');
+        add_settings_error('icopyright', '', '&bull; ' . (string) $m, 'icopyright-hide');
       }
     }
   }
