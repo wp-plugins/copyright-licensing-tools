@@ -164,24 +164,31 @@ function icopyright_post_settings($input) {
   $results['Toolbar Setting'] = $ez_res;
   icopyright_admin_error_messages_from_response($results);
 
-  // Save publication info details (so long as there's something to save; if they didn't do the address don't send
-  if(!empty($icopyright_address_line1)) {
-    $i_res = icopyright_post_publication_info($icopyright_pubid, $icopyright_fname, $icopyright_lname,
-      $icopyright_site_name, $icopyright_site_url, $icopyright_feed_url,
-      $icopyright_address_line1, $icopyright_address_line2, $icopyright_address_line3, $icopyright_address_city,
-      $icopyright_address_state, $icopyright_address_postal, $icopyright_address_country, $icopyright_address_phone,
-      $user_agent, $conductor_email, $conductor_password, $icopyright_pricing_optimizer_opt_in, $icopyright_pricing_optimizer_apply_automatically
-    );
-    if (icopyright_check_response($i_res) != TRUE) {
-      // The update failed; let's pull out the errors and report them
-      add_settings_error('icopyright', '', 'Due to the following errors, your changes have not been properly submitted to iCopyright.', 'icopyright-hide');
-      $xml = @simplexml_load_string($i_res->response);
-      //add_settings_error( 'icopyright', '', implode("|",$xml), 'icopyright-hide' );
-      foreach ($xml->status->messages->message as $m) {
-        add_settings_error('icopyright', '', '&bull; ' . (string) $m, 'icopyright-hide');
-      }
+  //
+  // Save publication info details.
+  //
+
+  // If only the country address field is not null then nullify it.  This way the API won't throw validation warnings about the address.
+  if (empty($icopyright_address_line1) && empty($icopyright_address_line2) && empty($icopyright_address_line3) &&
+      empty($icopyright_city) && empty($icopyright_address_state) && empty($icopyright_address_postal) && !empty($icopyright_address_country))
+    $icopyright_address_country = "";
+
+  $i_res = icopyright_post_publication_info($icopyright_pubid, $icopyright_fname, $icopyright_lname,
+    $icopyright_site_name, $icopyright_site_url, $icopyright_feed_url,
+    $icopyright_address_line1, $icopyright_address_line2, $icopyright_address_line3, $icopyright_address_city,
+    $icopyright_address_state, $icopyright_address_postal, $icopyright_address_country, $icopyright_address_phone,
+    $user_agent, $conductor_email, $conductor_password, $icopyright_pricing_optimizer_opt_in, $icopyright_pricing_optimizer_apply_automatically
+  );
+  if (icopyright_check_response($i_res) != TRUE) {
+    // The update failed; let's pull out the errors and report them
+    add_settings_error('icopyright', '', 'Due to the following errors, your changes have not been properly submitted to iCopyright.', 'icopyright-hide');
+    $xml = @simplexml_load_string($i_res->response);
+    //add_settings_error( 'icopyright', '', implode("|",$xml), 'icopyright-hide' );
+    foreach ($xml->status->messages->message as $m) {
+      add_settings_error('icopyright', '', '&bull; ' . (string) $m, 'icopyright-hide');
     }
   }
+
   return $input;
 }
 
