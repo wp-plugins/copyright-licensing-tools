@@ -94,6 +94,8 @@ function icopyright_get_publication_settings($useragent, $pid, $email, $password
     $output['ezExcerpt'] =(string)$xml->ezExcerpt;
     $output['background'] = (string)$xml->background;
     $output['theme'] = (string)$xml->theme;
+    $output['shareService'] = (string)$xml->shareService;
+    $output['syndication'] = (string)$xml->syndication;
 
   } else {
     $output['success'] = false;

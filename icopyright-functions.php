@@ -452,8 +452,8 @@ function icopyright_update_settings() {
     //
     $prevUpdate = get_option('icopyright_update_settings_time');
     $now = time();
-    if (($now - $prevUpdate) < (60*5))
-      return;
+    //if (($now - $prevUpdate) < (60*5))
+    //  return;
 
     //
     // Perform update
@@ -489,6 +489,8 @@ function icopyright_update_settings() {
           update_option('icopyright_pricing_optimizer_apply_automatically', $settings['pricingOptimizerApplyAutomatically']);
         }
         update_option('icopyright_ez_excerpt', $settings['ezExcerpt'] == 'true' ? 'yes' : 'no');
+        update_option('icopyright_share', $settings['shareService'] == 'true' ? 'yes' : 'no');
+        update_option('icopyright_syndication', $settings['syndication'] == 'true' ? 'yes' : 'no');
         update_option('icopyright_background', $settings['background']);
         update_option('icopyright_theme', $settings['theme']);
         update_option('icopyright_created_date', $settings['createdDate']);
