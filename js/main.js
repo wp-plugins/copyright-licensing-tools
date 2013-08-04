@@ -13,28 +13,28 @@ function toolbarTouch() {
     var theme = jQuery('#icopyright_article_tools_theme').val();
     var background = jQuery('input:radio[name=icopyright_background]:checked').val();
     var publication = jQuery('#pub_id').html();
-    var url_h = jQuery('#icopyright_server').html() + '/publisher/TouchToolbar.act?' +
+    var url_h = jQuery('#icopyright_server').html() + '/rights/TouchToolbar.act?' +
         jQuery.param({
             theme:theme,
             background:background,
             orientation:'horz',
             publication:publication});
     jQuery('#horizontal-article-tools-preview').attr('src', url_h);
-    var url_v = jQuery('#icopyright_server').html() + '/publisher/TouchToolbar.act?' +
+    var url_v = jQuery('#icopyright_server').html() + '/rights/TouchToolbar.act?' +
         jQuery.param({
             theme:theme,
             background:background,
             orientation:'vert',
             publication:publication});
     jQuery('#vertical-article-tools-preview').attr('src', url_v);
-    var url_o = jQuery('#icopyright_server').html() + '/publisher/TouchToolbar.act?' +
+    var url_o = jQuery('#icopyright_server').html() + '/rights/TouchToolbar.act?' +
         jQuery.param({
             theme:theme,
             background:background,
             orientation:'one-button',
             publication:publication});
     jQuery('#onebutton-article-tools-preview').attr('src', url_o);
-    var noticeUrl = jQuery('#icopyright_server').html() + '/publisher/copyright-preview.jsp?' +
+    var noticeUrl = jQuery('#icopyright_server').html() + '/rights/copyright-preview.jsp?' +
         jQuery.param({
             themeName:theme,
             background:background,
