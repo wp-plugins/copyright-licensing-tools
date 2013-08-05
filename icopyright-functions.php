@@ -452,8 +452,8 @@ function icopyright_update_settings() {
     //
     $prevUpdate = get_option('icopyright_update_settings_time');
     $now = time();
-    //if (($now - $prevUpdate) < (60*5))
-    //  return;
+    if (($now - $prevUpdate) < (60*5))
+      return;
 
     //
     // Perform update
