@@ -31,15 +31,8 @@ function icopyright_wp_feed_emit_feed() {
     die();
   }
 
-  // If user has disabled the toolbar on this content, hide
-  $hide_toolbar = get_post_meta($id, 'icopyright_hide_toolbar', true);
-  if ($hide_toolbar == 'yes') {
-    status_header(403);
-    die();
-  }
-
-  // Does this pass the category filter?
-  if(!icopyright_post_passes_category_filter($id)) {
+  // If article doesn't pass basic filters do not display it
+  if(!icopyright_post_passes_filters()) {
     status_header(403);
     die();
   }
