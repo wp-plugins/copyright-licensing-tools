@@ -364,7 +364,6 @@ function icopyright_current_page_url() {
 function icopyright_post_passes_filters() {
   global $post;
   $post_id = $post->ID;
-
   // Is there even a configured publication ID? If not, no point in continuing
   $pub_id_no = get_option('icopyright_pub_id');
   if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
@@ -385,8 +384,31 @@ function icopyright_post_passes_filters() {
       return FALSE;
     }
   }
+  // Is there content within the post that we *know* can't be reused?
+  if(icopyright_post_contains_known_unlicensable_content($post)) {
+    return FALSE;
+  }
   // Got this far? Then it passed all the filters
   return TRUE;
+}
+
+/**
+ * Returns true if the body of the post contains content that is known unlicensable content
+ * @param $post object the post in question
+ * @return TRUE if this post looks like it has unlicenseable stuff in it
+ */
+function icopyright_post_contains_known_unlicensable_content($post) {
+  // Be aggressive with the fingerprints: better to refuse than accidentally allow license
+  $fingerprints = array(
+    'src=\"\/\/license\.icopyright\.net\/user\/viewFreeUse\.act\?fuid=.*\"',
+    'src=\"https:\/\/\d+.rp-api.com\/rjs\/repost-article.js'
+  );
+  foreach($fingerprints as $fingerprint) {
+    if(preg_match("/$fingerprint/", $post->post_content)) {
+      return TRUE;
+    }
+  }
+  return FALSE;
 }
 
 /**
