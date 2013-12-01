@@ -400,8 +400,8 @@ function icopyright_post_passes_filters() {
 function icopyright_post_contains_known_unlicensable_content($post) {
   // Be aggressive with the fingerprints: better to refuse than accidentally allow license
   $fingerprints = array(
-    'src=\"(http:)?\/\/license\.icopyright\.net\/user\/viewFreeUse\.act\?fuid',
-    'src=\"(http:)?\/\/license\.icopyright\.net\/user\/webEprint\.act\?id',
+    'src=\"(http:)?\/\/\w+\.icopyright\.net\/user\/viewFreeUse\.act\?fuid',
+    'src=\"(http:)?\/\/\w+\.icopyright\.net\/user\/webEprint\.act\?id',
     'src=\"https:\/\/\d+.rp-api.com\/rjs\/repost-article.js'
   );
   foreach($fingerprints as $fingerprint) {
