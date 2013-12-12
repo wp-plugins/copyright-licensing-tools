@@ -41,6 +41,9 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 
 == Changelog ==
 
+= 1.10.2 =
+1. Bug fix for registering when using multisite
+
 = 1.10.1 =
 1. Do not display article tools on repubhub.icopyright.net content
 
