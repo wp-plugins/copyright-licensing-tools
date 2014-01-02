@@ -56,6 +56,7 @@ function icopyright_wp_feed_emit_feed() {
   //add in <br> to format content, so that no break tags are inserting during processing of shortcodes!
   $icx_story_raw = nl2br($feed_post->post_content);
   $icx_story = apply_filters('the_content', $icx_story_raw);
+  $icx_excerpt = $feed_post->post_excerpt;
 
   //get url
   $icx_url = get_permalink($id);
@@ -70,6 +71,7 @@ function icopyright_wp_feed_emit_feed() {
   $xml .= "<icx>\n";
   $xml .= "  <icx_authors>$icx_author</icx_authors>\n";
   $xml .= "  <icx_copyright>$icx_copyright</icx_copyright>\n";
+  $xml .= "  <icx_deckheader>$icx_excerpt</icx_deckheader>\n";
   $xml .= "  <icx_headline>$icx_headline</icx_headline>\n";
   $xml .= "  <icx_pubdate>$icx_pubdate</icx_pubdate>\n";
   $xml .= "  <icx_pubyear>$icx_pubyear</icx_pubyear>\n";
