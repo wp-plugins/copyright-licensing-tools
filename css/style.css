@@ -87,3 +87,116 @@
 input[type="radio"].price_optimizer_radio {
   margin-left: 20px;
 }
+
+.icx_republish_header {
+  float: left;
+}
+
+.icx_search_wrapper {
+  float: left;
+  margin-left: 50px;
+  margin-top: 12px;
+}
+
+#icx_republish_form input[type="text"] {
+  margin-bottom: 5px;
+  width: 250px;
+}
+
+.icx_republish_label {
+  width: 100px;
+  display: inline-block;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  width: 150px;
+}
+
+.icx_add_btn {
+  width: 70px;
+}
+
+.icx_clear {
+  clear: both;
+}
+
+.icx_topic {
+  margin-right: 20px;
+  margin-bottom: 30px;
+  width: 800px;
+  margin-top: 20px;
+}
+
+.icx_topic_title {
+  float: left;
+}
+
+.icx_topic_controls {
+  float: right;
+  margin-bottom: 20px;
+}
+
+.icx_clips {
+  overflow-y: hidden;
+  overflow-x: hidden;
+  width: 800px;
+}
+
+.icx_clip {
+  padding: 10px;
+  overflow: hidden;
+}
+
+.icx_clip_icon_wrapper {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  float: left;
+}
+
+.icx_clip_icon {
+  float: right;
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.icx_clip_wrapper {
+  float: left;
+  margin-left: 10px;
+  overflow: hidden;
+  width: 650px;
+}
+
+.icx_clip_title {
+  float: left;
+  max-width: 560px;
+  font-size: 14px;
+}
+
+.icx_republish_btn {
+  float: right;
+}
+
+.icx_republish_btn img {
+  width: 85px;
+}
+
+.icx_success {
+  background: lightgreen;
+  border: 1px solid darkgreen;
+}
+
+.icx_error {
+  background: #FFEBE8;
+  border: 1px solid #CC0000;
+}
+
+.icx_success, .icx_error {
+  border-radius: 3px;
+  margin: 5px 0 15px 5px;
+  padding: 0 0.6em;
+}
+
+.icx_success p, .icx_error p {
+  margin: 0.5em 0;
+  padding: 2px;
+}

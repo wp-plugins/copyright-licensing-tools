@@ -2,6 +2,7 @@
 
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-admin-functions.php');
 include (ICOPYRIGHT_PLUGIN_DIR . '/settings-fields-callback.php');
+include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-republish-page.php');
 
 //
 // Add the iCopyright options page

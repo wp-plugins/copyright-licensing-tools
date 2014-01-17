@@ -102,4 +102,28 @@ jQuery(document).ready(function () {
     if (jQuery("input[name='icopyright_pub_id']").val() != "") {
         jQuery("#no_pub_id_message").hide();
     }
+
+    jQuery(".icx_republish_advanced_btn").click(function(event) {
+       if (jQuery(".icx_republish_advanced_fields").is(":visible")) {
+           jQuery(".icx_republish_advanced_fields").hide();
+           jQuery(".icx_republish_advanced_btn").html("Advanced Search");
+           jQuery("#icx_and_words_label").html("");
+           jQuery("#icx_and_words_label").hide();
+       } else {
+           jQuery(".icx_republish_advanced_fields").show();
+           jQuery(".icx_republish_advanced_btn").html("Basic Search");
+           jQuery("#icx_and_words_label").html("With all the words:");
+           jQuery("#icx_and_words_label").show();
+       }
+       event.preventDefault();
+    });
+
+    jQuery(".icx_nav_tab").click(function(event){
+       jQuery(".icx_topic").hide();
+       jQuery("#icx_topic_"+jQuery(this).attr("href")).show();
+
+       jQuery(".icx_nav_tab").removeClass("nav-tab-active");
+       jQuery("#icx_nav_tab_"+jQuery(this).attr("href")).addClass("nav-tab-active");
+       event.preventDefault();
+    });
 });

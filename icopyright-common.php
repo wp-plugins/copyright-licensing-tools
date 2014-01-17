@@ -135,6 +135,41 @@ function icopyright_post_new_publisher($postdata, $useragent, $email, $password)
   return $res;
 }
 
+function icopyright_add_topic($postdata, $useragent, $email, $password) {
+  $url = "/api/xml/repubhub/topics";
+  $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "PUT");
+  return $res;
+}
+
+function icopyright_edit_topic($topicId, $postdata, $useragent, $email, $password) {
+  $url = "/api/xml/repubhub/topics/".$topicId;
+  $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "POST");
+  return $res;
+}
+
+function icopyright_get_embed($tag, $useragent, $email, $password) {
+  $url = "/api/xml/repubhub/embed/".$tag;
+  $res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
+  return $res;
+}
+
+function icopyright_get_topics($useragent, $email, $password) {
+  $url = "/api/xml/repubhub/topics";
+  $res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
+  return $res;
+}
+
+function icopyright_get_topic($rssUrl, $useragent, $email, $password) {
+  $res = icopyright_post($rssUrl, NULL, $useragent, icopyright_make_header($email, $password), "GET");
+  return $res;
+}
+
+function icopyright_delete_topic($topicId, $useragent, $email, $password) {
+  $url = "/api/xml/repubhub/topics/".$topicId;
+  $res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "DELETE");
+  return $res;
+}
+
 /**
  * Update the publication info as necessary
  *
