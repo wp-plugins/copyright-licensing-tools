@@ -54,6 +54,7 @@ function categoryListDisplay() {
 }
 
 jQuery(document).ready(function () {
+    jQuery('.fadeout').delay(5000).fadeOut('slow');
     jQuery("h2#wait").hide();
     jQuery("div#noneedtohide").show();
     jQuery("#toggle_advance_setting").toggle(function () {

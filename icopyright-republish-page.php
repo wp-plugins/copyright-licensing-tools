@@ -185,10 +185,10 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
   ?>
   <div class="wrap">
   <?php if(!empty($data['error'])) { ?>
-    <div class="icx_error"><p><?php echo $data['error']; ?></p></div>
+    <div class="icx_error fadeout"><p><?php echo $data['error']; ?></p></div>
   <?php } ?>
   <?php if(!empty($data['success'])) { ?>
-    <div class="icx_success"><p><?php echo $data['success']; ?></p></div>
+    <div class="icx_success fadeout"><p><?php echo $data['success']; ?></p></div>
   <?php } ?>
   <div class="icx_republish_header">
     <h3>Find Republishable Articles</h3>
