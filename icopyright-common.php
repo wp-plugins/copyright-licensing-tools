@@ -148,7 +148,7 @@ function icopyright_edit_topic($topicId, $postdata, $useragent, $email, $passwor
 }
 
 function icopyright_get_embed($tag, $useragent, $email, $password) {
-  $url = "/api/xml/repubhub/embed/".$tag;
+  $url = "/api/xml/repubhub/embed?tag=".$tag;
   $res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
   return $res;
 }
