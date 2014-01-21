@@ -329,7 +329,7 @@ function icopyright_republish_page_get_edit_topic($data) {
   );
   ?>
   <?php if(!empty($data['error'])) { ?>
-    <div class="icx_error"><p><?php echo $data['error']; ?></p></div>
+    <div class="icx_error fadeout"><p><?php echo $data['error']; ?></p></div>
   <?php } ?>
 <div class="icx_republish_header">
   <h3>Edit Topic</h3>
@@ -348,7 +348,7 @@ function icopyright_republish_page_get_edit_topic($data) {
     </div>
     <label class="icx_republish_label" for="icx_frequency">Email me updated list:</label>
     <select name="frequency" id="icx_frequency">
-      <? foreach ($frequencies as $key => $name) { ?>
+      <?php foreach ($frequencies as $key => $name) { ?>
         <option value="<?php echo $key ?>"<?php if(strcmp($data['frequency'], $key) == 0){ ?> selected="selected"<?php } ?>><?php echo $name ?></option>
       <?php } ?>
     </select>
