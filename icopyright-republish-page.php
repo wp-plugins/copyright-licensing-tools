@@ -279,8 +279,6 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
     ?>
       <div class="icx_clips">
         <?php
-          $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $topic->xmlLocation), $user_agent, $email, $password);
-          $topicxml = @simplexml_load_string($res->response);
           foreach ($topicxml->clips->clip as $clip) {
             if (strcmp($clip->embeddable, "true") == 0) {
         ?>
