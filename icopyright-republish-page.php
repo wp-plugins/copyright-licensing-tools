@@ -273,9 +273,10 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
     </div>
     <div class="icx_clear"></div>
     <?php
+    echo ($topic->xmlLocation);
       $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $topic->xmlLocation), $user_agent, $email, $password);
       $topicxml = @simplexml_load_string($res->response);
-      if (sizeof($topicxml->clips->clip) > 0) {
+      if (sizeof($topicxml->clips->clip) > 0 && icopyright_includes_embeddable($topicxml->clips->clip)) {
     ?>
       <div class="icx_clips">
         <?php
@@ -287,11 +288,15 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
                   <img class="icx_clip_icon" src="<?php echo($clip->image); ?>"/>
                 </div>
                 <div class="icx_clip_wrapper">
-                  <a class="icx_clip_title" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode(icopyright_server_url($_SERVER)."/wp-admin/post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
+                  <a class="icx_clip_title" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode(icopyright_server_url($_SERVER)."/wp-admin/post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo(icopyright_get_clip_title($clip)); ?></a>
                   <?php if (strcmp($clip->embeddable, "true") == 0) { ?>
                     <a class="icx_republish_btn" href="/wp-admin/post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="/wp-content/plugins/copyright-licensing-tools/images/republishBtn.png"/></a>
                   <?php } ?>
                   <div class="icx_clear"></div>
+                  <div class="icx_clip_byline">
+                    <b><?php echo(icopyright_get_publication_name($clip)); ?></b>
+                    <?php echo($clip->pubDate);?>
+                  </div>
                   <div class="icx_clip_body">
                     <?php echo($clip->description); ?>
                   </div>
@@ -313,6 +318,22 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
 ?>
 </div>
 <?php
+}
+
+function icopyright_get_clip_title($clip) {
+  return trim(substr($clip->title, 0, strrpos($clip->title, "(")));
+}
+
+function icopyright_get_publication_name($clip) {
+  return trim(substr($clip->title, strrpos($clip->title, "(")+1, strrpos($clip->title, ")")-strrpos($clip->title, "(")-1));
+}
+
+function icopyright_includes_embeddable($clips) {
+  foreach ($clips as $clip) {
+    if (strcmp($clip->embeddable, "true") == 0)
+      return true;
+  }
+  return false;
 }
 
 function icopyright_republish_page_get_edit_topic($data) {
