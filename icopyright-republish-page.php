@@ -1,4 +1,11 @@
 <?php
+add_action('edit_form_after_title', 'icopyright_edit_form_after_title' );
+function icopyright_edit_form_after_title() {
+  if (!empty( $_GET['icx_tag'] )) {
+    echo("<p style=\"float: right;width:460px;background:lightblue;padding:5px;margin:0px;\">This embed code will display the republished article.  To Preview it, be sure to click Save Draft first.  You may add an intro or conclusion above or below the embed code.</p>");
+    echo("<div style=\"clear: both;\"></div>");
+  }
+}
 
 //
 // Add the iCopyright republish page
@@ -273,7 +280,6 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
     </div>
     <div class="icx_clear"></div>
     <?php
-    echo ($topic->xmlLocation);
       $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $topic->xmlLocation), $user_agent, $email, $password);
       $topicxml = @simplexml_load_string($res->response);
       if (sizeof($topicxml->clips->clip) > 0 && icopyright_includes_embeddable($topicxml->clips->clip)) {
