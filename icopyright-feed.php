@@ -32,7 +32,7 @@ function icopyright_wp_feed_emit_feed() {
   }
 
   // If article doesn't pass basic filters do not display it
-  if(!icopyright_post_passes_filters()) {
+  if(!icopyright_post_passes_filters($id)) {
     status_header(403);
     die();
   }

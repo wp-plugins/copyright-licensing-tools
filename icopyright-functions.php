@@ -359,11 +359,14 @@ function icopyright_current_page_url() {
  * Returns true if the post passes all the various filters and the article tools are eligible to be placed here.
  * The filters include such things as (a) the user not explicitly turning them off for a post; (b) the category
  *
+ * @param $post_id integer the post ID to look at, or null for current post
  * @return bool true if the post passes
  */
-function icopyright_post_passes_filters() {
-  global $post;
-  $post_id = $post->ID;
+function icopyright_post_passes_filters($post_id = NULL) {
+  if($post_id == NULL) {
+    global $post;
+    $post_id = $post->ID;
+  }
   // Is there even a configured publication ID? If not, no point in continuing
   $pub_id_no = get_option('icopyright_pub_id');
   if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
@@ -385,7 +388,7 @@ function icopyright_post_passes_filters() {
     }
   }
   // Is there content within the post that we *know* can't be reused?
-  if(icopyright_post_contains_known_unlicensable_content($post)) {
+  if(icopyright_post_contains_known_unlicensable_content(get_post($post_id))) {
     return FALSE;
   }
   // Got this far? Then it passed all the filters
