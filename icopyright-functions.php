@@ -484,6 +484,7 @@ function icopyright_update_settings() {
     //
     // Perform update
     //
+    update_option('icopyright_update_settings_time', time());
     $icopyright_pubid = get_option('icopyright_pub_id');
     if(is_numeric($icopyright_pubid)) {
       $email = get_option('icopyright_conductor_email');
@@ -520,12 +521,6 @@ function icopyright_update_settings() {
         update_option('icopyright_background', $settings['background']);
         update_option('icopyright_theme', $settings['theme']);
         update_option('icopyright_created_date', $settings['createdDate']);
-        update_option('icopyright_update_settings_time', time());
-      } else {
-        print '<div id="message" class="updated">';
-        print '<p><strong>WARNING</strong>: Unable to sync settings with iCopyright servers.</p>';
-        print '<p><em>'.$settings['error'].'</em>.</p>';
-        print '</div>';
       }
     }
   }
