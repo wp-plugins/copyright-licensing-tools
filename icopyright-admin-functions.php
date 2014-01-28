@@ -181,11 +181,14 @@ function icopyright_post_settings($input) {
   );
   if (icopyright_check_response($i_res) != TRUE) {
     // The update failed; let's pull out the errors and report them
-    add_settings_error('icopyright', '', 'Due to the following errors, your changes have not been properly submitted to iCopyright.', 'icopyright-hide');
     $xml = @simplexml_load_string($i_res->response);
-    //add_settings_error( 'icopyright', '', implode("|",$xml), 'icopyright-hide' );
-    foreach ($xml->status->messages->message as $m) {
-      add_settings_error('icopyright', '', '&bull; ' . (string) $m, 'icopyright-hide');
+    if (is_object($xml) && ($xml->status->messages->count() > 0)) {
+      add_settings_error('icopyright', '', 'Due to the following errors, your changes have not been successfully submitted to iCopyright.', 'icopyright-hide');
+      foreach ($xml->status->messages as $m) {
+        add_settings_error('icopyright', '', '&bull; ' . (string) $m->message, 'icopyright-hide');
+      }
+    } else {
+      add_settings_error('icopyright', '', 'Your changes have not been successfully submitted to iCopyright.', 'icopyright-hide');
     }
   }
 
@@ -505,12 +508,17 @@ function icopyright_post_registration_form() {
     } else {
       // There was a failure for the post, as in problems with the form field elements
       print '<div id="message" class="updated fade">';
-      print '<p><strong>The following fields needs your attention</strong></p>';
-      print '<ol>';
-      foreach ($xml->status->messages->message as $m) {
-        print '<li>' . (string) $m . '</li>';
+      if (is_object($xml) && ($xml->status->messages->count() > 0)) {
+        print '<p><strong>The following fields needs your attention</strong></p>';
+        print '<ol>';
+        foreach ($xml->status->messages as $m) {
+          print '<li>' . (string) $m->message . '</li>';
+        }
+        print '</ol>';
+      } else {
+        print'<p>There was a problem in submitting your form.</p>';
       }
-      print '</ol></div>';
+      print '</div>';
     }
     return 'FAILURE';
   }
