@@ -208,10 +208,13 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
       <a class="icx_republish_advanced_btn" href="">Advanced Search</a>
       <div class="icx_republish_advanced_fields" style="display: none;">
         <label class="icx_republish_label" for="icx_exact_words">With the exact phrase:</label><input id="icx_exact_words" type="text" name="exactPhrase" value="<?php echo $data['exactPhrase']; ?>"/>
+        <span class="help">The exact phrase you enter here <b>must</b> exist in the content for it to match, for example <i>Mama's Apple Pies Inc.</i></span>
         <br/>
         <label class="icx_republish_label" for="icx_or_words">With at least one of the words:</label><input id="icx_or_words" type="text" name="orWords" value="<?php echo $data['orWords']; ?>"/>
+        <span class="help"><b>At least one</b> of these words must exist in the content for it to match. This field is used in conjunction with one or more other fields. As an example, you might enter the words <i>retail store</i> in this field.</span>
         <br/>
         <label class="icx_republish_label" for="icx_not_words">Without the words:</label><input id="icx_not_words" type="text" name="notWords" value="<?php echo $data['notWords']; ?>"/>
+        <span class="help"><b>None</b> of these words can exist in the content for it to match. This field is used in conjunction with the fields above, and is helpful for limiting a broader search. As an example, you might enter the words <i>trees orchards</i> here to avoid getting articles about apple trees and apple orchards.</span>
       </div>
     </form>
   </div>

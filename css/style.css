@@ -104,11 +104,17 @@ input[type="radio"].price_optimizer_radio {
 }
 
 .icx_republish_label {
-  width: 100px;
   display: inline-block;
   margin-bottom: 5px;
   margin-top: 5px;
   width: 150px;
+}
+
+span.help {
+  display: block;
+  padding-left: 150px;
+  font-size: 0.8em;
+  width: 350px;
 }
 
 .icx_add_btn {
