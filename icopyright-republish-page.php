@@ -3,10 +3,36 @@
 add_action('wp_ajax_repubhub_clips', 'icopyright_republish_topic_hits');
 add_action('edit_form_after_title', 'icopyright_edit_form_after_title' );
 function icopyright_edit_form_after_title() {
-  if (!empty( $_GET['icx_tag'] )) {
-    echo("<p style=\"float: right;width:460px;background:lightblue;padding:5px;margin:0px;\">This embed code will display the republished article.  To Preview it, be sure to click Save Draft first.  You may add an intro or conclusion above or below the embed code.</p>");
-    echo("<div style=\"clear: both;\"></div>");
+  if (!empty($_GET['icx_tag']) && get_option("repubhub_dismiss_post_new_info_box") == null) {
+    ?>
+      <p style="float:left; width:460px; background:lightblue; padding:5px; margin:0px 0px 10px 0px;" id="icx_post_new_info_box">
+        This embed code (shown as a yellow box if you're in the Visual tab) will display the republished article.
+        To Preview it, be sure to click "Save Draft" first. You may add an intro or conclusion above or below the embed code.
+        <br/>
+        <a style="float: right;" href="" id="icx_dismiss_post_new_info_box">Dismiss</a>
+      </p>
+      <div style="clear: both;"></div>
+      <script type="text/javascript">
+        jQuery(document).ready(function () {
+          jQuery("#icx_dismiss_post_new_info_box").click(function (event) {
+            jQuery("#icx_post_new_info_box").hide();
+            jQuery.ajax({
+              url : "/wp-admin/admin-ajax.php",
+              type : "get",
+              data : {action: "repubhub_dismiss_post_new_info_box", loc: '/wp-admin/edit.php?page=repubhub-republish'},
+              success: function() {}
+            });
+            event.preventDefault();
+          });
+        });
+      </script>
+    <?php
   }
+}
+
+add_action('wp_ajax_repubhub_dismiss_post_new_info_box', 'icopyright_repubhub_dismiss_post_new_info_box');
+function icopyright_repubhub_dismiss_post_new_info_box() {
+  update_option("repubhub_dismiss_post_new_info_box", "true");
 }
 
 //
