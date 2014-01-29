@@ -1,4 +1,6 @@
 <?php
+//for logged in users
+add_action('wp_ajax_repubhub_clips', 'icopyright_republish_topic_hits');
 add_action('edit_form_after_title', 'icopyright_edit_form_after_title' );
 function icopyright_edit_form_after_title() {
   if (!empty( $_GET['icx_tag'] )) {
@@ -171,10 +173,11 @@ function icopyright_republish_page_get($data) {
     else
       icopyright_republish_page_get_edit_topic($data, $_GET['topicId']);
   } else {
-    if (empty($_GET['topicId']))
-      icopyright_republish_page_get_topics($data);
-    else
+    if(isset($_GET['topicId'])) {
       icopyright_republish_page_get_topics($data, $_GET['topicId']);
+    } else {
+      icopyright_republish_page_get_topics($data);
+    }
   }
 }
 
@@ -282,43 +285,9 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
       </form>
     </div>
     <div class="icx_clear"></div>
-    <?php
-      $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $topic->xmlLocation), $user_agent, $email, $password);
-      $topicxml = @simplexml_load_string($res->response);
-      if (sizeof($topicxml->clips->clip) > 0 && icopyright_includes_embeddable($topicxml->clips->clip)) {
-    ?>
-      <div class="icx_clips">
-        <?php
-          foreach ($topicxml->clips->clip as $clip) {
-            if (strcmp($clip->embeddable, "true") == 0) {
-        ?>
-              <div class="icx_clip">
-                <div class="icx_clip_icon_wrapper">
-                  <img class="icx_clip_icon" src="<?php echo($clip->image); ?>"/>
-                </div>
-                <div class="icx_clip_wrapper">
-                  <a class="icx_clip_title" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode(icopyright_server_url($_SERVER)."/wp-admin/post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
-                  <?php if (strcmp($clip->embeddable, "true") == 0) { ?>
-                    <a class="icx_republish_btn" href="/wp-admin/post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="/wp-content/plugins/copyright-licensing-tools/images/republishBtn.png"/></a>
-                  <?php } ?>
-                  <div class="icx_clear"></div>
-                  <div class="icx_clip_byline">
-                    <b><?php echo($clip->publication); ?></b>
-                    <?php echo($clip->pubDate);?>
-                  </div>
-                  <div class="icx_clip_body">
-                    <?php echo($clip->description); ?>
-                  </div>
-                </div>
-              </div>
-        <?php
-            }
-          }
-        ?>
-      </div>
-    <?php } else { ?>
-      <p>No articles currently match that topic.</p>
-    <?php } ?>
+    <div class="icx_repubhub_clips" id="icx_clips_for_topic_<?php print $topic->id ?>" data-loc="<?php print $topic->xmlLocation ?>">
+      <img src="<?php print plugin_dir_url(__FILE__) ?>images/animated-spinner.gif">
+    </div>
   </div>
   <div class="icx_clear"></div>
 <?php
@@ -328,6 +297,47 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
 </div>
 <?php
 }
+
+/**
+ * Given an XML location, returns HTML for the hits. Used in an AJAX call to fill out the page
+ */
+function icopyright_republish_topic_hits() {
+  $xml_location = $_GET['loc'];
+  $user_agent = ICOPYRIGHT_USERAGENT;
+  $email = get_option('icopyright_conductor_email');
+  $password = get_option('icopyright_conductor_password');
+  $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $xml_location), $user_agent, $email, $password);
+  $topicxml = @simplexml_load_string($res->response);
+  if (sizeof($topicxml->clips->clip) > 0 && icopyright_includes_embeddable($topicxml->clips->clip)) {
+    foreach ($topicxml->clips->clip as $clip) {
+      if (strcmp($clip->embeddable, "true") == 0) { ?>
+        <div class="icx_clip">
+          <div class="icx_clip_icon_wrapper">
+            <img class="icx_clip_icon" src="<?php echo($clip->image); ?>"/>
+          </div>
+          <div class="icx_clip_wrapper">
+            <a class="icx_clip_title" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode(icopyright_server_url($_SERVER)."/wp-admin/post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
+            <?php if (strcmp($clip->embeddable, "true") == 0) { ?>
+              <a class="icx_republish_btn" href="/wp-admin/post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="/wp-content/plugins/copyright-licensing-tools/images/republishBtn.png"/></a>
+            <?php } ?>
+            <div class="icx_clear"></div>
+            <div class="icx_clip_byline">
+              <b><?php echo($clip->publication); ?></b>
+              <?php echo($clip->pubDate);?>
+            </div>
+            <div class="icx_clip_body">
+              <?php echo($clip->description); ?>
+            </div>
+          </div>
+        </div>
+      <?php }
+    }
+  } else { ?>
+    <p>No articles currently match that topic.</p>
+  <?php }
+  exit();
+}
+
 
 function icopyright_includes_embeddable($clips) {
   foreach ($clips as $clip) {
