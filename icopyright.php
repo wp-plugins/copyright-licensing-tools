@@ -54,7 +54,6 @@ function icopyright_settings_link($links, $file) {
 
 //function to delete option during uninstallation
 function icopyright_remove_settings() {
-
   delete_option("icopyright_fname");
   delete_option("icopyright_lname");
   delete_option("icopyright_site_name");
@@ -67,7 +66,6 @@ function icopyright_remove_settings() {
   delete_option("icopyright_address_country");
   delete_option("icopyright_address_postal");
   delete_option("icopyright_address_phone");
-
   delete_option("icopyright_pub_id");
   delete_option("icopyright_display");
   delete_option("icopyright_tools");
@@ -87,6 +85,7 @@ function icopyright_remove_settings() {
   delete_option('icopyright_conductor_password');
   delete_option('icopyright_conductor_email');
   delete_option('icopyright_redirect_on_first_activation');
+  delete_option("repubhub_dismiss_post_new_info_box");
 }
 
 register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
