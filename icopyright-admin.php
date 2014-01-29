@@ -83,7 +83,6 @@ function icopyright_options_page() {
               <div class="clear"></div>
               <?php print icopyright_graphical_link_to_conductor('serviceGroups.act', 'modify-services-and-prices.jpg', 'icx-modify-services-prices'); ?>
               <?php print icopyright_graphical_link_to_conductor('publisherReports.act', 'view-reports.jpg', 'icx-view-reports'); ?>
-              <?php print icopyright_graphical_link_to_conductor('contentSyndicationFeedWizard.act', 'subscribe-to-syndication-feeds.jpg', 'icx-subscribe-to-syndication-feeds'); ?>
             </div>
             <div style="clear:both;"></div>
           </td>
