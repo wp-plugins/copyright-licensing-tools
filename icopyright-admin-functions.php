@@ -314,8 +314,7 @@ function icopyright_display_publication_welcome() {
   print $form;
   print '<h2>Congratulations, your website is now live with iCopyright!</h2>';
   print '<p>';
-  print 'Please review the default settings below and make any changes you wish. You may find it helpful to view the ';
-  print 'video <a href="http://info.icopyright.com/icopyright-video" target="_blank">"Introduction to iCopyright"</a>. ';
+  print 'Please review the default settings below and make any changes you wish. You may find it helpful to view the video below. ';
   print 'Feel free to visit your new <a href="' . $icopyright_conductor_url . '" target="_blank" id="welcome-anchor">Conductor</a> ';
   print 'account to explore your new capabilities. A welcome email has been sent to you with some helpful hints.';
   print '</p>';

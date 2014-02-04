@@ -37,9 +37,6 @@ function icopyright_options_page() {
   //
   wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.0.0');  // Update the version when the style changes.  Refreshes cache.
   wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__));
-  wp_enqueue_style('icopyright-fancybox-css', plugins_url('css/jquery.fancybox.css', __FILE__));  // Update the version when the style changes.  Refreshes cache.
-  wp_enqueue_script('icopyright-fancybox-js', plugins_url('js/jquery.fancybox.js', __FILE__));
-  wp_enqueue_script('icopyright-fancybox-media-js', plugins_url('js/jquery.fancybox-media.js', __FILE__));
 
   $tou = get_option('icopyright_tou');
   if (($touResult != NULL && $touResult == 'FAILURE') || ($registrationResult != NULL && $registrationResult == 'FAILURE') || !empty($_GET['show-registration-form'])) {
@@ -120,31 +117,14 @@ function account_settings_section_callback() {
   } else {
 ?>
     <h3>Send Revenue Checks To:</h3>
-    <div style="position:relative;float:right;width:500px;">
-      <a href="http://www.youtube.com/watch?v=bpYG-Frhh9E&autoplay=1" style="width:500px;position:absolute;" class="fancybox-youtube" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
+    <div style="float:right;width:502px;overflow:hidden;">
+    <div style="position:relative;">
+      <a href="http://www.youtube.com/watch?v=bpYG-Frhh9E&autoplay=1&vq=hd720" target="_blank" style="width:500px;" class="fancybox-youtube" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
         <img src="/wp-content/plugins/copyright-licensing-tools/images/bpYG-Frhh9E-mq.png" width="500px" style="border: 1px solid black"/>
-        <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:190px;top:65px;opacity:.5;"/>
+        <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:219px;top:102px;opacity:.5;width:75px"/>
       </a>
     </div>
-    <script type="text/javascript">
-      jQuery(document).ready(function() {
-        jQuery('a.fancybox-youtube, area.fancybox-youtube').fancybox({
-          'padding'		: 0,
-          'autoScale'		: false,
-          'transitionIn'	: 'none',
-          'transitionOut'	: 'none',
-          'title'			: jQuery("#icopyright_wp_settings_video").attr("title"),
-          'width'		: 680,
-          'height'		: 495,
-          'href'			: jQuery("#icopyright_wp_settings_video").attr("href").replace(new RegExp("watch\\?v=", "i"), 'v/'),
-          'type'			: 'swf',
-          'swf'			: {
-            'wmode'		: 'transparent',
-            'allowfullscreen'	: 'true'
-          }
-        });
-      });
-    </script>
+    </div>
     <div style="float:left; width: 700px;">
 <?php
   }
@@ -154,32 +134,15 @@ function deployment_mechanism_section_callback() {
   $address = get_option('icopyright_address_line1');
   if (!empty($address)) {
   ?>
-<div style="position:relative;float:right;width:350px;">
-  <a href="http://www.youtube.com/watch?v=bpYG-Frhh9E&autoplay=1" style="width:350px;position:absolute;" class="fancybox-youtube" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
+<div style="float:right;width:352px;overflow:hidden;">
+<div style="position:relative;">
+  <a href="http://www.youtube.com/watch?v=bpYG-Frhh9E&autoplay=1&vq=hd720" target="_blank" style="width:350px;" class="fancybox-youtube" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
     <img src="/wp-content/plugins/copyright-licensing-tools/images/bpYG-Frhh9E-mq.png" width="350px" style="border: 1px solid black"/>
-    <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:115px;top:25px;opacity:.5;"/>
+    <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:155px;top:73px;opacity:.5;width:50px"/>
   </a>
 </div>
-<script type="text/javascript">
-  jQuery(document).ready(function() {
-    jQuery('a.fancybox-youtube, area.fancybox-youtube').fancybox({
-        'padding'		: 0,
-        'autoScale'		: false,
-        'transitionIn'	: 'none',
-        'transitionOut'	: 'none',
-        'title'			: jQuery("#icopyright_wp_settings_video").attr("title"),
-        'width'		: 680,
-        'height'		: 495,
-        'href'			: jQuery("#icopyright_wp_settings_video").attr("href").replace(new RegExp("watch\\?v=", "i"), 'v/'),
-        'type'			: 'swf',
-        'swf'			: {
-          'wmode'		: 'transparent',
-          'allowfullscreen'	: 'true'
-        }
-      });
-  });
-</script>
-<div style="float:left; width: 850px;">
+</div>
+<div style="float:left; width: 750px;">
   <?php
   }
   ?>
