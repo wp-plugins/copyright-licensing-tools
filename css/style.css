@@ -202,3 +202,12 @@ span.help {
   margin: 0.5em 0;
   padding: 2px;
 }
+
+#intro-video {
+  float: right;
+}
+@media screen and (max-width: 1440px) {
+  #intro-video {
+    float: none;
+  }
+}

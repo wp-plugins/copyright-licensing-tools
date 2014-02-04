@@ -57,7 +57,12 @@ function icopyright_options_page() {
       ?>
     <div class="wrap">
       <h2>iCopyright Settings</h2>
-
+      <div id="intro-video" style="position:relative;">
+        <a href="http://www.youtube.com/watch?v=bpYG-Frhh9E&autoplay=1&vq=hd720" target="_blank" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
+          <img src="/wp-content/plugins/copyright-licensing-tools/images/bpYG-Frhh9E-mq.png" style="border: 1px solid black"/>
+          <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:219px;top:102px;opacity:.5;width:75px"/>
+        </a>
+      </div>
       <form action="options.php" method="POST">
         <?php
         settings_fields('icopyright-settings-group');
@@ -117,15 +122,7 @@ function account_settings_section_callback() {
   } else {
 ?>
     <h3>Send Revenue Checks To:</h3>
-    <div style="float:right;width:502px;overflow:hidden;">
-    <div style="position:relative;">
-      <a href="http://www.youtube.com/watch?v=bpYG-Frhh9E&autoplay=1&vq=hd720" target="_blank" style="width:500px;" class="fancybox-youtube" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
-        <img src="/wp-content/plugins/copyright-licensing-tools/images/bpYG-Frhh9E-mq.png" width="500px" style="border: 1px solid black"/>
-        <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:219px;top:102px;opacity:.5;width:75px"/>
-      </a>
-    </div>
-    </div>
-    <div style="float:left; width: 700px;">
+    <div style="float:left;">
 <?php
   }
 }
@@ -134,15 +131,7 @@ function deployment_mechanism_section_callback() {
   $address = get_option('icopyright_address_line1');
   if (!empty($address)) {
   ?>
-<div style="float:right;width:352px;overflow:hidden;">
-<div style="position:relative;">
-  <a href="http://www.youtube.com/watch?v=bpYG-Frhh9E&autoplay=1&vq=hd720" target="_blank" style="width:350px;" class="fancybox-youtube" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
-    <img src="/wp-content/plugins/copyright-licensing-tools/images/bpYG-Frhh9E-mq.png" width="350px" style="border: 1px solid black"/>
-    <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:155px;top:73px;opacity:.5;width:50px"/>
-  </a>
-</div>
-</div>
-<div style="float:left; width: 750px;">
+<div style="float:left;max-width: 700px;">
   <?php
   }
   ?>
