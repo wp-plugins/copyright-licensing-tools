@@ -5,7 +5,7 @@ Plugin URI: http://info.icopyright.com/wordpress
 Description: The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 2.1
+Version: 2.2
 */
 
 //define constant that need to be changed from test environment to live environment
@@ -20,7 +20,7 @@ define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.1");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.2");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php
@@ -45,7 +45,7 @@ add_filter('plugin_row_meta', 'icopyright_settings_link', 10, 2);
 function icopyright_settings_link($links, $file) {
   if ($file == plugin_basename(__FILE__)) {
     $settings_link = "<a href=\"options-general.php?page=copyright-licensing-tools\">Settings</a>";
-    $video_link = "<a href=\"http://info.icopyright.com/icopyright-video\" target=\"_blank\">View a video introduction to iCopyright</a>"; //added version 1.1.2
+    $video_link = "<a href=\"http://www.youtube.com/watch?v=bpYG-Frhh9E\" target=\"_blank\">View a video introduction to iCopyright</a>"; //added version 1.1.2
     $links[] = $settings_link;
     $links[] .= $video_link; //added version 1.1.2
   }

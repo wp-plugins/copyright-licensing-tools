@@ -3,7 +3,7 @@ Contributors: iCopyright Inc.
 Tags: icopyright, copyright, prints, reprints, eprint, e-print, email, post, republish, share, article tools, monetize, monetization, distribute, distribution, piracy, infringement, syndication, reuse, re-use, advertisement, ads, license, licensing
 Requires at least: 3.0
 Tested up to: 3.8.1
-Stable tag: 2.1
+Stable tag: 2.2
 
 iCopyright adds article tools and an Interactive Copyright Notice to enable sharing, licensing, syndication, tracking and monetization of content.
 
@@ -40,6 +40,10 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 3. An example of the print services dialog
 
 == Changelog ==
+
+= 2.2 =
+1. Include introductory settings video
+2. Improve themeing of admin pages for narrow resolutions
 
 = 2.1 =
 1. Improve performance of Republish page
