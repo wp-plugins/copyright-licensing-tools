@@ -183,8 +183,13 @@ span.help {
 
 #intro-video {
   float: right;
+  width: 250px;
+  height: auto;
 }
-@media screen and (max-width: 1440px) {
+#intro-video img {
+  max-width: 100%;
+}
+@media screen and (max-width: 1150px) {
   #intro-video {
     float: none;
   }

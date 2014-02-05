@@ -35,8 +35,10 @@ function icopyright_options_page() {
   //
   // Add JS and CSS
   //
-  wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.0.0');  // Update the version when the style changes.  Refreshes cache.
+  wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.0.1');  // Update the version when the style changes.  Refreshes cache.
+  wp_enqueue_style('icopyright-admin-css-2', "http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/example1/colorbox.css", array(), '1.0.0');
   wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__));
+  wp_enqueue_script("icopyright-admin-js-2", "http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/jquery.colorbox-min.js");
 
   $tou = get_option('icopyright_tou');
   if (($touResult != NULL && $touResult == 'FAILURE') || ($registrationResult != NULL && $registrationResult == 'FAILURE') || !empty($_GET['show-registration-form'])) {
@@ -58,11 +60,17 @@ function icopyright_options_page() {
     <div class="wrap">
       <h2>iCopyright Settings</h2>
       <div id="intro-video" style="position:relative;">
-        <a href="http://www.youtube.com/watch?v=bpYG-Frhh9E&autoplay=1&vq=hd720" target="_blank" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
+        <a href="http://www.youtube.com/embed/bpYG-Frhh9E?autoplay=1&vq=hd720" target="_blank" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
           <img src="/wp-content/plugins/copyright-licensing-tools/images/bpYG-Frhh9E-mq.png" style="border: 1px solid black"/>
-          <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:219px;top:102px;opacity:.5;width:75px"/>
+          <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:100px;top:45px;opacity:.5;width:45px"/>
         </a>
       </div>
+      <script type="text/javascript">
+        jQuery(document).ready(function() {
+          jQuery('a#icopyright_wp_settings_video').colorbox({ href: 'http://www.youtube.com/embed/bpYG-Frhh9E?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
+        });
+      </script>
+
       <form action="options.php" method="POST">
         <?php
         settings_fields('icopyright-settings-group');
