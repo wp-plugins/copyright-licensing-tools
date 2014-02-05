@@ -214,9 +214,6 @@ function icopyright_admin_init() {
   add_settings_field('icopyright_show', 'Display style', 'show_preview_callback', 'copyright-licensing-tools', 'toolbar-display');
   register_setting('icopyright-settings-group', 'icopyright_show');
 
-  add_settings_field('icopyright_show_multiple', '', 'show_multiple_callback', 'copyright-licensing-tools', 'toolbar-display');
-  register_setting('icopyright-settings-group', 'icopyright_show_multiple');
-
   add_settings_field('icopyright_display_on_pages', 'Pages', 'display_on_pages_field_callback', 'copyright-licensing-tools', 'toolbar-display');
   register_setting('icopyright-settings-group', 'icopyright_display_on_pages');
 
@@ -263,6 +260,9 @@ function icopyright_admin_init() {
 
   add_settings_field('icopyright_feed_url', 'Conductor Feed URL', 'feed_url_field_callback', 'copyright-licensing-tools', 'advanced-settings');
   register_setting('icopyright-settings-group', 'icopyright_feed_url', 'icopyright_post_settings');
+
+  add_settings_field('icopyright_show_multiple', '', 'show_multiple_callback', 'copyright-licensing-tools', 'toolbar-display');
+  register_setting('icopyright-settings-group', 'icopyright_show_multiple');
 }
 
 function add_account_settings_section() {
