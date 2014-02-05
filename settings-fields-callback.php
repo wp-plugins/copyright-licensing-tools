@@ -14,11 +14,11 @@ function last_name_field_callback() {
 }
 
 function site_name_field_callback() {
-  icopyright_make_account_row(200, 'icopyright_site_name');
+  icopyright_make_account_row(350, 'icopyright_site_name');
 }
 
 function site_url_field_callback() {
-  icopyright_make_account_row(200, 'icopyright_site_url');
+  icopyright_make_account_row(350, 'icopyright_site_url');
 }
 
 function address_line1_field_callback() {
