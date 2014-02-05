@@ -349,7 +349,7 @@ function display_field_callback() {
   <p>
     <strong><?php _e('Available WordPress Shortcode Attributes: ')?></strong>
   </p>
-  <table class="widefat">
+  <table>
     <thead>
     <tr>
       <th>Purpose</th>

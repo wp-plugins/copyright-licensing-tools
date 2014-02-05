@@ -416,7 +416,7 @@ function icopyright_create_register_form() {
   $form .= '<h3>Registration Form</h3><p><a href="' .
     admin_url('options-general.php?page=copyright-licensing-tools&advanced-settings=1#toggle_advance_setting') . '" style="font-size:12px;margin:0 0 0 10px;text-decoration:none;">(If you already have a publication ID, click here to enter it under Show Advanced Settings.)</a></p>';
   $form .= '<p>If you need assistance, please email <a href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a href="http://info.icopyright.com/wordpress-setup" target="_blank">help</a>.</p>';
-  $form .= '<table class="widefat">';
+  $form .= '<table>';
 
   //fname
   $form .= "<tr><td colspan=\"2\"><h2>About You</h2></td></tr>";
