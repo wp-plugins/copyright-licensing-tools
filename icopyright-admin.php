@@ -62,7 +62,7 @@ function icopyright_options_page() {
       <div id="intro-video" style="position:relative;">
         <a href="http://www.youtube.com/embed/bpYG-Frhh9E?autoplay=1&vq=hd720" target="_blank" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
           <img src="/wp-content/plugins/copyright-licensing-tools/images/bpYG-Frhh9E-mq.png" style="border: 1px solid black"/>
-          <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:100px;top:45px;opacity:.5;width:45px"/>
+          <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:157px;top:76px;opacity:.5;width:45px"/>
         </a>
       </div>
       <script type="text/javascript">
@@ -130,7 +130,7 @@ function account_settings_section_callback() {
   } else {
 ?>
     <h3>Send Revenue Checks To:</h3>
-    <div style="float:left;">
+    <div style="float:left;max-width: 700px;">
 <?php
   }
 }
