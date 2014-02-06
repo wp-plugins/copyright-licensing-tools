@@ -7,7 +7,8 @@ function icopyright_edit_form_after_title() {
     ?>
       <p style="float:left; width:460px; background:lightblue; padding:5px; margin:0px 0px 10px 0px;" id="icx_post_new_info_box">
         This embed code (shown as a yellow box if you're in the Visual tab) will display the republished article.
-        To Preview it, be sure to click "Save Draft" first. You may add an intro or conclusion above or below the embed code.
+        To preview it, be sure to click "Save" first, and then "View post" at top (since clicking Preview will not
+        work in some browsers). You may add an intro or conclusion above or below the embed code.
         <br/>
         <a style="float: right;" href="" id="icx_dismiss_post_new_info_box">Dismiss</a>
       </p>
