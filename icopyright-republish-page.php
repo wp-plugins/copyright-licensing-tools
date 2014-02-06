@@ -3,7 +3,8 @@
 add_action('wp_ajax_repubhub_clips', 'icopyright_republish_topic_hits');
 add_action('edit_form_after_title', 'icopyright_edit_form_after_title' );
 function icopyright_edit_form_after_title() {
-  if (!empty($_GET['icx_tag']) && get_option("repubhub_dismiss_post_new_info_box") == null) {
+  if ((!empty($_GET['icx_tag']) || (!empty($_GET['post']) && get_post_meta($_GET['post'], "icopyright_republish_content")))
+    && get_option("repubhub_dismiss_post_new_info_box") == null) {
     ?>
       <p style="float:left; width:460px; background:lightblue; padding:5px; margin:0px 0px 10px 0px;" id="icx_post_new_info_box">
         This embed code (shown as a yellow box if you're in the Visual tab) will display the republished article.
@@ -77,6 +78,7 @@ function icopyright_republish_content( $content, $post ) {
     $xml = @simplexml_load_string($res->response);
     $content = $xml->embedCode;
     $post->title = $xml->title;
+    update_post_meta($post->ID, "icopyright_republish_content", true);
     return($content);
   }
   return $content;
