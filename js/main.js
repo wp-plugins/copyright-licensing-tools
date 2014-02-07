@@ -143,4 +143,6 @@ jQuery(document).ready(function () {
       success: onSuccess
     });
   });
+
+  jQuery('a#icopyright_wp_settings_video').colorbox({ href: 'http://www.youtube.com/embed/bpYG-Frhh9E?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
 });

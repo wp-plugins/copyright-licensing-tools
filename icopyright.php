@@ -44,8 +44,11 @@ add_filter('plugin_row_meta', 'icopyright_settings_link', 10, 2);
 //function to create settings link
 function icopyright_settings_link($links, $file) {
   if ($file == plugin_basename(__FILE__)) {
+    wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__));
+    wp_enqueue_style('icopyright-admin-css', "http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/example1/colorbox.css", array(), '1.0.0');
+    wp_enqueue_script("icopyright-admin-js-2", "http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/jquery.colorbox-min.js");
     $settings_link = "<a href=\"options-general.php?page=copyright-licensing-tools\">Settings</a>";
-    $video_link = "<a href=\"http://www.youtube.com/watch?v=bpYG-Frhh9E\" target=\"_blank\">View a video introduction to iCopyright</a>"; //added version 1.1.2
+    $video_link = "<a id=\"icopyright_wp_settings_video\" href=\"http://www.youtube.com/watch?v=bpYG-Frhh9E\" target=\"_blank\">View a video introduction to iCopyright</a>"; //added version 1.1.2
     $links[] = $settings_link;
     $links[] .= $video_link; //added version 1.1.2
   }

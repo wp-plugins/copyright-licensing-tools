@@ -65,12 +65,6 @@ function icopyright_options_page() {
           <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:157px;top:76px;opacity:.5;width:45px"/>
         </a>
       </div>
-      <script type="text/javascript">
-        jQuery(document).ready(function() {
-          jQuery('a#icopyright_wp_settings_video').colorbox({ href: 'http://www.youtube.com/embed/bpYG-Frhh9E?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
-        });
-      </script>
-
       <form action="options.php" method="POST">
         <?php
         settings_fields('icopyright-settings-group');
