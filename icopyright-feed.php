@@ -37,9 +37,12 @@ function icopyright_wp_feed_emit_feed() {
     die();
   }
 
-  // Author name comes from the public item
+  // Author name comes from the display name; allow custom author byline override
   $user = new WP_User($feed_post->post_author);
   $icx_author = $user->data->display_name;
+  if (function_exists('custom_author_byline')) {
+    $icx_author = custom_author_byline($icx_author);
+  }
 
   // get copyright date and year based on the date the content was published
   $publish_date = $feed_post->post_date;
