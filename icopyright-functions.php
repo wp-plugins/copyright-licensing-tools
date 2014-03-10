@@ -515,6 +515,11 @@ function icopyright_update_settings() {
           update_option('icopyright_pricing_optimizer_opt_in', $settings['pricingOptimizerOptIn']);
           update_option('icopyright_pricing_optimizer_apply_automatically', $settings['pricingOptimizerApplyAutomatically']);
         }
+        if (!isset($settings['searchable']) || strcmp($settings['searchable'], '') == 0) {
+          delete_option('icopyright_searchable');
+        } else {
+          update_option('icopyright_searchable', $settings['searchable']);
+        }
         update_option('icopyright_ez_excerpt', $settings['ezExcerpt'] == 'true' ? 'yes' : 'no');
         update_option('icopyright_share', $settings['shareService'] == 'true' ? 'yes' : 'no');
         update_option('icopyright_syndication', $settings['syndication'] == 'true' ? 'yes' : 'no');
@@ -567,4 +572,170 @@ function icopyright_error_messages_from_response($results) {
   return $msg;
 }
 
-?>
+/**
+ * This method will parse a date as described in RFC822, section 5 and return a unix timestamp
+ * @param $date string date to parse
+ * @return int unix timestamp
+ */
+function icopyright_parseRfc822Date($date)
+{
+  if (!preg_match('/^(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), )?(?P<day>\d{1,2}) (?P<month>Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (?P<year>\d{4}) (?P<hour>\d{2}):(?P<minute>\d{2})(?::(?P<second>\d{2}))? (?P<timezone>UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[A-IK-Z]|[+-]\d{4})$/', $date, $matches))
+    throw new Exception("'$date' is not a valid Rfc822Date format");
+  switch($matches['month'])
+  {
+    case 'Jan':
+      $matches['month'] = 1;
+      break;
+    case 'Feb':
+      $matches['month'] = 2;
+      break;
+    case 'Mar':
+      $matches['month'] = 3;
+      break;
+    case 'Apr':
+      $matches['month'] = 4;
+      break;
+    case 'May':
+      $matches['month'] = 5;
+      break;
+    case 'Jun':
+      $matches['month'] = 6;
+      break;
+    case 'Jul':
+      $matches['month'] = 7;
+      break;
+    case 'Aug':
+      $matches['month'] = 8;
+      break;
+    case 'Sep':
+      $matches['month'] = 9;
+      break;
+    case 'Oct':
+      $matches['month'] = 10;
+      break;
+    case 'Nov':
+      $matches['month'] = 11;
+      break;
+    case 'Dec':
+      $matches['month'] = 12;
+      break;
+    default:
+      throw new Exception('This should not even be possible...');
+  }
+  switch($matches['timezone'])
+  {
+    case 'UT': // Universal Time
+    case 'GMT': // Universal Time
+      $matches['timezone'] = 0*3600;
+      break;
+    case 'EST': // Eastern: - 5
+      $matches['timezone'] = -5*3600;
+      break;
+    case 'EDT': // Eastern: - 4
+      $matches['timezone'] = -4*3600;
+      break;
+    case 'CST': // Central: - 6
+      $matches['timezone'] = -6*3600;
+      break;
+    case 'CDT': // Central: - 5
+      $matches['timezone'] = -5*3600;
+      break;
+    case 'MST': // Mountain: - 7
+      $matches['timezone'] = -7*3600;
+      break;
+    case 'MDT': // Mountain: - 6
+      $matches['timezone'] = -6*3600;
+      break;
+    case 'PST': // Pacific: -8
+      $matches['timezone'] = -8*3600;
+      break;
+    case 'PDT': // Pacific: -7
+      $matches['timezone'] = -7*3600;
+      break;
+    // Military (letters, J is not used):
+    case 'A':
+      $matches['timezone'] = -1*3600;
+      break;
+    case 'B':
+      $matches['timezone'] = -2*3600;
+      break;
+    case 'C':
+      $matches['timezone'] = -3*3600;
+      break;
+    case 'D':
+      $matches['timezone'] = -4*3600;
+      break;
+    case 'E':
+      $matches['timezone'] = -5*3600;
+      break;
+    case 'F':
+      $matches['timezone'] = -6*3600;
+      break;
+    case 'G':
+      $matches['timezone'] = -7*3600;
+      break;
+    case 'H':
+      $matches['timezone'] = -8*3600;
+      break;
+    case 'I':
+      $matches['timezone'] = -9*3600;
+      break;
+    case 'K':
+      $matches['timezone'] = -10*3600;
+      break;
+    case 'L':
+      $matches['timezone'] = -11*3600;
+      break;
+    case 'M':
+      $matches['timezone'] = -12*3600;
+      break;
+    case 'N':
+      $matches['timezone'] = 1*3600;
+      break;
+    case 'O':
+      $matches['timezone'] = 2*3600;
+      break;
+    case 'P':
+      $matches['timezone'] = 3*3600;
+      break;
+    case 'Q':
+      $matches['timezone'] = 4*3600;
+      break;
+    case 'R':
+      $matches['timezone'] = 5*3600;
+      break;
+    case 'S':
+      $matches['timezone'] = 6*3600;
+      break;
+    case 'T':
+      $matches['timezone'] = 7*3600;
+      break;
+    case 'U':
+      $matches['timezone'] = 8*3600;
+      break;
+    case 'V':
+      $matches['timezone'] = 9*3600;
+      break;
+    case 'W':
+      $matches['timezone'] = 10*3600;
+      break;
+    case 'X':
+      $matches['timezone'] = 11*3600;
+      break;
+    case 'Y':
+      $matches['timezone'] = 12*3600;
+      break;
+    case 'Z':
+      $matches['timezone'] = 0*3600;
+      break;
+    default:
+      if ($matches['timezone'][0] == '+' || $matches['timezone'][0] == '-')
+      {
+        $matches['timezone'] = (int)substr($matches['timezone'], 0, 3)*3600 + (int)($matches['timezone'][0].substr($matches['timezone'], 3)) * 60;
+      }
+      else
+        throw new Exception('That should not even be possible...');
+  }
+  return gmmktime($matches['hour'], $matches['minute'], (int)$matches['second'], $matches['month'], $matches['day'], $matches['year']) - $matches['timezone'];
+}
+

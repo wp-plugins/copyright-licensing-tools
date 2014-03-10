@@ -125,24 +125,79 @@ jQuery(document).ready(function () {
 
     jQuery(".icx_nav_tab").removeClass("nav-tab-active");
     jQuery("#icx_nav_tab_" + jQuery(this).attr("href")).addClass("nav-tab-active");
+
+    icopyright_update_unread_notification(jQuery(this).attr("href"),
+        jQuery("#icx_topic_"+jQuery(this).attr("href")+"_first_clip_id").html());
     event.preventDefault();
   });
 
   jQuery("div.icx_repubhub_clips").each(function () {
     topic = jQuery(this).attr("id").replace(/\D/g,'');
     div = "div#icx_clips_for_topic_" + topic;
-    var onSuccess = (function(divinclosure) {
+    var onSuccess = (function(divinclosure, topicinclosure) {
       return function(data){
         jQuery(divinclosure).html(data);
+        if (jQuery("#icx_nav_tab_"+topicinclosure).hasClass('nav-tab-active'))
+            icopyright_update_unread_notification(topicinclosure, jQuery("#icx_topic_"+topicinclosure+"_first_clip_id").html());
       };
-    })(div);
-    jQuery.ajax({
-      url : "/wp-admin/admin-ajax.php",
-      type : "get",
-      data : {action: "repubhub_clips", loc: jQuery(this).data("loc")},
-      success: onSuccess
-    });
+    })(div, topic);
+    if (topic == 0) {
+        jQuery.ajax({
+            url : "/wp-admin/admin-ajax.php",
+            type : "get",
+            data : {action: "repubhub_recent_headlines"},
+            success: onSuccess
+        });
+    } else {
+        jQuery.ajax({
+          url : "/wp-admin/admin-ajax.php",
+          type : "get",
+          data : {action: "repubhub_clips", loc: jQuery(this).data("loc"), topicid: jQuery(this).data("topicid")},
+          success: onSuccess
+        });
+    }
   });
+
+
 
   jQuery('a#icopyright_wp_settings_video').colorbox({ href: 'http://www.youtube.com/embed/bpYG-Frhh9E?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
 });
+
+
+function icopyright_update_unread_notification(topicId, contentId) {
+
+    var onSuccess = function(data) {
+        // Update unread notifications
+        icopyright_update_unread_notification_message(jQuery("#icx_nav_tab_"+topicId), 0, true);
+        icopyright_update_unread_notification_message(jQuery("#wp-admin-bar-republish-1 a"), data, false);
+        icopyright_update_unread_notification_message(jQuery("#wp-admin-bar-republish-2 a"), data, false);
+        icopyright_update_unread_notification_message(jQuery("li.current a.current[href='edit.php?page=repubhub-republish']"), data, true);
+    }
+
+    jQuery.ajax({
+        url : "/wp-admin/admin-ajax.php",
+        type : "get",
+        data : {action: "repubhub_clips_read", topicid: topicId, contentid: contentId},
+        success: onSuccess
+    });
+}
+
+function icopyright_update_unread_notification_message(item, value, circle) {
+    var title = item.html();
+
+    var newValue = "&nbsp;"+value;
+    var lastIndexVal = "&nbsp;"
+    if (circle) {
+        newValue = '<span class="icx_unread update-plugins count-1"><span class="plugin-count">'+value+'</span></span>';
+        lastIndexVal = '<span class="icx_unread';
+    }
+    if (title.lastIndexOf(lastIndexVal)>0) {
+        if (value > 0)
+            item.html(title.substr(0, title.lastIndexOf(lastIndexVal)) + newValue);
+        else
+            item.html(title.substr(0, title.lastIndexOf(lastIndexVal)));
+    } else {
+        if (value > 0)
+            item.html(title + newValue);
+    }
+}

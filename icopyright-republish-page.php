@@ -1,10 +1,11 @@
 <?php
 //for logged in users
 add_action('wp_ajax_repubhub_clips', 'icopyright_republish_topic_hits');
+add_action('wp_ajax_repubhub_recent_headlines', 'icopyright_republish_recent_headlines');
 add_action('edit_form_after_title', 'icopyright_edit_form_after_title' );
 function icopyright_edit_form_after_title() {
-  if ((!empty($_GET['icx_tag']) || (!empty($_GET['post']) && get_post_meta($_GET['post'], "icopyright_republish_content")))) {
-    //&& get_option("repubhub_dismiss_post_new_info_box") == null) {
+  if ((!empty($_GET['icx_tag']) || (!empty($_GET['post']) && get_post_meta($_GET['post'], "icopyright_republish_content")))
+    && get_option("repubhub_dismiss_post_new_info_box") == null) {
     ?>
       <p style="float:left; width:460px; background:lightblue; padding:5px; margin:0px 0px 10px 0px;" id="icx_post_new_info_box">
         This embed code (shown as a yellow box if you're in the Visual tab) will display the republished article.
@@ -42,14 +43,15 @@ function icopyright_repubhub_dismiss_post_new_info_box() {
 //
 add_action('admin_menu', 'icopyright_post_menu');
 function icopyright_post_menu() {
-  add_posts_page('Republish content via iCopyright\'s repubHub', 'Republish', 'edit_posts', 'repubhub-republish', 'icopyright_republish_page');
+  add_posts_page('Republish content via iCopyright\'s repubHub', icopyright_get_republish_title(true), 'edit_posts', 'repubhub-republish', 'icopyright_republish_page');
 }
 
 add_action( 'admin_bar_menu', 'icopyright_admin_bar', 999 );
 function icopyright_admin_bar( $wp_admin_bar ){
+  $title = icopyright_get_republish_title(false);
   $args = array(
     'href' => '/wp-admin/edit.php?page=repubhub-republish',
-    'title' => 'Republish',
+    'title' => $title,
     'parent' => 'new-content', // false for a root menu, pass the ID value for a submenu of that menu.
     'id' => 'republish-1', // defaults to a sanitized title value.
     'meta' => array() // array of any of the following options: array( 'html' => '', 'class' => '', 'onclick' => '', 'target' => '', 'title' => '' );
@@ -58,7 +60,7 @@ function icopyright_admin_bar( $wp_admin_bar ){
 
   $args = array(
     'href' => '/wp-admin/edit.php?page=repubhub-republish',
-    'title' => 'Republish',
+    'title' => $title,
     'parent' => false, // false for a root menu, pass the ID value for a submenu of that menu.
     'id' => 'republish-2', // defaults to a sanitized title value.
     'meta' => array() // array of any of the following options: array( 'html' => '', 'class' => '', 'onclick' => '', 'target' => '', 'title' => '' );
@@ -211,8 +213,8 @@ function icopyright_republish_page_get($data) {
 }
 
 function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
-  wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.1.0');  // Update the version when the style changes.  Refreshes cache.
-  wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.1.0');
+  wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.2.0');  // Update the version when the style changes.  Refreshes cache.
+  wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.2.0');
   $frequencies = array(
     'IMMED' => 'As Stories Break',
     'DAILY' => 'Daily',
@@ -252,6 +254,9 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
   </div>
   <div class="icx_clear"></div>
 <?php
+  icopyright_calculate_unread_republish_clips();
+  $unreadCounts = icopyright_get_unread_counts();
+
   $user_agent = ICOPYRIGHT_USERAGENT;
   $email = get_option('icopyright_conductor_email');
   $password = get_option('icopyright_conductor_password');
@@ -259,25 +264,30 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
 
   $xml = @simplexml_load_string($res->response);
 ?>
-  <?php if (sizeof($xml->response)>0) { ?>
   <div class="icon32" id="icon-page"><br></div>
   <h2 class="nav-tab-wrapper">
+    <a id="icx_nav_tab_recent_headlines" class="nav-tab-recent-headlines icx_nav_tab nav-tab<?php if(empty($displayTopicId)){ ?> nav-tab-active<?php } ?>" href="recent_headlines">Recent Headlines</a>
     <?php
       $index = 0;
       foreach ($xml->response as $topic) {
         ?>
-          <a id="icx_nav_tab_<?php echo $topic->id; ?>" class="icx_nav_tab nav-tab<?php if((empty($displayTopicId) && $index == 0) || $displayTopicId == $topic->id){ ?> nav-tab-active<?php } ?>" href="<?php echo $topic->id; ?>"><?php echo icopyright_republish_topic_name($topic); ?></a>
+          <a id="icx_nav_tab_<?php echo $topic->id; ?>" class="icx_nav_tab nav-tab<?php if(!empty($displayTopicId) &&  $displayTopicId == $topic->id){ ?> nav-tab-active<?php } ?>" href="<?php echo $topic->id; ?>"><?php echo icopyright_republish_topic_name($topic, $unreadCounts); ?></a>
         <?php
         $index ++;
       }
     ?>
   </h2>
-  <?php } ?>
+  <div id="icx_topic_recent_headlines" class="icx_topic" style="display: <?php if(!empty($displayTopicId)){ ?>none<?php } ?>;">
+    <div class="icx_repubhub_clips" id="icx_clips_for_topic_0" data-loc="recent_headlines" data-topicid="recent_headlines">
+      <img src="<?php print plugin_dir_url(__FILE__) ?>images/animated-spinner.gif">
+    </div>
+  </div>
+  <div class="icx_clear"></div>
 <?php
   $index = 0;
   foreach ($xml->response as $topic) {
 ?>
-  <div id="icx_topic_<?php echo $topic->id; ?>" class="icx_topic" style="display: <?php if((empty($displayTopicId) && $index != 0) || (!empty($displayTopicId) && $displayTopicId != $topic->id)){ ?>none<?php } ?>;">
+  <div id="icx_topic_<?php echo $topic->id; ?>" class="icx_topic" style="display: <?php if(empty($displayTopicId) || $displayTopicId != $topic->id){ ?>none<?php } ?>;">
     <div class="icx_topic_title">
       <?php if (!empty($topic->andWords)) { ?>
         With all the words: <strong><?php echo($topic->andWords); ?></strong><br/>
@@ -314,7 +324,7 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
       </form>
     </div>
     <div class="icx_clear"></div>
-    <div class="icx_repubhub_clips" id="icx_clips_for_topic_<?php print $topic->id ?>" data-loc="<?php print $topic->xmlLocation ?>">
+    <div class="icx_repubhub_clips" id="icx_clips_for_topic_<?php print $topic->id ?>" data-loc="<?php print $topic->xmlLocation ?>" data-topicid="<?php print $topic->id ?>">
       <img src="<?php print plugin_dir_url(__FILE__) ?>images/animated-spinner.gif">
     </div>
   </div>
@@ -327,19 +337,35 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
 <?php
 }
 
+
+add_action('wp_ajax_repubhub_clips_read', 'icopyright_republish_topic_read');
+function icopyright_republish_topic_read() {
+  $topicId = (int) $_GET['topicid'];
+  $total = icopyright_update_unread_count($topicId);
+  $unreadMarkers = icopyright_get_unread_markers();
+  $unreadMarkers[$topicId] = (int) $_GET['contentid'];
+  update_option('icopyright_unread_republish_markers_'+get_option('icopyright_pub_id'), json_encode($unreadMarkers));
+  echo $total;
+  exit();
+}
+
 /**
  * Given an XML location, returns HTML for the hits. Used in an AJAX call to fill out the page
  */
-function icopyright_republish_topic_hits() {
-  $xml_location = $_GET['loc'];
+function icopyright_republish_recent_headlines() {
   $user_agent = ICOPYRIGHT_USERAGENT;
   $email = get_option('icopyright_conductor_email');
   $password = get_option('icopyright_conductor_password');
-  $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $xml_location), $user_agent, $email, $password);
+  $res = icopyright_get_recent_headlines($user_agent, $email, $password);
   $topicxml = @simplexml_load_string($res->response);
-  if (sizeof($topicxml->clips->clip) > 0 && icopyright_includes_embeddable($topicxml->clips->clip)) {
-    foreach ($topicxml->clips->clip as $clip) {
-      if (strcmp($clip->embeddable, "true") == 0) { ?>
+  if (sizeof($topicxml) > 0 && icopyright_includes_embeddable($topicxml)) {
+    $firstClipId = -1;
+    foreach ($topicxml as $clip) {
+      if (strcmp($clip->embeddable, "true") == 0) {
+        $clipId = (int) $clip->clipId;
+        if ($clipId > $firstClipId) {
+          $firstClipId = $clipId;
+        }?>
         <div class="icx_clip">
           <div class="icx_clip_icon_wrapper">
             <img class="icx_clip_icon" src="<?php echo($clip->image); ?>"/>
@@ -361,10 +387,86 @@ function icopyright_republish_topic_hits() {
         </div>
       <?php }
     }
+    ?>
+  <?php
   } else { ?>
     <p>No articles currently match that topic.</p>
   <?php }
   exit();
+}
+
+/**
+ * Given an XML location, returns HTML for the hits. Used in an AJAX call to fill out the page
+ */
+function icopyright_republish_topic_hits() {
+  $xml_location = $_GET['loc'];
+  $topicId = $_GET['topicid'];
+  $unreadMarkers = icopyright_get_unread_markers();
+  $lastReadclipId = 0;
+  if (array_key_exists((int)$topicId, $unreadMarkers)) {
+    $lastReadclipId = (int) $unreadMarkers[(int)$topicId];
+  }
+  $user_agent = ICOPYRIGHT_USERAGENT;
+  $email = get_option('icopyright_conductor_email');
+  $password = get_option('icopyright_conductor_password');
+  $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $xml_location), $user_agent, $email, $password);
+  $topicxml = @simplexml_load_string($res->response);
+  if (sizeof($topicxml->clips->clip) > 0 && icopyright_includes_embeddable($topicxml->clips->clip)) {
+    $firstClipId = -1;
+    foreach ($topicxml->clips->clip as $clip) {
+      if (strcmp($clip->embeddable, "true") == 0) {
+        $clipId = (int) $clip->clipId;
+        if ($clipId > $firstClipId) {
+          $firstClipId = $clipId;
+        }?>
+        <div class="icx_clip">
+          <div class="icx_clip_icon_wrapper">
+            <img class="icx_clip_icon" src="<?php echo($clip->image); ?>"/>
+          </div>
+          <div class="icx_clip_wrapper">
+            <a class="icx_clip_title <?php if ($clipId>$lastReadclipId) { ?>icx_unread_title<?php } ?>" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode(icopyright_server_url($_SERVER)."/wp-admin/post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
+            <?php if (strcmp($clip->embeddable, "true") == 0) { ?>
+              <a class="icx_republish_btn" href="/wp-admin/post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="/wp-content/plugins/copyright-licensing-tools/images/republishBtn.png"/></a>
+            <?php } ?>
+            <div class="icx_clear"></div>
+            <div class="icx_clip_byline">
+              <b><?php echo($clip->publication); ?></b>
+              <?php echo($clip->pubDate);?>
+            </div>
+            <div class="icx_clip_body">
+              <?php echo($clip->description); ?>
+            </div>
+          </div>
+        </div>
+      <?php }
+    }
+    ?>
+    <div id="icx_topic_<?php echo $topicId; ?>_first_clip_id" style="display:none;"><?php echo $firstClipId; ?></div>
+    <?php
+  } else { ?>
+    <p>No articles currently match that topic.</p>
+  <?php }
+  exit();
+}
+
+function icopyright_update_unread_count($topicId) {
+  $unreadCounts = icopyright_get_unread_counts();
+  $topicCount = 0;
+  if (array_key_exists($topicId, $unreadCounts)) {
+    $topicCount = $unreadCounts[$topicId];
+  }
+
+  $total = 0;
+  if (array_key_exists('total', $unreadCounts))
+    $total = $unreadCounts['total'];
+  $total = $total - $topicCount;
+  if ($total<0) $total = 0;
+
+  $unreadCounts['total'] = $total;
+  $unreadCounts[$topicId] = 0;
+  update_option('icopyright_unread_republish_clips_'+get_option('icopyright_pub_id'), json_encode($unreadCounts));
+
+  return $total;
 }
 
 
@@ -419,7 +521,12 @@ function icopyright_republish_page_get_edit_topic($data) {
 <?php
 }
 
-function icopyright_republish_topic_name($topic) {
+function icopyright_republish_has_unread($topic, $unreadCounts) {
+  $topicId = (int)$topic->id;
+  return array_key_exists($topicId, $unreadCounts) && $unreadCounts[$topicId]>0;
+}
+
+function icopyright_republish_topic_name($topic, $unreadCounts) {
   $name = $topic->friendlyString;
   if (strlen($name) > 10) {
     $nameWords = preg_split('/\s+/', $name);
@@ -432,6 +539,11 @@ function icopyright_republish_topic_name($topic) {
       $div = " ";
     }
   }
+  $topicId = (int)$topic->id;
+  if (array_key_exists($topicId, $unreadCounts) && $unreadCounts[$topicId]>0)
+    $name .= '<span class="icx_unread update-plugins count-1"><span class="plugin-count">'.$unreadCounts[$topicId].'</span></span>';
+    //$name .= ' <span>'.$unreadCounts[$topicId].'</span>';
+
   return $name;
 }
 
@@ -443,4 +555,87 @@ function icopyright_server_url($s) {
   $port = ((!$ssl && $port=='80') || ($ssl && $port=='443')) ? '' : ':'.$port;
   $host = isset($s['HTTP_X_FORWARDED_HOST']) ? $s['HTTP_X_FORWARDED_HOST'] : isset($s['HTTP_HOST']) ? $s['HTTP_HOST'] : $s['SERVER_NAME'];
   return $protocol . '://' . $host . $port;
+}
+
+function icopyright_calculate_unread_republish_clips() {
+  //
+  // Only do this every 30 mins
+  //
+  $prevUpdate = get_option('icopyright_update_unread_republish_time');
+  if (empty($prevUpdate)) $prevUpdate = 0;
+  $now = time();
+  if (($now - $prevUpdate) < (60*30))
+    return;
+
+  //
+  // Fetch all topics and clips.  Calculate the unread clips per topic.
+  //
+  update_option('icopyright_update_unread_republish_time', time());
+
+  $totalUnreadCount = 0;
+  $unreadCounts = array();
+  $unreadMarkers = icopyright_get_unread_markers();
+
+  $user_agent = ICOPYRIGHT_USERAGENT;
+  $email = get_option('icopyright_conductor_email');
+  $password = get_option('icopyright_conductor_password');
+  $res = icopyright_get_topics($user_agent, $email, $password);
+
+  $xml = @simplexml_load_string($res->response);
+  if (sizeof($xml->response)>0) {
+    foreach ($xml->response as $topic) {
+      $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $topic->xmlLocation), $user_agent, $email, $password);
+      $topicxml = @simplexml_load_string($res->response);
+      $unreadCount = 0;
+      if (sizeof($topicxml->clips->clip) > 0 && icopyright_includes_embeddable($topicxml->clips->clip)) {
+        $lastReadclipId = 0;
+        if (array_key_exists((int)$topic->id, $unreadMarkers)) {
+          $lastReadclipId = (int) $unreadMarkers[(int)$topic->id];
+        }
+        foreach ($topicxml->clips->clip as $clip) {
+
+          if (strcmp($clip->embeddable, "true") == 0 && (int) $clip->clipId > $lastReadclipId) {
+            $unreadCount ++;
+          }
+        }
+      }
+      $unreadCounts[(int)$topic->id] = $unreadCount;
+      $totalUnreadCount += $unreadCount;
+    }
+  }
+  $unreadCounts["total"] = $totalUnreadCount;
+  update_option('icopyright_unread_republish_clips_'+get_option('icopyright_pub_id'), json_encode($unreadCounts));
+}
+
+function icopyright_get_unread_counts() {
+  $unreadCounts = array();
+  try {
+    $unreadJson = get_option('icopyright_unread_republish_clips_'+get_option('icopyright_pub_id'));
+    if (!empty($unreadJson))
+      $unreadCounts = json_decode($unreadJson, true);
+  } catch (Exception $e) {}
+  return $unreadCounts;
+}
+
+function icopyright_get_unread_markers() {
+  $unreadMarkers = array();
+  try {
+    $markersJson = get_option('icopyright_unread_republish_markers_'+get_option('icopyright_pub_id'));
+    if (!empty($markersJson))
+      $unreadMarkers = json_decode($markersJson, true);
+  } catch (Exception $e) {}
+  return $unreadMarkers;
+}
+
+function icopyright_get_republish_title($circleStyle) {
+  icopyright_calculate_unread_republish_clips();
+  $unreadCounts = icopyright_get_unread_counts();
+  $title = "Republish";
+  if (array_key_exists('total', $unreadCounts) && $unreadCounts['total']>0) {
+    if ($circleStyle)
+      $title .= '<span class="icx_unread update-plugins count-1"><span class="plugin-count">'.$unreadCounts['total'].'</span></span>';
+    else
+      $title .= '&nbsp;'.$unreadCounts['total'];
+  }
+  return $title;
 }

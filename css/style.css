@@ -189,3 +189,25 @@ span.help {
 #intro-video img {
   max-width: 100%;
 }
+
+#adminmenu .icx_unread {
+  background-color: rgba(26,146,29,1);
+}
+.icx_unread_title {
+  color: rgba(26,146,29,1);
+}
+
+.icx_nav_tab .update-plugins {
+  border-radius: 10px;
+  margin-left: 7px;
+  margin-top: 1px;
+  display: inline-block;
+  text-shadow: none;
+  color: white;
+  background-color: rgba(26,146,29,.5);
+}
+
+.icx_nav_tab .update-plugins span {
+  display: block;
+  padding: 0 6px;
+}

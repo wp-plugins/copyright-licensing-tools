@@ -91,6 +91,7 @@ function icopyright_get_publication_settings($useragent, $pid, $email, $password
     $output['createdDate'] = (string)$xml->createdDate;
     $output['pricingOptimizerOptIn'] = (string)$xml->pricingOptimizerOptIn;
     $output['pricingOptimizerApplyAutomatically'] = (string)$xml->pricingOptimizerApplyAutomatically;
+    $output['searchable'] = (string)$xml->searchable;
     $output['ezExcerpt'] =(string)$xml->ezExcerpt;
     $output['background'] = (string)$xml->background;
     $output['theme'] = (string)$xml->theme;
@@ -159,6 +160,12 @@ function icopyright_get_topics($useragent, $email, $password) {
   return $res;
 }
 
+function icopyright_get_recent_headlines($useragent, $email, $password) {
+  $url = "/api/xml/repubhub/recent-headlines";
+  $res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
+  return $res;
+}
+
 function icopyright_get_topic($rssUrl, $useragent, $email, $password) {
   $res = icopyright_post($rssUrl, NULL, $useragent, icopyright_make_header($email, $password), "GET");
   return $res;
@@ -193,7 +200,7 @@ function icopyright_delete_topic($topicId, $useragent, $email, $password) {
  * @return object
  */
 function icopyright_post_publication_info($pid, $fname, $lname, $name, $pub_url, $feed_url, $line1, $line2, $line3, $city, $state, $postal, $country,
-                                             $phone, $useragent, $email, $password, $icopyright_pricing_optimizer_opt_in, $icopyright_pricing_optimizer_apply_automatically) {
+                                             $phone, $useragent, $email, $password, $icopyright_pricing_optimizer_opt_in, $icopyright_pricing_optimizer_apply_automatically, $icopyright_searchable) {
   $post = array(
     'fname' => $fname,
     'lname' => $lname,
@@ -209,7 +216,8 @@ function icopyright_post_publication_info($pid, $fname, $lname, $name, $pub_url,
     'country' => $country,
     'phone' => $phone,
     'pricingOptimizerOptIn' => is_null($icopyright_pricing_optimizer_opt_in) ? 'N/A' : ''.$icopyright_pricing_optimizer_opt_in,
-    'pricingOptimizerApplyAutomatically' => is_null($icopyright_pricing_optimizer_apply_automatically) ? 'N/A' : ''.$icopyright_pricing_optimizer_apply_automatically
+    'pricingOptimizerApplyAutomatically' => is_null($icopyright_pricing_optimizer_apply_automatically) ? 'N/A' : ''.$icopyright_pricing_optimizer_apply_automatically,
+    'searchable' => is_null($icopyright_searchable) ? 'N/A' : ''.$icopyright_searchable
   );
   $postdata = http_build_query($post);
   $url = "/api/xml/publication/update/$pid";

@@ -245,6 +245,10 @@ function icopyright_admin_init() {
     register_setting('icopyright-settings-group', 'icopyright_pricing_optimizer_apply_automatically');
   }
 
+  add_settings_field('icopyright_searchable', 'Searchable', 'searchable_field_callback', 'copyright-licensing-tools', 'service-settings');
+  register_setting('icopyright-settings-group', 'icopyright_searchable');
+
+
   if (!empty($address)) {
     add_account_settings_section();
   }

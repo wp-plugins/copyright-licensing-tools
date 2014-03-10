@@ -673,7 +673,27 @@ function syndication_field_callback() {
 }
 
 function pricing_optimizer_apply_automatically_field_callback() {
+  ?>
+  <div id="icx_remove_parent_tr"></div>
+  <script type="text/javascript">
+    jQuery(document).ready(function() {
+      jQuery("#icx_remove_parent_tr").parent().parent().remove();
+    });
+  </script>
+  <?php
+}
 
+function searchable_field_callback() {
+  $check_email = get_option('icopyright_conductor_email');
+  $check_password = get_option('icopyright_conductor_password');
+  $icopyright_searchable = get_option('icopyright_searchable');
+  ?>
+  <fieldset>
+    <input name="icopyright_searchable" type="checkbox"
+          value="true" <?php if ($icopyright_searchable == "true") echo('checked="checked"'); ?> <?php if (empty($check_email) || empty($check_password)) echo(' disabled="disabled"');?>/>
+    <?php _e('Allow the articles on my site which bear the iCopyright Toolbar to be searchable by tools such as the Republish module in this plugin and iCopyright repubHub&trade;')?>
+  </fieldset>
+<?php
 }
 
 function pricing_optimizer_opt_in_field_callback() {
