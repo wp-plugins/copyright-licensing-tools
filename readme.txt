@@ -1,33 +1,35 @@
 === iCopyright Toolbar ===
 Contributors: iCopyright Inc.
-Tags: icopyright, copyright, prints, reprints, eprint, e-print, email, post, republish, share, article tools, monetize, monetization, distribute, distribution, piracy, infringement, syndication, reuse, re-use, advertisement, ads, license, licensing
+Tags: ads, advertising, article tools, attribution, copyright, creative commons, curate, curation, curation tools, content distribution, icopyright, infringement, license, licensing, monetization, monetize, network, piracy, publish, publishing, reblog, repost, re-use, reprints, republish, republish network, republishing network, repubHub, reuse, Share, sharing, syndicate, syndication
 Requires at least: 3.0
 Tested up to: 3.8.1
 Stable tag: 2.3
 
-iCopyright adds article tools and an Interactive Copyright Notice to enable sharing, licensing, syndication, tracking and monetization of content.
+Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content.
 
 == Description ==
 
-The iCopyright Toolbar plugin adds article tools (print, email, share, and republish) and an Interactive Copyright Notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. Use the same solution many of the world's leading publishers use to protect and monetize their content. Automatic registration on activation. By iCopyright Inc.
+The iCopyright Toolbar adds a Republish option to your Posts menu where you can search for news items and monitor topics relevant to your site and republish them. It also adds a Republish button to your articles and feeds them into the network for others to discover and license.
+
+With the iCopyright Toolbar plugin, you can:
+
+* Search for and monitor articles by leading publishers on topics of interest to your readers
+* Republish them legally with just one click directly from your Posts menu
+* Get alerts when new articles on your topics are available for republication
+* Syndicate and monetize your content with a Republish button that feeds your content into iCopyright’s repubHub portal for others to discover and republish.
+
+The powerful iCopyright Toolbar lets you do it all.
+
+*Welcome to the iCopyright republishing network!*
 
 == Installation ==
 
-= Install Plugin Using Search =
-
-   1. Click 'Install Now' in search results row
-   2. Click 'OK' to accept plugin installation
-   3. Once installed, click Activate Plugin link
-   4. Click Accept to indicate acceptance of terms of use
-   5. Configure the plugin through Settings
-
-= or, install Plugin in .ZIP Format =
-
-   1. Visit Plugins > Add New > Upload in WordPress admin
-   2. Upload copyright-licensing-tools.zip file
-   3. Once uploaded, click Activate Plugin link
-   4. Click Accept to indicate acceptance of terms of use
-   5. Configure the plugin through Settings
+  1. Visit Plugins > Add New
+  2. Search for "iCopyright"
+  3. Click "Install Now" and then "OK"
+  4. Click "Activate Plugin"
+  5. Click "Agree" to indicate acceptance of terms of use
+  6. Review the default settings and make any changes you wish
 
 == Frequently Asked Questions ==
 
