@@ -522,7 +522,6 @@ function icopyright_update_settings() {
         }
         update_option('icopyright_ez_excerpt', $settings['ezExcerpt'] == 'true' ? 'yes' : 'no');
         update_option('icopyright_share', $settings['shareService'] == 'true' ? 'yes' : 'no');
-        update_option('icopyright_syndication', $settings['syndication'] == 'true' ? 'yes' : 'no');
         update_option('icopyright_background', $settings['background']);
         update_option('icopyright_theme', $settings['theme']);
         update_option('icopyright_created_date', $settings['createdDate']);

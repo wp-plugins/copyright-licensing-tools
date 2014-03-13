@@ -233,9 +233,6 @@ function icopyright_admin_init() {
   add_settings_field('icopyright_ez_excerpt', 'EZ Excerpt', 'ez_excerpt_field_callback', 'copyright-licensing-tools', 'service-settings');
   register_setting('icopyright-settings-group', 'icopyright_ez_excerpt');
 
-  add_settings_field('icopyright_syndication', 'Syndication', 'syndication_field_callback', 'copyright-licensing-tools', 'service-settings');
-  register_setting('icopyright-settings-group', 'icopyright_syndication');
-
   $icopyright_pricing_optimizer_opt_in = get_option('icopyright_pricing_optimizer_opt_in');
   if ($icopyright_pricing_optimizer_opt_in != FALSE) {
     add_settings_field('icopyright_pricing_optimizer_opt_in', 'Price Optimizer', 'pricing_optimizer_opt_in_field_callback', 'copyright-licensing-tools', 'service-settings');

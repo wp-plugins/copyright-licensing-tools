@@ -646,32 +646,6 @@ function ez_excerpt_field_callback() {
 <?php
 }
 
-function syndication_field_callback() {
-  $check_email = get_option('icopyright_conductor_email');
-  $check_password = get_option('icopyright_conductor_password');
-  ?>
-<fieldset>
-  <input name="icopyright_syndication" type="radio"
-         value="yes" <?php $icopyright_syndication = get_option('icopyright_syndication'); if (empty($icopyright_syndication) || $icopyright_syndication == "yes") {
-    echo "checked";
-  }?> <?php if (empty($check_email) || empty($check_password)) {
-    echo 'disabled';
-  }?>/> <?php _e('On ')?>
-  <br/>
-  <input name="icopyright_syndication" type="radio"
-         value="no" <?php $icopyright_syndication2 = get_option('icopyright_syndication'); if ($icopyright_syndication2 == "no") {
-    echo "checked";
-  }?><?php if (empty($check_email) || empty($check_password)) {
-    echo 'disabled';
-  }?>/> <?php _e('Off ')?>
-</fieldset>
-<span class="description">The Syndication Feed service enables other websites to subscribe to a feed
-                  of your content and pay you based on the number of times your articles are viewed on their site at
-                  a CPM rate you specify. When you receive your welcome email, click to go into Conductor and set the
-                  business terms you would like. Until you do that, default pricing and business terms will apply.</span>
-<?php
-}
-
 function pricing_optimizer_apply_automatically_field_callback() {
   ?>
   <div id="icx_remove_parent_tr"></div>

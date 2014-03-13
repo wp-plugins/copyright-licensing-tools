@@ -37,7 +37,6 @@ function icopyright_migrate_options() {
 
     icopyright_migrate_option($icopyright_admin, "share");
     icopyright_migrate_option($icopyright_admin, "ez_excerpt");
-    icopyright_migrate_option($icopyright_admin, "syndication");
     icopyright_migrate_option($icopyright_admin, "feed_url");
     add_option("icopyright_tou", "on");
 
@@ -92,7 +91,6 @@ function icopyright_post_settings($input) {
   //assign posted value
   $icopyright_pubid = sanitize_text_field(stripslashes($_POST['icopyright_pub_id']));
   $icopyright_ez_excerpt = sanitize_text_field(stripslashes($_POST['icopyright_ez_excerpt']));
-  $icopyright_syndication = sanitize_text_field(stripslashes($_POST['icopyright_syndication']));
   $icopyright_share = sanitize_text_field(stripslashes($_POST['icopyright_share']));
   $icopyright_conductor_email = sanitize_email(stripslashes($_POST['icopyright_conductor_email']));
   $icopyright_conductor_password = sanitize_text_field(stripslashes($_POST['icopyright_conductor_password']));
@@ -166,8 +164,6 @@ function icopyright_post_settings($input) {
   // Submit as appropriate
   $ez_res = icopyright_post_ez_excerpt($icopyright_pubid, ($icopyright_ez_excerpt == 'yes'), $user_agent, $conductor_email, $conductor_password);
   $results['EZ Excerpt Setting'] = $ez_res;
-  $syndicate_res = icopyright_post_syndication_service($icopyright_pubid, ($icopyright_syndication == 'yes'), $user_agent, $conductor_email, $conductor_password);
-  $results['Syndication Setting'] = $ez_res;
   $share_res = icopyright_post_share_service($icopyright_pubid, ($icopyright_share == 'yes'), $user_agent, $conductor_email, $conductor_password);
   $results['Sharing Setting'] = $ez_res;
   $t_res = icopyright_post_toolbar_theme($icopyright_pubid, $icopyright_theme, $icopyright_background, $user_agent, $conductor_email, $conductor_password);
@@ -387,7 +383,6 @@ function icopyright_admin_defaults() {
   update_option('icopyright_show', 'both');
   update_option('icopyright_show_multiple', 'notice');
   update_option('icopyright_ez_excerpt', 'yes');
-  update_option('icopyright_syndication', 'yes');
   update_option('icopyright_share', 'yes');
   update_option('icopyright_categories', '');
   update_option('icopyright_use_category_filter', 'no');
