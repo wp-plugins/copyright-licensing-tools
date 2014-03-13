@@ -235,7 +235,7 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
     <h3>Find Republishable Articles</h3>
   </div>
   <div class="icx_search_wrapper">
-    <form id="icx_republish_form" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $_GET['page'] ?>&noheader=true">
+    <form id="icx_republish_form" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $_GET['page'] ?>">
       <input type="hidden" name="action" value="add"/>
       <label id="icx_and_words_label" class="icx_republish_label" for="icx_and_words" style="display: none;"></label><input id="icx_and_words" type="text" name="andWords" placeholder="Enter your search terms here" value="<?php echo $data['andWords']; ?>"/>
       <input class="icx_add_btn" type="submit" value="Go"/>
@@ -304,7 +304,7 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
       Email me: <strong><?php echo($frequencies[$topic->frequency.""]); ?></strong><br/>
     </div>
     <div class="icx_topic_controls">
-      <form method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $_GET['page'] ?>&noheader=true">
+      <form method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $_GET['page'] ?>">
         <input type="hidden" name="action" value="delete"/>
         <input type="hidden" name="topicId" value="<?php echo $topic->id; ?>"/>
         <input type="submit" value="Delete Topic"/>
@@ -496,7 +496,7 @@ function icopyright_republish_page_get_edit_topic($data) {
   <h3>Edit Topic</h3>
 </div>
 <div class="icx_search_wrapper">
-  <form id="icx_republish_form" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $_GET['page'] ?>&noheader=true">
+  <form id="icx_republish_form" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $_GET['page'] ?>">
     <input type="hidden" name="action" value="edit"/>
     <input type="hidden" name="topicId" value="<?php echo $data['topicId']; ?>"/>
     <label id="" class="icx_republish_label" for="icx_and_words">With all the words:</label><input id="icx_and_words" type="text" name="andWords" value="<?php echo $data['andWords']; ?>"/>
@@ -593,7 +593,6 @@ function icopyright_calculate_unread_republish_clips() {
           $lastReadclipId = (int) $unreadMarkers[(int)$topic->id];
         }
         foreach ($topicxml->clips->clip as $clip) {
-
           if (strcmp($clip->embeddable, "true") == 0 && (int) $clip->clipId > $lastReadclipId) {
             $unreadCount ++;
           }
