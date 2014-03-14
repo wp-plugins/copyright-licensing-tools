@@ -3,6 +3,7 @@
 add_action('wp_ajax_repubhub_clips', 'icopyright_republish_topic_hits');
 add_action('wp_ajax_repubhub_recent_headlines', 'icopyright_republish_recent_headlines');
 add_action('edit_form_after_title', 'icopyright_edit_form_after_title' );
+
 function icopyright_edit_form_after_title() {
   if ((!empty($_GET['icx_tag']) || (!empty($_GET['post']) && get_post_meta($_GET['post'], "icopyright_republish_content")))
     && get_option("repubhub_dismiss_post_new_info_box") == null) {
@@ -337,14 +338,13 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
 <?php
 }
 
-
 add_action('wp_ajax_repubhub_clips_read', 'icopyright_republish_topic_read');
 function icopyright_republish_topic_read() {
   $topicId = (int) $_GET['topicid'];
   $total = icopyright_update_unread_count($topicId);
   $unreadMarkers = icopyright_get_unread_markers();
   $unreadMarkers[$topicId] = (int) $_GET['contentid'];
-  update_option('icopyright_unread_republish_markers_'+get_option('icopyright_pub_id'), json_encode($unreadMarkers));
+  update_option('icopyright_unread_republish_markers_' . get_option('icopyright_pub_id'), json_encode($unreadMarkers));
   echo $total;
   exit();
 }
@@ -464,7 +464,7 @@ function icopyright_update_unread_count($topicId) {
 
   $unreadCounts['total'] = $total;
   $unreadCounts[$topicId] = 0;
-  update_option('icopyright_unread_republish_clips_'+get_option('icopyright_pub_id'), json_encode($unreadCounts));
+  update_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'), json_encode($unreadCounts));
 
   return $total;
 }
@@ -603,13 +603,13 @@ function icopyright_calculate_unread_republish_clips() {
     }
   }
   $unreadCounts["total"] = $totalUnreadCount;
-  update_option('icopyright_unread_republish_clips_'+get_option('icopyright_pub_id'), json_encode($unreadCounts));
+  update_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'), json_encode($unreadCounts));
 }
 
 function icopyright_get_unread_counts() {
   $unreadCounts = array();
   try {
-    $unreadJson = get_option('icopyright_unread_republish_clips_'+get_option('icopyright_pub_id'));
+    $unreadJson = get_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'));
     if (!empty($unreadJson))
       $unreadCounts = json_decode($unreadJson, true);
   } catch (Exception $e) {}
@@ -619,7 +619,7 @@ function icopyright_get_unread_counts() {
 function icopyright_get_unread_markers() {
   $unreadMarkers = array();
   try {
-    $markersJson = get_option('icopyright_unread_republish_markers_'+get_option('icopyright_pub_id'));
+    $markersJson = get_option('icopyright_unread_republish_markers_' . get_option('icopyright_pub_id'));
     if (!empty($markersJson))
       $unreadMarkers = json_decode($markersJson, true);
   } catch (Exception $e) {}
