@@ -338,6 +338,9 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
 <?php
 }
 
+/**
+ * When a topic is read, decrease the "unread" numbers for the total and set this one to zero
+ */
 add_action('wp_ajax_repubhub_clips_read', 'icopyright_republish_topic_read');
 function icopyright_republish_topic_read() {
   $topicId = (int) $_GET['topicid'];
@@ -449,23 +452,26 @@ function icopyright_republish_topic_hits() {
   exit();
 }
 
+/**
+ * When a topic is "read" by the user clicking on the tab, set the number of unread stories to be zero and update the
+ * totals for all topics accordingly
+ * @param $topicId
+ * @return int
+ */
 function icopyright_update_unread_count($topicId) {
   $unreadCounts = icopyright_get_unread_counts();
   $topicCount = 0;
   if (array_key_exists($topicId, $unreadCounts)) {
     $topicCount = $unreadCounts[$topicId];
   }
-
   $total = 0;
   if (array_key_exists('total', $unreadCounts))
     $total = $unreadCounts['total'];
   $total = $total - $topicCount;
   if ($total<0) $total = 0;
-
   $unreadCounts['total'] = $total;
   $unreadCounts[$topicId] = 0;
   update_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'), json_encode($unreadCounts));
-
   return $total;
 }
 
