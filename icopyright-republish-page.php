@@ -136,13 +136,18 @@ function icopyright_republish_page_post_add() {
   $email = get_option('icopyright_conductor_email');
   $password = get_option('icopyright_conductor_password');
   $res = icopyright_add_topic(http_build_query($post), $user_agent, $email, $password);
+  $topic = @simplexml_load_string($res->response);
   if(!icopyright_check_response($res)) {
-    $post['error'] = "Unable to add topic at this time.  Please try again later.";
-    icopyright_republish_page_get($post);
+    if (is_object($topic) && ($topic->status->messages->count() > 0)) {
+      $post['error'] = (string)$topic->status->messages[0]->message;
+    } else {
+      $post['error'] = 'Sorry, we were unable to add that topic.';
+    }
   } else {
-    $topic = @simplexml_load_string($res->response);
-    wp_redirect($_SERVER['PHP_SELF']."?page=".$_GET['page']."&success=".urlencode("Topic has been added!")."&topicId=".$topic->id);
+    $post['success'] = "Topic has been added.";
+    $post['topicId'] = (string)$topic->id;
   }
+  icopyright_republish_page_get($post);
 }
 
 function icopyright_republish_page_post_edit() {
@@ -173,7 +178,9 @@ function icopyright_republish_page_post_edit() {
     $post['error'] = "Unable to add topic at this time.  Please try again later.";
     icopyright_republish_page_get_edit_topic($post);
   } else {
-    wp_redirect($_SERVER['PHP_SELF']."?page=".$_GET['page']."&success=".urlencode("Topic has been modified!")."&topicId=".$post['topicId']);
+    $post['success'] = "Topic has been modified.";
+    $post['topicId'] = $_POST['topicId'];
+    icopyright_republish_page_get($post);
   }
 }
 
@@ -184,13 +191,16 @@ function icopyright_republish_page_post_delete() {
   $res = icopyright_delete_topic($_POST['topicId'], $user_agent, $email, $password);
   if(!icopyright_check_response($res)) {
     $post['error'] = "Unable to delete topic at this time.  Please try again later.";
-    icopyright_republish_page_get($post);
   } else {
-    wp_redirect($_SERVER['PHP_SELF']."?page=".$_GET['page']."&success=".urlencode("Topic has been removed!"));
+    $post['success'] = "Topic has been deleted.";
   }
+  icopyright_republish_page_get($post);
 }
 
 function icopyright_republish_page_get($data) {
+  $topic_id = $_GET['topicId'];
+  if(is_numeric($data['topicId']))
+    $topic_id = $data['topicId'];
   if (!empty($_GET['success']))
     $data['success'] = $_GET['success'];
   if ($_GET['action'] === "edit") {
@@ -200,13 +210,13 @@ function icopyright_republish_page_get($data) {
     $data['orWords'] = $_GET['orWords'];
     $data['notWords'] = $_GET['notWords'];
     $data['frequency'] = $_GET['frequency'];
-    if (empty($_GET['topicId']))
+    if (empty($topic_id))
       icopyright_republish_page_get_edit_topic($data);
     else
-      icopyright_republish_page_get_edit_topic($data, $_GET['topicId']);
+      icopyright_republish_page_get_edit_topic($data, $topic_id);
   } else {
-    if(isset($_GET['topicId'])) {
-      icopyright_republish_page_get_topics($data, $_GET['topicId']);
+    if(isset($topic_id)) {
+      icopyright_republish_page_get_topics($data, $topic_id);
     } else {
       icopyright_republish_page_get_topics($data);
     }
