@@ -216,7 +216,7 @@ function icopyright_republish_page_get($data) {
       icopyright_republish_page_get_edit_topic($data, $topic_id);
   } else {
     if(isset($topic_id)) {
-      icopyright_republish_page_get_topics($data, $topic_id);
+      icopyright_republish_page_get_topics(array(), $topic_id);
     } else {
       icopyright_republish_page_get_topics($data);
     }
