@@ -173,14 +173,15 @@ function icopyright_republish_page_post_edit() {
   $user_agent = ICOPYRIGHT_USERAGENT;
   $email = get_option('icopyright_conductor_email');
   $password = get_option('icopyright_conductor_password');
-  $res = icopyright_edit_topic($_POST['topicId'], http_build_query($post), $user_agent, $email, $password);
+  $res = icopyright_edit_topic($post['topicId'], http_build_query($post), $user_agent, $email, $password);
   if(!icopyright_check_response($res)) {
-    $post['error'] = "Unable to add topic at this time.  Please try again later.";
-    icopyright_republish_page_get_edit_topic($post);
+    $post['error'] = "Unable to edit topic at this time.  Please try again later.";
+    icopyright_republish_page_get_edit_topic($post, $post['topicId']);
   } else {
     $post['success'] = "Topic has been modified.";
-    $post['topicId'] = $_POST['topicId'];
-    icopyright_republish_page_get($post);
+    $xml = @simplexml_load_string($res->response);
+    $tid = (string)$xml->id;
+    icopyright_republish_page_get($post, $tid);
   }
 }
 
@@ -197,10 +198,13 @@ function icopyright_republish_page_post_delete() {
   icopyright_republish_page_get($post);
 }
 
-function icopyright_republish_page_get($data) {
-  $topic_id = $_GET['topicId'];
-  if(is_numeric($data['topicId']))
-    $topic_id = $data['topicId'];
+function icopyright_republish_page_get($data, $topic_id = NULL) {
+  if($topic_id == NULL) {
+    if(is_numeric($data['topicId']))
+      $topic_id = $data['topicId'];
+    else
+      $topic_id = $_GET['topicId'];
+  }
   if (!empty($_GET['success']))
     $data['success'] = $_GET['success'];
   if ($_GET['action'] === "edit") {
@@ -494,7 +498,7 @@ function icopyright_includes_embeddable($clips) {
   return false;
 }
 
-function icopyright_republish_page_get_edit_topic($data) {
+function icopyright_republish_page_get_edit_topic($data, $displayTopicId = '') {
   wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.1.0');  // Update the version when the style changes.  Refreshes cache.
   wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.1.0');
   $frequencies = array(
