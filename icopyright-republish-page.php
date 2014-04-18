@@ -9,8 +9,8 @@ function icopyright_edit_form_after_title() {
     && get_option("repubhub_dismiss_post_new_info_box") == null) {
     ?>
       <p style="float:left; width:460px; background:lightblue; padding:5px; margin:0px 0px 10px 0px;" id="icx_post_new_info_box">
-        This embed code (shown as a yellow box if you're in the Visual tab) will display the republished article.
-        To preview it, be sure to click "Save" first, and then "View post" at top (since clicking Preview will not
+        This embed code (appearing as an empty box if you're in the Visual tab) will display the republished article.
+        To preview it, be sure to click "Save Draft" first, and then "View Post" at top (since clicking Preview will not
         work in some browsers). You may add an intro or conclusion above or below the embed code.
         <br/>
         <a style="float: right;" href="" id="icx_dismiss_post_new_info_box">Dismiss</a>
