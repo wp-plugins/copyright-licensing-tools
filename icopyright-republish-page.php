@@ -178,10 +178,11 @@ function icopyright_republish_page_post_edit() {
     $post['error'] = "Unable to edit topic at this time.  Please try again later.";
     icopyright_republish_page_get_edit_topic($post, $post['topicId']);
   } else {
-    $post['success'] = "Topic has been modified.";
+    $results = array();
+    $results['success'] = "Topic has been modified.";
     $xml = @simplexml_load_string($res->response);
     $tid = (string)$xml->id;
-    icopyright_republish_page_get($post, $tid);
+    icopyright_republish_page_get($results, $tid);
   }
 }
 
@@ -220,7 +221,7 @@ function icopyright_republish_page_get($data, $topic_id = NULL) {
       icopyright_republish_page_get_edit_topic($data, $topic_id);
   } else {
     if(isset($topic_id)) {
-      icopyright_republish_page_get_topics(array(), $topic_id);
+      icopyright_republish_page_get_topics($data, $topic_id);
     } else {
       icopyright_republish_page_get_topics($data);
     }
