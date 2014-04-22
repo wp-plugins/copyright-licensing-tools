@@ -357,6 +357,12 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
 <?php
     $index ++;
   }
+  if(isset($displayTopicId)) { ?>
+    <script type="application/javascript">
+      jQuery("#icx_topic_<?php print $displayTopicId; ?>").trigger("click");
+    </script>
+  <?php
+  }
 ?>
 </div>
 <?php
