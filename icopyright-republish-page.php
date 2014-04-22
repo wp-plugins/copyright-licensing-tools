@@ -5,8 +5,8 @@ add_action('wp_ajax_repubhub_recent_headlines', 'icopyright_republish_recent_hea
 add_action('edit_form_after_title', 'icopyright_edit_form_after_title' );
 
 function icopyright_edit_form_after_title() {
-  if ((!empty($_GET['icx_tag']) || (!empty($_GET['post']) && get_post_meta($_GET['post'], "icopyright_republish_content")))
-    && get_option("repubhub_dismiss_post_new_info_box") == null) {
+  if (!empty($_GET['icx_tag']) || (!empty($_GET['post']) && get_post_meta($_GET['post'], "icopyright_republish_content"))) {
+    if(get_option("repubhub_dismiss_post_new_info_box") == null) {
     ?>
       <p style="float:left; background:lightblue; padding:10px; margin: 0 0 20px 0;" id="icx_post_new_info_box">
         This embed code (appearing as an empty box if you're in the Visual tab) will display the republished article.
@@ -31,13 +31,15 @@ function icopyright_edit_form_after_title() {
         });
       </script>
     <?php
-  } ?>
+    }
+  ?>
   <p style="float:left; background:lightblue; padding:10px; margin: 0 0 20px 0;" id="icx_terms_of_use_box">
     By clicking "Publish" you agree to the
   <a target="_blank" href="<?php print icopyright_get_server() ?>/rights/termsOfUse.act?sid=15&tag=<?php print urlencode($_GET['icx_tag']) ?>">terms of use</a>.
       </p>
       <div style="clear: both;"></div>
   <?php
+  }
 }
 
 add_action('wp_ajax_repubhub_dismiss_post_new_info_box', 'icopyright_repubhub_dismiss_post_new_info_box');
