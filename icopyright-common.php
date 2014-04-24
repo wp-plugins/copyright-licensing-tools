@@ -233,7 +233,7 @@ function icopyright_post_publication_info($pid, $fname, $lname, $name, $pub_url,
  * @return TRUE if all is OK
  */
 function icopyright_check_response($res) {
-  return (strlen($res->http_code) == 0) || ($res->http_code == '200');
+  return ($res->http_code == '200');
 }
 
 /**
