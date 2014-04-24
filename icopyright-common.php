@@ -17,7 +17,7 @@ define('ICOPYRIGHT_PORT', 80);
  * @return the full server specification
  */
 function icopyright_get_server($secure = FALSE) {
-  $server = ($secure ? 'https' : 'http') . '://' . ICOPYRIGHT_SERVER;
+$server = ($secure ? 'https' : 'http') . '://' . ICOPYRIGHT_SERVER;
   if (ICOPYRIGHT_PORT != 80) {
     $server .= ':' . ICOPYRIGHT_PORT;
   }
@@ -233,7 +233,7 @@ function icopyright_post_publication_info($pid, $fname, $lname, $name, $pub_url,
  * @return TRUE if all is OK
  */
 function icopyright_check_response($res) {
-  return ($res->http_code == '200');
+  return (strlen($res->http_code) == 0) || ($res->http_code == '200');
 }
 
 /**
