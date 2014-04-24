@@ -390,6 +390,15 @@ function icopyright_republish_recent_headlines() {
   $email = get_option('icopyright_conductor_email');
   $password = get_option('icopyright_conductor_password');
   $res = icopyright_get_recent_headlines($user_agent, $email, $password);
+  if((strlen($res->http_code) > 0) && ($res->http_code != '200')) {
+    echo "<p>Failed to get recent headlines (" . $res->http_code . ': ' . $res->http_expl . ")</p>";
+    if ($res->http_code == 401) {
+      echo '<p>Your email address and password don\'t match a valid account in Conductor. Please visit the ' .
+        '<a href="/wp-admin/options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
+        'push <em>Show Advanced Settings</em> to check your Conductor email address and password.</p>';
+    }
+    exit;
+  }
   $topicxml = @simplexml_load_string($res->response);
   if (sizeof($topicxml) > 0 && icopyright_includes_embeddable($topicxml)) {
     $firstClipId = -1;
@@ -443,6 +452,15 @@ function icopyright_republish_topic_hits() {
   $email = get_option('icopyright_conductor_email');
   $password = get_option('icopyright_conductor_password');
   $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $xml_location), $user_agent, $email, $password);
+  if((strlen($res->http_code) > 0) && ($res->http_code != '200')) {
+    echo "<p>Failed to get topic clips (" . $res->http_code . ': ' . $res->http_expl . ")</p>";
+    if ($res->http_code == 401) {
+      echo '<p>Your email address and password don\'t match a valid account in Conductor. Please visit the ' .
+        '<a href="/wp-admin/options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
+        'push <em>Show Advanced Settings</em> to check your Conductor email address and password.</p>';
+    }
+    exit;
+  }
   $topicxml = @simplexml_load_string($res->response);
   if (sizeof($topicxml->clips->clip) > 0 && icopyright_includes_embeddable($topicxml->clips->clip)) {
     $firstClipId = -1;
