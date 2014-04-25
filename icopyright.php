@@ -2,10 +2,10 @@
 /*
 Plugin Name: iCopyright
 Plugin URI: http://info.icopyright.com/wordpress
-Description: The iCopyright plugin adds article tools (print, email, post, and republish) and an interactive copyright notice to your site that facilitate the monetization and distribution of your content. Earn fees or ad revenue when your articles are re-used. Identify websites that re-use your content without permission and request takedown or convert them to customers. By iCopyright, Inc.
+Description: Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 2.3
+Version: 2.4
 */
 
 //define constant that need to be changed from test environment to live environment
@@ -20,7 +20,7 @@ define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.3");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.4");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php
@@ -69,7 +69,6 @@ function icopyright_remove_settings() {
   delete_option("icopyright_address_country");
   delete_option("icopyright_address_postal");
   delete_option("icopyright_address_phone");
-  delete_option("icopyright_pub_id");
   delete_option("icopyright_display");
   delete_option("icopyright_tools");
   delete_option("icopyright_theme");
@@ -80,15 +79,21 @@ function icopyright_remove_settings() {
   delete_option("icopyright_display_on_pages");
   delete_option("icopyright_use_category_filter");
   delete_option("icopyright_categories");
-  delete_option("icopyright_share");
   delete_option("icopyright_ez_excerpt");
+  delete_option("icopyright_share");
   delete_option("icopyright_syndication");
   delete_option("icopyright_feed_url");
   delete_option('icopyright_tou');
   delete_option('icopyright_conductor_password');
   delete_option('icopyright_conductor_email');
   delete_option('icopyright_redirect_on_first_activation');
-  delete_option("repubhub_dismiss_post_new_info_box");
+  delete_option('icopyright_pricing_optimizer_opt_in');
+  delete_option('repubhub_dismiss_post_new_info_box');
+  delete_option('icopyright_searchable');
+  $pid = get_option('icopyright_pub_id');
+  delete_option("icopyright_unread_republish_clips_$pid");
+  delete_option("icopyright_unread_republish_markers_$pid");
+  delete_option('icopyright_pub_id');
 }
 
 register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
