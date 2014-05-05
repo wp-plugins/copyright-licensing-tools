@@ -60,18 +60,9 @@ function icopyright_wp_feed_emit_feed() {
   $icx_story_raw = nl2br($feed_post->post_content);
   $icx_story = apply_filters('the_content', $icx_story_raw);
   $icx_excerpt = $feed_post->post_excerpt;
-  $icx_featured_image = get_the_post_thumbnail($id, 'medium');
-  
+  $icx_featured_image = get_the_post_thumbnail($id, 'medium', array("style" => "float: left; margin: 0 10px 10px 0;"));
   if ($icx_featured_image != '') {
-    // Get the width of the img so we can set our div to that width
-    $doc = new DOMDocument();
-    $doc->loadHTML($icx_featured_image);
-	$xpath = new DOMXPath($doc);
-	$width = $xpath->evaluate("string(//img/@width)");
-	
-  	$imgDiv = "<div style=\"float: left; margin: 0 10px 10px 0; width: ".$width. "px;\">";
-  	$imgDiv = $imgDiv . $icx_featured_image . "</div>";
-  	$icx_story = $imgDiv . $icx_story;
+    $icx_story = "<p>".$icx_featured_image."</p>" . $icx_story;
   }
   //get url
   $icx_url = get_permalink($id);
