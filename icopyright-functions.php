@@ -270,7 +270,7 @@ add_filter('get_the_excerpt', 'icopyright_trim_excerpt', 0);
 
 //adds a custom meta box to the add or edit Post and Page editor
 function icopyright_add_custom_box() {
-
+  
   if (function_exists('add_meta_box')) {
 
     add_meta_box('icopyright_sectionid', __('iCopyright Custom Field', 'icopyright_textdomain'),
@@ -285,7 +285,6 @@ function icopyright_add_custom_box() {
 
 //creates the inner fields for the custom meta box
 function icopyright_inner_custom_box() {
-
   //Create icopyright_admin_nonce for verification
   echo '<input type="hidden" name="icopyright_noncename" id="icopyright_noncename" value="' .
     wp_create_nonce('icopyright_admin_nonce') . '" />';
@@ -296,7 +295,7 @@ function icopyright_inner_custom_box() {
   //retrieve custom field data
   $data = get_post_meta($content, 'icopyright_hide_toolbar', TRUE);
 
-  echo "<p><label>Do not offer iCopyright Article Tools on this story</label> <input name=\"icopyright_hide_toolbar\" type=\"checkbox\" value=\"yes\"";
+  echo "<p><label>Do not offer iCopyright Article Tools on this story and/or make searchable</label> <input name=\"icopyright_hide_toolbar\" type=\"checkbox\" value=\"yes\"";
   if ($data == 'yes') {
     echo 'checked';
   } else {
@@ -309,7 +308,7 @@ function icopyright_inner_custom_box() {
 }
 
 //saves our custom field data, when the post is saved
-function icopyright_save_postdata($post_id) {
+function icopyright_save_postdata($post_id, $post) {
 
   //check admin nonce
   if (!wp_verify_nonce($_POST['icopyright_noncename'], 'icopyright_admin_nonce')) {
@@ -331,13 +330,90 @@ function icopyright_save_postdata($post_id) {
   //update custom field
   update_post_meta($post_id, 'icopyright_hide_toolbar', $mydata);
 
+	icopyright_publish_post($post_id, $post);
+}
+
+function icopyright_publish_post($post_id, $post) {
+  if ($post->post_type == 'post' && $post->post_status == 'publish') {
+
+  	$user_agent = ICOPYRIGHT_USERAGENT;
+		$email = get_option('icopyright_conductor_email');
+		$password = get_option('icopyright_conductor_password');
+		$pub_id_no = get_option('icopyright_pub_id');
+		$tag = "3." . $pub_id_no . "?icx_id=" . $post_id;    	
+  	
+		// Do some filter checks.  Don't register content if it's a page.
+		// Make sure client has 'none' selected for article tools display option
+		$display_status = get_option('icopyright_display');
+		if ($display_status != 'none')
+			return;
+		
+		if (is_page())
+			return;
+
+		if(!icopyright_post_passes_filters())
+			return;
+
+		$result = update_post_meta($post_id, 'icopyright_registered_content', 'yes');
+		icopyright_register_content($tag, $useragent, $email, $password);  
+	}
+}
+
+function icopyright_check_for_searchable($post) {
+	if ($post->post_type == 'post' && $post->post_status == 'publish') {
+  	$icopyright_hide_toolbar_cur = get_post_meta($post->ID, 'icopyright_hide_toolbar', $single = TRUE);
+  	$icopyright_hide_toolbar_new = $_POST['icopyright_hide_toolbar'];
+
+		// Check to see if a change has happened
+    if ($icopyright_hide_toolbar_cur != $icopyright_hide_toolbar_new) {
+      $searchable = ($icopyright_hide_toolbar_new != NULL && $icopyright_hide_toolbar_new == "yes") ? false : true;
+
+			$user_agent = ICOPYRIGHT_USERAGENT;
+			$email = get_option('icopyright_conductor_email');
+			$password = get_option('icopyright_conductor_password');
+			$pub_id_no = get_option('icopyright_pub_id');
+			$tag = "3." . $pub_id_no . "?icx_id=" . $post->ID;
+
+			icopyright_update_searchable($tag, $searchable, $useragent, $email, $password);
+    }
+
+		/*if (($icopyright_hide_toolbar_cur == NULL || $icopyright_hide_toolbar_cur == '' || $icopyright_hide_toolbar_cur == false) && 
+		($icopyright_hide_toolbar_new != NULL && $icopyright_hide_toolbar_new == "yes")) {
+			
+		}	*/
+	}
 }
 
 //hook in admin_menu action to create the custom meta box
 add_action('admin_menu', 'icopyright_add_custom_box');
 
 //hook in save_post action to save custom field data
-add_action('save_post', 'icopyright_save_postdata');
+add_action('publish_to_publish', 'icopyright_check_for_searchable', 9);
+add_action('save_post', 'icopyright_save_postdata', 10, 2);
+
+add_action('before_delete_post', 'icopyright_delete_post');
+
+function icopyright_delete_post($post_id) {
+	$icopyright_registered_content = get_post_meta($post_id, 'icopyright_registered_content', $single = TRUE);
+  if ($icopyright_registered_content != 'yes') {
+    return;
+  }
+
+	$display_status = get_option('icopyright_display');
+	if ($display_status != 'none')
+		return;
+	
+	if (is_page())
+		return;
+		
+	$user_agent = ICOPYRIGHT_USERAGENT;
+	$email = get_option('icopyright_conductor_email');
+	$password = get_option('icopyright_conductor_password');
+	$pub_id_no = get_option('icopyright_pub_id');
+	$tag = "3." . $pub_id_no . "?icx_id=" . $post_id;
+
+	icopyright_delete_content($tag, $useragent, $email, $password);  	
+}
 
 
 //Since Version 1.1.2 
@@ -367,6 +443,7 @@ function icopyright_post_passes_filters($post_id = NULL) {
     global $post;
     $post_id = $post->ID;
   }
+  
   // Is there even a configured publication ID? If not, no point in continuing
   $pub_id_no = get_option('icopyright_pub_id');
   if (empty($pub_id_no) || !is_numeric($pub_id_no)) {
@@ -374,6 +451,7 @@ function icopyright_post_passes_filters($post_id = NULL) {
   }
   // Has the site admin chosen to hide this particular post? If so then return false
   $icopyright_hide_toolbar = get_post_meta($post_id, 'icopyright_hide_toolbar', $single = TRUE);
+  
   if ($icopyright_hide_toolbar == 'yes') {
     return FALSE;
   }

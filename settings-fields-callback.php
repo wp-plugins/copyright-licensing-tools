@@ -330,7 +330,7 @@ function display_field_callback() {
 }?>/>
   <?php _e('Manual ')?><br/>
 <span class="description">
-		    <?php _e('Deploy iCopyright Toolbar and Interactive Copyright Notice into content of post, using WordPress shortcode')?>
+		    <?php _e('Deploy iCopyright Toolbar and Interactive Copyright Notice into content of post using WordPress shortcode')?>
 		</span>
 
 <div id="M3"
@@ -374,6 +374,15 @@ function display_field_callback() {
     </tbody>
   </table>
 </div>
+
+<br/>
+
+<input name="icopyright_display" type="radio" value="none"
+       onclick="hide_manual_option()" <?php $icopyright_displayNone = get_option('icopyright_display'); if ($icopyright_displayNone == "none") {
+  echo "checked";
+}?>/>
+  <?php _e('Do not display iCopyright Toolbar on my site')?><br/>
+  
 <?php
 }
 
@@ -565,12 +574,12 @@ function use_category_filter_field_callback() {
   <input class="category-radio" name="icopyright_use_category_filter" type="radio"
          value="no" <?php if ($use_filter != "yes") {
     echo "checked";
-  }?> /> <?php _e('Apply tools to all posts')?>
+  }?> /> <?php _e('Apply tools and/or search rules to all posts')?>
   <br/>
   <input class="category-radio" name="icopyright_use_category_filter" type="radio"
          value="yes" <?php if ($use_filter == "yes") {
     echo "checked";
-  }?> /> <?php _e('Apply tools only to selected categories')?>
+  }?> /> <?php _e('Apply tools and/or search rules only to selected categories')?>
   <br/>
 </fieldset>
 <?php
@@ -582,7 +591,7 @@ function categories_field_callback() {
 <fieldset>
 
   <?php
-  echo '<div id="icopyright-category-list" style="font-size:10px;"><span class="description">Select categories on which to display the Article Tools.</span>';
+  echo '<div id="icopyright-category-list" style="font-size:10px;"><span class="description">Select categories on which to display tools and/or make searchable.</span>';
   $selectedCategories = get_option('icopyright_categories', array());
   echo '<ul>';
 
@@ -665,7 +674,7 @@ function searchable_field_callback() {
   <fieldset>
     <input name="icopyright_searchable" type="checkbox"
           value="true" <?php if ($icopyright_searchable == "true") echo('checked="checked"'); ?> <?php if (empty($check_email) || empty($check_password)) echo(' disabled="disabled"');?>/>
-    <?php _e('Allow the articles on my site which bear the iCopyright Toolbar to be searchable by tools such as the Republish module in this plugin and iCopyright repubHub&trade;')?>
+    <?php _e('Allow the articles on my site which bear the iCopyright Toolbar, or are in the Categories selected below, to be searchable by tools such as the Republish module in this plugin and iCopyright <a href="http://www.repubhub.com" target="_blank">repubHub</a>&trade;')?>
   </fieldset>
 <?php
 }

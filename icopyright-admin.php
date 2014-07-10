@@ -138,8 +138,7 @@ function deployment_mechanism_section_callback() {
   }
   ?>
 <p>
-  The following settings will determine how the iCopyright Toolbar and Interactive Copyright Notice appear on your
-  content pages. If you need assistance, please email <a
+    For assistance, please email <a
     href="mailto:wordpress@icopyright.com">wordpress@icopyright.com</a> or get <a
     href="http://info.icopyright.com/wordpress" target="_blank">help</a>.
 </p>
@@ -189,14 +188,17 @@ function icopyright_admin_init() {
     add_account_settings_section();
   }
 
-  add_settings_section('deployment-mechanism', 'Deployment Mechanism:', 'deployment_mechanism_section_callback', 'copyright-licensing-tools');
+  add_settings_section('deployment-mechanism', 'The Basics:', 'deployment_mechanism_section_callback', 'copyright-licensing-tools');
 
-  add_settings_field('icopyright_display', '', 'display_field_callback', 'copyright-licensing-tools', 'deployment-mechanism');
+  add_settings_field('icopyright_display', 'Toolbar Placement', 'display_field_callback', 'copyright-licensing-tools', 'deployment-mechanism');
   register_setting('icopyright-settings-group', 'icopyright_display');
+  
+  add_settings_field('icopyright_searchable', 'Searchable', 'searchable_field_callback', 'copyright-licensing-tools', 'deployment-mechanism');
+  register_setting('icopyright-settings-group', 'icopyright_searchable');
 
-  add_settings_section('toolbar-appearance', 'iCopyright Toolbar Appearance:', 'toolbar_appearance_section_callback', 'copyright-licensing-tools');
+  add_settings_section('toolbar-appearance', 'Toolbar Appearance:', 'toolbar_appearance_section_callback', 'copyright-licensing-tools');
 
-  add_settings_field('icopyright_tools', 'Toolbar Format', 'tools_field_callback', 'copyright-licensing-tools', 'toolbar-appearance');
+  add_settings_field('icopyright_tools', 'Format', 'tools_field_callback', 'copyright-licensing-tools', 'toolbar-appearance');
   register_setting('icopyright-settings-group', 'icopyright_tools');
 
   add_settings_field('icopyright_theme', 'Theme', 'theme_field_callback', 'copyright-licensing-tools', 'toolbar-appearance');
@@ -241,9 +243,6 @@ function icopyright_admin_init() {
     add_settings_field('icopyright_pricing_optimizer_apply_automatically', '', 'pricing_optimizer_apply_automatically_field_callback', 'copyright-licensing-tools', 'service-settings');
     register_setting('icopyright-settings-group', 'icopyright_pricing_optimizer_apply_automatically');
   }
-
-  add_settings_field('icopyright_searchable', 'Searchable', 'searchable_field_callback', 'copyright-licensing-tools', 'service-settings');
-  register_setting('icopyright-settings-group', 'icopyright_searchable');
 
 
   if (!empty($address)) {

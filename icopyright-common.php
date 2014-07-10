@@ -6,8 +6,8 @@
 
 // Which iCopyright server should we talk to via REST? The standard is license.icopyright.net, port 80,
 // but you can target alternate infrastructures (normally for debugging purposes) by changing these variables.
-define('ICOPYRIGHT_SERVER', 'license.icopyright.net');
-define('ICOPYRIGHT_PORT', 80);
+define('ICOPYRIGHT_SERVER', 'staging.icopyright.net');
+define('ICOPYRIGHT_PORT', 8080);
 
 /**
  * Return the iCopyright server and port that is handling the various services
@@ -136,6 +136,27 @@ function icopyright_post_new_publisher($postdata, $useragent, $email, $password)
   return $res;
 }
 
+function icopyright_register_content($tag, $useragent, $email, $password) {
+  $url = "/api/xml/content/tag/". urlencode($tag);
+  $res = icopyright_post_blocking($url, NULL, $useragent, icopyright_make_header($email, $password), "PUT", false);
+  return $res;
+}
+
+function icopyright_delete_content($tag, $useragent, $email, $password) {
+  $url = "/api/xml/content/tag/". urlencode($tag);
+  $res = icopyright_post_blocking($url, NULL, $useragent, icopyright_make_header($email, $password), "DELETE", false);
+  return $res;
+}
+
+function icopyright_update_searchable($tag, $searchable, $useragent, $email, $password) {
+  $post = array('searchable' => $searchable); 
+  $postdata = http_build_query($post);
+  
+  $url = "/api/xml/content/tag/update-searchable/". urlencode($tag);
+  $res = icopyright_post_blocking($url, $postdata, $useragent, icopyright_make_header($email, $password), "POST", false);
+  return $res;
+}
+
 function icopyright_add_topic($postdata, $useragent, $email, $password) {
   $url = "/api/xml/repubhub/topics";
   $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "PUT");
@@ -223,6 +244,17 @@ function icopyright_post_publication_info($pid, $fname, $lname, $name, $pub_url,
   $url = "/api/xml/publication/update/$pid";
   $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password));
   return $res;
+}
+
+function icopyright_post_publication_categories($pid, $allowed_categories, $useragent, $email, $password) {
+  $cat_string = is_array($allowed_categories) ? implode("|", $allowed_categories) : $allowed_categories;
+   
+  $post = array('allowed_categories' => $cat_string);
+  
+  $postdata = http_build_query($post);
+  $url = "/api/xml/publication/update-categories/$pid";
+  $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password));
+  return $res;  
 }
 
 /**
@@ -425,6 +457,10 @@ function icopyright_make_header($email, $password) {
  * @return object results of the post as specified
  */
 function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL, $method = 'POST') {
+  return icopyright_post_blocking($url, $postdata, $useragent, $headers, $method, true);
+}
+
+function icopyright_post_blocking($url, $postdata, $useragent = NULL, $headers = NULL, $method = 'POST', $blocking) {
 
     //Default: timeout: 5, redirection: 5, httpversion: 1.0, blocking: true, headers: array(), body: null, cookies: array()
     $args = array();
@@ -432,7 +468,7 @@ function icopyright_post($url, $postdata, $useragent = NULL, $headers = NULL, $m
     $args['timeout'] = 60;
     $args['redirection'] = 5;
     $args['httpversion'] = '1.0';
-    $args['blocking'] = true;
+    $args['blocking'] = $blocking;
     $args['sslverify'] = false;
 
     if ($headers == NULL)

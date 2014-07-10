@@ -197,6 +197,38 @@ function icopyright_post_settings($input) {
       add_settings_error('icopyright', '', 'Your changes have not been successfully submitted to iCopyright.', 'icopyright-hide');
     }
   }
+  else {
+    // Update the categories
+		$use_filter = get_option('icopyright_use_category_filter');
+		if($use_filter == 'yes' && $icopyright_searchable != 'false') {
+			$systemCategories = get_categories();
+
+      if ($systemCategories != NULL && count($systemCategories) > 0) {
+				$icopyright_categories = get_option('icopyright_categories');			
+				$selectedCategoryNames = array(); 
+				foreach ($systemCategories as $cat) {
+					if (!empty($icopyright_categories) && in_array($cat->term_id, $icopyright_categories)) {
+						$selectedCategoryNames[] = $cat->name;
+					}
+				}
+				
+				$cat_res = icopyright_post_publication_categories($icopyright_pubid, $selectedCategoryNames, $user_agent, $conductor_email, $conductor_password);
+				
+				if (icopyright_check_response($cat_res) != TRUE) {
+					// The update failed; let's pull out the errors and report them
+					$xml = @simplexml_load_string($cat_res->response);
+					if (is_object($xml) && ($xml->status->messages->count() > 0)) {
+						add_settings_error('icopyright', '', 'Due to the following errors, your changes have not been successfully submitted to iCopyright.', 'icopyright-hide');
+						foreach ($xml->status->messages as $m) {
+							add_settings_error('icopyright', '', '&bull; ' . (string) $m->message, 'icopyright-hide');
+						}
+					} else {
+						add_settings_error('icopyright', '', 'Your changes have not been successfully submitted to iCopyright.', 'icopyright-hide');
+					}
+				}
+			}
+		}
+  }
 
   return $input;
 }

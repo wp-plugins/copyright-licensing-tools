@@ -61,16 +61,60 @@ function icopyright_wp_feed_emit_feed() {
   $icx_story = apply_filters('the_content', $icx_story_raw);
   $icx_excerpt = $feed_post->post_excerpt;
   $icx_featured_image = get_the_post_thumbnail($id, 'medium', array("style" => "float: left; margin: 0 10px 10px 0;"));
+  
   if ($icx_featured_image != '') {
-    $icx_story = "<p>".$icx_featured_image."</p>" . $icx_story;
+		$doc1 = new DOMDocument();
+		$doc1->loadHTML($icx_featured_image);
+		$xpath1 = new DOMXpath($doc1);
+		$imgs1 = $xpath1->query("//img");
+		$featured_image_src = '';
+		$img = $imgs1->item(0);
+		
+		if ($img)
+			$featured_image_src = $img->getAttribute("src");
+			
+		$isIncluded = false;
+		if ($featured_image_src != '') {
+			// See if the same image as the featured image is inserted into the post content.
+			// If so, don't include the feautured image.
+			$doc2 = new DOMDocument();
+			$doc2->loadHTML($icx_story);
+			$xpath2 = new DOMXpath($doc2);
+			$imgs2 = $xpath2->query("//img");
+			
+			for ($i=0; $i < $imgs2->length; $i++) {
+				$img = $imgs2->item($i);
+				$src = $img->getAttribute("src");
+			
+				if ($src && $featured_image_src == $src) {
+					$isIncluded = true;
+					break;
+				}	
+			}		
+		}	
+		
+		if (!$isIncluded) {
+	    $icx_story = "<p>".$icx_featured_image."</p>" . $icx_story;
+	  }
   }
   //get url
   $icx_url = get_permalink($id);
 
   // get category
   $category = get_the_category($id);
-  $icx_section_raw = $category[0]->cat_name;
-  $icx_section = (strcasecmp($icx_section_raw, 'uncategorized') == 0) ? '' : $icx_section_raw;
+  var_dump($category);
+  $icx_section = '';
+  foreach ($category as $cat) {
+  	$icx_section_raw = $cat->cat_name;  
+  	
+  	if (strcasecmp($icx_section_raw, 'uncategorized') != 0) {
+			if ($icx_section != '') {
+				$icx_section = $icx_section . '|';  // Delimiter
+			}
+
+			$icx_section = $icx_section . $icx_section_raw;
+		}
+  }
   
 
   // Construct and emit the XML feed output. Sanitation happens iCopyright-serverside
