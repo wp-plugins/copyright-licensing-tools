@@ -366,7 +366,10 @@ function icopyright_check_for_searchable($post) {
 
 		// Check to see if a change has happened
     if ($icopyright_hide_toolbar_cur != $icopyright_hide_toolbar_new) {
-      $searchable = ($icopyright_hide_toolbar_new != NULL && $icopyright_hide_toolbar_new == "yes") ? false : true;
+	    $icopyright_searchable = get_option('icopyright_searchable');
+      $searchable_override = ($icopyright_hide_toolbar_new != NULL && $icopyright_hide_toolbar_new == "yes") ? true : false;
+      $searchable = !$searchable_override && icopyright_post_passes_category_filter($post->ID) && $icopyright_searchable == 'true';
+
 
 			$user_agent = ICOPYRIGHT_USERAGENT;
 			$email = get_option('icopyright_conductor_email');
@@ -374,13 +377,8 @@ function icopyright_check_for_searchable($post) {
 			$pub_id_no = get_option('icopyright_pub_id');
 			$tag = "3." . $pub_id_no . "?icx_id=" . $post->ID;
 
-			icopyright_update_searchable($tag, $searchable, $useragent, $email, $password);
+			icopyright_update_searchable($tag, $searchable, $searchable_override, $useragent, $email, $password);
     }
-
-		/*if (($icopyright_hide_toolbar_cur == NULL || $icopyright_hide_toolbar_cur == '' || $icopyright_hide_toolbar_cur == false) && 
-		($icopyright_hide_toolbar_new != NULL && $icopyright_hide_toolbar_new == "yes")) {
-			
-		}	*/
 	}
 }
 

@@ -148,8 +148,11 @@ function icopyright_delete_content($tag, $useragent, $email, $password) {
   return $res;
 }
 
-function icopyright_update_searchable($tag, $searchable, $useragent, $email, $password) {
-  $post = array('searchable' => ($searchable == true ? 'true' : 'false'), 'searchable_override' => ($searchable == true ? 'false' : 'true')); 
+function icopyright_update_searchable($tag, $searchable, $searchable_override, $useragent, $email, $password) {
+  $post = array(
+  		'searchable' => ($searchable == true ? 'true' : 'false'), 
+  		'searchable_override' => ($searchable_override == true ? 'true' : 'false')
+  		); 
   $postdata = http_build_query($post);
   
   $url = "/api/xml/content/tag/update-searchable/". urlencode($tag);
