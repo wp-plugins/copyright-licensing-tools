@@ -401,6 +401,9 @@ function icopyright_set_up_new_publication($pid, $email, $password) {
 
   update_option('icopyright_conductor_password', $password);
   update_option('icopyright_conductor_email', $email);
+  
+  update_option('icopyright_pricing_optimizer_opt_in', 'true');
+  update_option('icopyright_pricing_optimizer_apply_automatically', 'true');
 }
 
 //auto update admin setting with response publication id,

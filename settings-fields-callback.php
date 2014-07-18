@@ -599,7 +599,7 @@ function categories_field_callback() {
     $checked = (!empty($selectedCategories) && in_array($cat->term_id, $selectedCategories) ? 'checked' : '');
     echo '<li><input id="cat_' . $cat->term_id . '" type="checkbox" name="icopyright_categories[]" value="' . $cat->term_id . '" ' . $checked . ' /><label style="margin-left: 5px;" for="cat_' . $cat->term_id . '">' . $cat->name . '</label></li>';
   }
-  echo '</ul></div>';
+  echo '</ul><span class="description" style="font-size: 8pt;">(If an article has multiple categories with conflicting settings, the checked category will govern.)</span></div>';
   ?>
 </fieldset>
 <?php
