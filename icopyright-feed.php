@@ -68,15 +68,18 @@ function icopyright_wp_feed_emit_feed() {
 		$xpath1 = new DOMXpath($doc1);
 		$imgs1 = $xpath1->query("//img");
 		$featured_image_src = '';
+		$featured_image_alt = '';
 		$img = $imgs1->item(0);
 		
-		if ($img)
+		if ($img) {
 			$featured_image_src = $img->getAttribute("src");
+			$featured_image_alt = $img->getAttribute("alt");	
+		}
 			
 		$isIncluded = false;
 		if ($featured_image_src != '') {
 			// See if the same image as the featured image is inserted into the post content.
-			// If so, don't include the feautured image.
+			// If so, don't include the featured image.
 			$doc2 = new DOMDocument();
 			$doc2->loadHTML($icx_story);
 			$xpath2 = new DOMXpath($doc2);
@@ -85,8 +88,9 @@ function icopyright_wp_feed_emit_feed() {
 			for ($i=0; $i < $imgs2->length; $i++) {
 				$img = $imgs2->item($i);
 				$src = $img->getAttribute("src");
-			
-				if ($src && $featured_image_src == $src) {
+			  $alt = $img->getAttribute("alt");
+			  
+				if (($src && $featured_image_src == $src) || ($alt && $featured_image_alt && $alt == $featured_image_alt)) {
 					$isIncluded = true;
 					break;
 				}	
