@@ -439,6 +439,9 @@ function icopyright_set_up_new_account($fname, $lname, $pname, $url) {
   update_option('icopyright_lname', $lname);
   update_option('icopyright_site_name', $pname);
   update_option('icopyright_site_url', $url);
+  
+  //update_option('icopyright_pricing_optimizer_opt_in', 'true');
+  //update_option('icopyright_pricing_optimizer_apply_automatically', 'true');
 }
 
 //function to dynamically create registration form!

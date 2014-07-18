@@ -13,7 +13,7 @@ function icopyright_admin_menu() {
 }
 
 function icopyright_options_page() {
-
+	
   //
   // Process the TOU Form
   //
@@ -53,6 +53,7 @@ function icopyright_options_page() {
       //
       icopyright_create_tou_form();
     } else {
+    icopyright_admin_init();
       //
       // Show options
       //
