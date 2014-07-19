@@ -3,7 +3,7 @@ Contributors: iCopyright Inc.
 Tags: ads, advertising, article tools, attribution, copyright, creative commons, curate, curation, curation tools, content distribution, icopyright, infringement, license, licensing, monetization, monetize, network, piracy, publish, publishing, reblog, repost, re-use, reprints, republish, republish network, republishing network, repubHub, reuse, Share, sharing, syndicate, syndication
 Requires at least: 3.0
 Tested up to: 3.9
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 
 Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content.
 
@@ -42,6 +42,14 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 3. An example of the print services dialog
 
 == Changelog ==
+
+= 2.4.2 =
+1. Fixed a bug with double images showing up in embed when setting a featured image for a
+   post, and inserting that same image into the body of the post.
+2. New option to not display article tools on your site.  New posts will be automatically
+   added to the repubHub engine as long as "Searchable" is selected.
+3. Selected categories not only determine what posts have the article tools displayed, but
+   also determine whether or not the article are searchable on repubHub.
 
 = 2.4.1 =
 1. Featured images are now included in republished content

@@ -60,7 +60,7 @@ function icopyright_wp_feed_emit_feed() {
   $icx_story_raw = nl2br($feed_post->post_content);
   $icx_story = apply_filters('the_content', $icx_story_raw);
   $icx_excerpt = $feed_post->post_excerpt;
-  $icx_featured_image = get_the_post_thumbnail($id, 'post-thumbnail', array("style" => "float: left; margin: 0 10px 10px 0;"));
+  $icx_featured_image = get_the_post_thumbnail($id, 'medium', array("style" => "float: left; margin: 0 10px 10px 0;"));
   
   if ($icx_featured_image != '') {
 		$doc1 = new DOMDocument();
