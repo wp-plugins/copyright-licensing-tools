@@ -78,22 +78,27 @@ function icopyright_wp_feed_emit_feed() {
 			
 		$isIncluded = false;
 		if ($featured_image_src != '') {
+		  // Split the string in case there is a query string (i.e imageName.jpg?resize=true)
+		  $featured_image_src = explode("?", $featured_image_src)[0];
+
 			// See if the same image as the featured image is inserted into the post content.
 			// If so, don't include the featured image.
 			$doc2 = new DOMDocument();
 			$doc2->loadHTML($icx_story);
 			$xpath2 = new DOMXpath($doc2);
 			$imgs2 = $xpath2->query("//img");
-			
+
 			for ($i=0; $i < $imgs2->length; $i++) {
 				$img = $imgs2->item($i);
 				$src = $img->getAttribute("src");
 			  $alt = $img->getAttribute("alt");
 			  
+			  $src = explode("?", $src)[0];
+
 				if (($src && $featured_image_src == $src) || ($alt && $featured_image_alt && $alt == $featured_image_alt)) {
 					$isIncluded = true;
 					break;
-				}	
+				} 
 			}		
 		}	
 		
