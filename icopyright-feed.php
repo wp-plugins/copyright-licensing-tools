@@ -79,7 +79,11 @@ function icopyright_wp_feed_emit_feed() {
 		$isIncluded = false;
 		if ($featured_image_src != '') {
 		  // Split the string in case there is a query string (i.e imageName.jpg?resize=true)
-		  $featured_image_src = explode("?", $featured_image_src)[0];
+	    $featured_image_src_arr = explode("?", $featured_image_src);
+
+		  if ($featured_image_src_arr && count($featured_image_src_arr) > 0) {
+		    $featured_image_src = $featured_image_src_arr[0];
+		  }
 
 			// See if the same image as the featured image is inserted into the post content.
 			// If so, don't include the featured image.
@@ -93,13 +97,48 @@ function icopyright_wp_feed_emit_feed() {
 				$src = $img->getAttribute("src");
 			  $alt = $img->getAttribute("alt");
 			  
-			  $src = explode("?", $src)[0];
+			  $src_arr = explode("?", $src);
+			  
+			  if ($src_arr && count($src_arr) > 0) {
+			    $src = $src_arr[0];
+			  }
 
 				if (($src && $featured_image_src == $src) || ($alt && $featured_image_alt && $alt == $featured_image_alt)) {
 					$isIncluded = true;
-					break;
 				} 
-			}		
+				
+				if (!$img->hasAttribute("style")) {
+				  $class_attr = $img->getAttribute("class");
+				  $class_attr_arr = explode(" ", $class_attr);
+
+				  // If the user aligned the image, then WP will use its built-in class of 
+				  // alignright, alignleft, aligncenter, and alignnone.  If one of these classes
+				  // are present, then insert align attribute into the image string
+				  if ($class_attr_arr && count($class_attr_arr) > 0) {
+				    $align = null;
+				  	foreach ($class_attr_arr as $value) {
+				  	  if ($value == 'alignright') {
+				  	    $align = "right";
+				  	    break;
+				  	  } else if ($value == 'alignleft' || $value == 'alignnone') {
+				  	    $align = "left";
+				  	    break;
+				  	  } else if ($value == 'aligncenter') {
+				  	    $align = "center";
+				  	    break;
+				  	  }
+				  	}
+				  	
+				  	if ($align != null) {
+							$pos = strpos($icx_story, "src=\"" . $src . "\"");
+							if ($pos) {
+								$icx_story = substr_replace($icx_story, " align=\"" . $align . "\" ", $pos, 0);
+							}
+				  	}
+				  }
+				}
+
+			}
 		}	
 		
 		if (!$isIncluded) {
