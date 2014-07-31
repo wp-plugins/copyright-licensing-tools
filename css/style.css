@@ -211,3 +211,8 @@ span.help {
   display: block;
   padding: 0 6px;
 }
+
+table.icopyright_excludes td {
+  padding: 2px 0;
+  vertical-align: top;
+}

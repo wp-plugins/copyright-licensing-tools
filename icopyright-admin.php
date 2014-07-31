@@ -233,11 +233,20 @@ function icopyright_admin_init() {
   add_settings_field('icopyright_display_on_pages', 'Pages', 'display_on_pages_field_callback', 'copyright-licensing-tools', 'toolbar-display');
   register_setting('icopyright-settings-group', 'icopyright_display_on_pages');
 
-  add_settings_field('icopyright_use_category_filter', 'Categories', 'use_category_filter_field_callback', 'copyright-licensing-tools', 'toolbar-display');
+  add_settings_field('icopyright_use_category_filter', 'Excludes', 'use_category_filter_field_callback', 'copyright-licensing-tools', 'toolbar-display');
   register_setting('icopyright-settings-group', 'icopyright_use_category_filter');
 
-  add_settings_field('icopyright_categories', '', 'categories_field_callback', 'copyright-licensing-tools', 'toolbar-display');
-  register_setting('icopyright-settings-group', 'icopyright_categories');
+  /*add_settings_field('icopyright_categories', '', '', 'copyright-licensing-tools', '');
+  register_setting('icopyright-settings-group', 'icopyright_categories');*/
+
+  add_settings_field('icopyright_exclude_categories', '', '', 'copyright-licensing-tools', '');
+  register_setting('icopyright-settings-group', 'icopyright_exclude_categories');  
+  
+  add_settings_field('icopyright_exclude_author_filter', '', '', 'copyright-licensing-tools', '');
+  register_setting('icopyright-settings-group', 'icopyright_exclude_author_filter');
+
+  add_settings_field('icopyright_authors', '', '', 'copyright-licensing-tools', '');
+  register_setting('icopyright-settings-group', 'icopyright_authors');  
 
   add_settings_section('service-settings', 'Service Settings:', 'service_section_callback', 'copyright-licensing-tools');
 
@@ -275,7 +284,7 @@ function icopyright_admin_init() {
   add_settings_field('icopyright_feed_url', 'Conductor Feed URL', 'feed_url_field_callback', 'copyright-licensing-tools', 'advanced-settings');
   register_setting('icopyright-settings-group', 'icopyright_feed_url', 'icopyright_post_settings');
 
-  add_settings_field('icopyright_show_multiple', '', 'show_multiple_callback', 'copyright-licensing-tools', 'toolbar-display');
+  add_settings_field('icopyright_show_multiple', '', 'show_multiple_callback', 'copyright-licensing-tools', '');
   register_setting('icopyright-settings-group', 'icopyright_show_multiple');
 }
 

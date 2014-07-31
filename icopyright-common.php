@@ -6,10 +6,10 @@
 
 // Which iCopyright server should we talk to via REST? The standard is license.icopyright.net, port 80,
 // but you can target alternate infrastructures (normally for debugging purposes) by changing these variables.
-define('ICOPYRIGHT_SERVER', 'license.icopyright.net');
-define('ICOPYRIGHT_PORT', 80);
-//define('ICOPYRIGHT_SERVER', 'localhost');
-//define('ICOPYRIGHT_PORT', 8080);
+//define('ICOPYRIGHT_SERVER', 'license.icopyright.net');
+//define('ICOPYRIGHT_PORT', 80);
+define('ICOPYRIGHT_SERVER', 'localhost');
+define('ICOPYRIGHT_PORT', 8080);
 
 /**
  * Return the iCopyright server and port that is handling the various services
@@ -19,7 +19,7 @@ define('ICOPYRIGHT_PORT', 80);
  * @return the full server specification
  */
 function icopyright_get_server($secure = FALSE) {
-//$secure = false;
+$secure = false;
 $server = ($secure ? 'https' : 'http') . '://' . ICOPYRIGHT_SERVER;
   if (ICOPYRIGHT_PORT != 80) {
     $server .= ':' . ICOPYRIGHT_PORT;
@@ -252,10 +252,11 @@ function icopyright_post_publication_info($pid, $fname, $lname, $name, $pub_url,
   return $res;
 }
 
-function icopyright_post_publication_categories($pid, $allowed_categories, $useragent, $email, $password) {
-  $cat_string = is_array($allowed_categories) ? implode("|", $allowed_categories) : $allowed_categories;
+function icopyright_post_publication_categories($pid, $excluded_categories, $excluded_authors, $useragent, $email, $password) {
+  $cat_string = is_array($excluded_categories) ? implode("|", $excluded_categories) : $excluded_categories;
+  $author_string = is_array($excluded_authors) ? implode("|", $excluded_authors) : $excluded_authors;
    
-  $post = array('allowed_categories' => $cat_string);
+  $post = array('excluded_categories' => $cat_string, 'excluded_authors' => $author_string);
   
   $postdata = http_build_query($post);
   $url = "/api/xml/publication/update-categories/$pid";

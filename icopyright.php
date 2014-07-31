@@ -79,6 +79,9 @@ function icopyright_remove_settings() {
   delete_option("icopyright_display_on_pages");
   delete_option("icopyright_use_category_filter");
   delete_option("icopyright_categories");
+  delete_option("icopyright_exclude_categories");
+  delete_option("icopyright_exclude_author_filter");
+  delete_option("icopyright_authors");  
   delete_option("icopyright_ez_excerpt");
   delete_option("icopyright_share");
   delete_option("icopyright_syndication");
@@ -103,6 +106,24 @@ register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
  */
 function icopyright_activate() {
   update_option('icopyright_redirect_on_first_activation', 'true');
+  
+  if (!get_option('icopyright_exclude_categories')) {
+		$selectedCategories = get_option('icopyright_categories', array());
+		$systemCategories = get_categories();  
+	
+		if ($selectedCategories && $systemCategories) {
+			$excludeCategories = array();
+			foreach ($systemCategories as $sys) {
+			  if (!in_array($sys->term_id, $selectedCategories)) {
+			    array_push($excludeCategories, $sys->term_id);
+			  }
+			}
+
+			if ($excludeCategories) {
+				update_option('icopyright_exclude_categories', $excludeCategories);
+			}
+		}
+	}
 }
 
 /**

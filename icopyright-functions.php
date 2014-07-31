@@ -503,16 +503,16 @@ function icopyright_post_passes_category_filter($post_id) {
   $use_filter = get_option('icopyright_use_category_filter');
   if($use_filter != 'yes') return TRUE;
 
-  // Which categories are we allowing through?
-  $icopyright_categories = get_option('icopyright_categories');
+  // Which categories are we excluding?
+  $icopyright_categories = get_option('icopyright_exclude_categories');
   if(count($icopyright_categories) == 0)
-    return FALSE;
+    return TRUE;
 
   // There are categories that we allow through, so check these
   $post_categories = wp_get_post_categories($post_id);
   foreach($post_categories as $cat ) {
     if(in_array($cat, $icopyright_categories))
-      return TRUE;
+      return FALSE;
   }
 
   // Got this far? Then we fail the filter

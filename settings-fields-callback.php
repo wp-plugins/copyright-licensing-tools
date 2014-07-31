@@ -569,41 +569,101 @@ function display_on_pages_field_callback() {
 
 function use_category_filter_field_callback() {
   $use_filter = get_option('icopyright_use_category_filter');
-  ?>
-<fieldset>
-  <input class="category-radio" name="icopyright_use_category_filter" type="radio"
-         value="no" <?php if ($use_filter != "yes") {
-    echo "checked";
-  }?> /> <?php _e('Apply tools and/or search rules to all posts')?>
-  <br/>
-  <input class="category-radio" name="icopyright_use_category_filter" type="radio"
-         value="yes" <?php if ($use_filter == "yes") {
-    echo "checked";
-  }?> /> <?php _e('Apply tools and/or search rules only to selected categories')?>
-  <br/>
-</fieldset>
-<?php
-}
-
-function categories_field_callback() {
+  $exclude_author_filter = get_option('icopyright_exclude_author_filter');
+  $selectedCategories = get_option('icopyright_exclude_categories', array());
+  $selectedAuthors = get_option('icopyright_authors', array());
   $systemCategories = get_categories();
+  $authors = wp_list_authors('html=0&echo=0&hide_empty=0');
+  $authors_arr = NULL;
+  if ($authors) {
+    $authors_arr = explode(',', $authors);
+  }
   ?>
 <fieldset>
+	<table class="icopyright_excludes" width="60%">
+		<thead>
+			<tr>
+      	<td width="50%">Authors</td>
+      	<td width="50%">Categories</td>
+  	  </tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<input class="author-radio" name="icopyright_exclude_author_filter" type="radio"
+								 value="no" <?php if ($exclude_author_filter != "yes") {
+						echo "checked";
+					}?> /> <?php _e('None')?>				
+				</td>
+				<td>
+					<input class="category-radio" name="icopyright_use_category_filter" type="radio"
+								 value="no" <?php if ($use_filter != "yes") {
+						echo "checked";
+					}?> /> <?php _e('None')?>				
+				</td>				
+			</tr>
+			
+			<tr>
+				<td>
+					<input class="author-radio" name="icopyright_exclude_author_filter" type="radio"
+								 value="yes" <?php if ($exclude_author_filter == "yes") {
+						echo "checked";
+					}?> /> <?php _e('The following:')?>				
+				</td>
+				<td>
+					<input class="category-radio" name="icopyright_use_category_filter" type="radio"
+								 value="yes" <?php if ($use_filter == "yes") {
+						echo "checked";
+					}?> /> <?php _e('The following:')?>
+				</td>				
+			</tr>			
+			
+			<!-- list of authors and categories -->
+			<tr>
+				<td>
+					<table id="icopyright-author-list" class="icopyright_excludes" style="padding-left: 21px;">
+						<?php 
+						if ($authors_arr != NULL) {
+							foreach ($authors_arr as $author) {
+								$checked = (!empty($selectedAuthors) && in_array($author, $selectedAuthors) ? 'checked' : '');
+								echo '<tr><td><input id="author_' . $author . '" type="checkbox" name="icopyright_authors[]" value="' . $author . '" ' . $checked . ' /><label style="margin-left: 5px;" for="author_' . $author . '">' . $author . '</label></td></tr>';
+							} 
+						} 
+						?>				
+					</table>
+				</td>
+				
+				<td>
+					<table id="icopyright-category-list" class="icopyright_excludes" style="padding-left: 21px;">
+						<?php
+						foreach ($systemCategories as $cat) {
+							$checked = (!empty($selectedCategories) && in_array($cat->term_id, $selectedCategories) ? 'checked' : '');
+							echo '<tr><td><input id="cat_' . $cat->term_id . '" type="checkbox" name="icopyright_exclude_categories[]" value="' . $cat->term_id . '" ' . $checked . ' /><label style="margin-left: 5px;" for="cat_' . $cat->term_id . '">' . $cat->name . '</label></td></tr>';
+						}?>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="font-size: 9pt; font-style: italic;">
+				<?php _e('Indicate any groups of articles for which you don\'t have the right to sell licenses.  (Individual articles may be excluded on their Edit Post template.)')?>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
-  <?php
-  echo '<div id="icopyright-category-list" style="font-size:10px;"><span class="description">Select categories on which to display tools and/or make searchable.</span>';
-  $selectedCategories = get_option('icopyright_categories', array());
-  echo '<ul>';
-
-  foreach ($systemCategories as $cat) {
-    $checked = (!empty($selectedCategories) && in_array($cat->term_id, $selectedCategories) ? 'checked' : '');
-    echo '<li><input id="cat_' . $cat->term_id . '" type="checkbox" name="icopyright_categories[]" value="' . $cat->term_id . '" ' . $checked . ' /><label style="margin-left: 5px;" for="cat_' . $cat->term_id . '">' . $cat->name . '</label></li>';
-  }
-  echo '</ul><span class="description" style="font-size: 8pt;">(If an article has multiple categories with conflicting settings, the checked category will govern.)</span></div>';
-  ?>
 </fieldset>
 <?php
 }
+
+function empty_callback() {
+	echo '<div class="empty_callback"></div>';
+}
+function categories_field_callback() {
+
+}
+
+function exclude_author_field_callback() {}
+function authors_field_callback() {}
 
 function share_field_callback() {
   $icopyright_share = get_option('icopyright_share');

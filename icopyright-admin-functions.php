@@ -32,8 +32,22 @@ function icopyright_migrate_options() {
     icopyright_migrate_option($icopyright_admin, "display_on_pages");
     icopyright_migrate_option($icopyright_admin, "use_category_filter");
 
-    if (!empty($icopyright_admin) && is_array($icopyright_admin) && array_key_exists('categories', $icopyright_admin))
-      update_option('icopyright_categories', explode(',',$icopyright_admin['categories']));
+    if (!empty($icopyright_admin) && is_array($icopyright_admin) && array_key_exists('categories', $icopyright_admin)) {
+    	$systemCategories = get_categories();
+    	$selectedCategories = explode(',',$icopyright_admin['categories']);
+    	$excludedCategories = array();
+    	
+    	if ($selectedCategories != NULL && !empty($selectedCategories)) {
+				foreach ($systemCategories as $cat) {
+					if (!in_array($cat->term_id, $selectedCategories)) {
+						$excludedCategories[] = $cat->term_id;
+					}
+				}    	
+			}
+    	
+      update_option('icopyright_exclude_categories', $excludedCategories);
+      
+    }
 
     icopyright_migrate_option($icopyright_admin, "share");
     icopyright_migrate_option($icopyright_admin, "ez_excerpt");
@@ -200,19 +214,44 @@ function icopyright_post_settings($input) {
   else {
     // Update the categories
 		$use_filter = get_option('icopyright_use_category_filter');
-		if($use_filter == 'yes' && $icopyright_searchable != 'false') {
-			$systemCategories = get_categories();
-
-      if ($systemCategories != NULL && count($systemCategories) > 0) {
-				$icopyright_categories = get_option('icopyright_categories');			
-				$selectedCategoryNames = array(); 
-				foreach ($systemCategories as $cat) {
-					if (!empty($icopyright_categories) && in_array($cat->term_id, $icopyright_categories)) {
-						$selectedCategoryNames[] = $cat->name;
+		$use_exclude_authors_filter = get_option('icopyright_exclude_author_filter');
+		if(($use_filter == 'yes' || $use_exclude_authors_filter == 'yes') && $icopyright_searchable != 'false') {
+			
+			$excludedCategoryNames = NULL;
+			$excludedAuthors = NULL;
+			
+			if ($use_filter == 'yes') {
+				$systemCategories = get_categories();
+				if ($systemCategories != NULL && count($systemCategories) > 0) {
+					$allowedCategoryNames = array(); 
+					$icopyright_categories = get_option('icopyright_exclude_categories');			
+					foreach ($systemCategories as $cat) {
+						if (!empty($icopyright_categories) && in_array($cat->term_id, $icopyright_categories)) {
+							$excludedCategoryNames[] = $cat->name;
+						}
 					}
 				}
-				
-				$cat_res = icopyright_post_publication_categories($icopyright_pubid, $selectedCategoryNames, $user_agent, $conductor_email, $conductor_password);
+			}
+
+			if ($use_exclude_authors_filter == 'yes') {
+				$authors = wp_list_authors('html=0&echo=0&hide_empty=0');
+				$authors_arr = NULL;
+				if ($authors) {
+					$authors_arr = explode(',', $authors);
+				}
+				if ($authors_arr != NULL && count($authors_arr) > 0) {
+					$excludedAuthors = array(); 
+					$icopyright_authors = get_option('icopyright_authors');			
+					foreach ($authors_arr as $author) {
+						if (!empty($icopyright_authors) && in_array($author, $icopyright_authors)) {
+							$excludedAuthors[] = $author;
+						}
+					}
+				}
+			}
+			
+			if ($excludedCategoryNames != NULL || $excludedAuthors != NULL) {
+				$cat_res = icopyright_post_publication_categories($icopyright_pubid, $excludedCategoryNames, $excludedAuthors, $user_agent, $conductor_email, $conductor_password);
 				
 				if (icopyright_check_response($cat_res) != TRUE) {
 					// The update failed; let's pull out the errors and report them
@@ -421,6 +460,9 @@ function icopyright_admin_defaults() {
   update_option('icopyright_share', 'yes');
   update_option('icopyright_categories', '');
   update_option('icopyright_use_category_filter', 'no');
+  update_option('icopyright_exclude_categories', '');
+  update_option('icopyright_exclude_author_filter', 'no');
+  update_option('icopyright_authors', '');
   update_option('icopyright_searchable', 'true');
   update_option('icopyright_pricing_optimizer_opt_in', 'true');
   update_option('icopyright_pricing_optimizer_apply_automatically', 'true');

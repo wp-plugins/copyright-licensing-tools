@@ -47,9 +47,18 @@ function toolbarTouch() {
 function categoryListDisplay() {
 
   if (jQuery("input.category-radio:checked").val() == "yes") {
-    jQuery("#icopyright-category-list").parents("tr").show();
+    jQuery("#icopyright-category-list").show();
   } else {
-    jQuery("#icopyright-category-list").parents("tr").hide();
+    jQuery("#icopyright-category-list").hide();
+  }
+}
+
+function authorListDisplay() {
+
+  if (jQuery("input.author-radio:checked").val() == "yes") {
+    jQuery("#icopyright-author-list").show();
+  } else {
+    jQuery("#icopyright-author-list").hide();
   }
 }
 
@@ -83,6 +92,13 @@ jQuery(document).ready(function () {
   jQuery("input.category-radio").change(function () {
     categoryListDisplay();
   });
+  
+  authorListDisplay();
+  jQuery("input.author-radio").change(function () {
+    authorListDisplay();
+  });  
+
+	jQuery("div.empty_callback").parents("tr").remove();
 
   toolbarTouch();
   jQuery('#icopyright_article_tools_theme').change(function () {
