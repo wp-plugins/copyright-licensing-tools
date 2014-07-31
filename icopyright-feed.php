@@ -61,7 +61,12 @@ function icopyright_wp_feed_emit_feed() {
   $icx_story = apply_filters('the_content', $icx_story_raw);
   $icx_excerpt = $feed_post->post_excerpt;
   $icx_featured_image = get_the_post_thumbnail($id, 'medium', array("style" => "float: left; margin: 0 10px 10px 0;"));
-  
+
+	$doc2 = new DOMDocument();
+	$doc2->loadHTML($icx_story);
+	$xpath2 = new DOMXpath($doc2);
+	$imgs2 = $xpath2->query("//img");	
+		  
   if ($icx_featured_image != '') {
 		$doc1 = new DOMDocument();
 		$doc1->loadHTML($icx_featured_image);
@@ -77,6 +82,7 @@ function icopyright_wp_feed_emit_feed() {
 		}
 			
 		$isIncluded = false;
+	
 		if ($featured_image_src != '') {
 		  // Split the string in case there is a query string (i.e imageName.jpg?resize=true)
 	    $featured_image_src_arr = explode("?", $featured_image_src);
@@ -87,10 +93,6 @@ function icopyright_wp_feed_emit_feed() {
 
 			// See if the same image as the featured image is inserted into the post content.
 			// If so, don't include the featured image.
-			$doc2 = new DOMDocument();
-			$doc2->loadHTML($icx_story);
-			$xpath2 = new DOMXpath($doc2);
-			$imgs2 = $xpath2->query("//img");
 
 			for ($i=0; $i < $imgs2->length; $i++) {
 				$img = $imgs2->item($i);
@@ -105,46 +107,54 @@ function icopyright_wp_feed_emit_feed() {
 
 				if (($src && $featured_image_src == $src) || ($alt && $featured_image_alt && $alt == $featured_image_alt)) {
 					$isIncluded = true;
+					break;
 				} 
-				
-				if (!$img->hasAttribute("style")) {
-				  $class_attr = $img->getAttribute("class");
-				  $class_attr_arr = explode(" ", $class_attr);
-
-				  // If the user aligned the image, then WP will use its built-in class of 
-				  // alignright, alignleft, aligncenter, and alignnone.  If one of these classes
-				  // are present, then insert align attribute into the image string
-				  if ($class_attr_arr && count($class_attr_arr) > 0) {
-				    $align = null;
-				  	foreach ($class_attr_arr as $value) {
-				  	  if ($value == 'alignright') {
-				  	    $align = "right";
-				  	    break;
-				  	  } else if ($value == 'alignleft' || $value == 'alignnone') {
-				  	    $align = "left";
-				  	    break;
-				  	  } else if ($value == 'aligncenter') {
-				  	    $align = "center";
-				  	    break;
-				  	  }
-				  	}
-				  	
-				  	if ($align != null) {
-							$pos = strpos($icx_story, "src=\"" . $src . "\"");
-							if ($pos) {
-								$icx_story = substr_replace($icx_story, " align=\"" . $align . "\" ", $pos, 0);
-							}
-				  	}
-				  }
-				}
-
 			}
-		}	
+		}					
 		
 		if (!$isIncluded) {
 	    $icx_story = "<p>".$icx_featured_image."</p>" . $icx_story;
 	  }
   }
+  
+	// Try and align the images correctly.  Wordpress uses class alignright/left/center
+	// when aligning an image		
+	for ($i=0; $i < $imgs2->length; $i++) {
+		$img = $imgs2->item($i);
+		$src = $img->getAttribute("src");
+
+		if (!$img->hasAttribute("style")) {
+			$class_attr = $img->getAttribute("class");
+			$class_attr_arr = explode(" ", $class_attr);
+
+			// If the user aligned the image, then WP will use its built-in class of 
+			// alignright, alignleft, aligncenter, and alignnone.  If one of these classes
+			// are present, then insert align attribute into the image string
+			if ($class_attr_arr && count($class_attr_arr) > 0) {
+				$align = null;
+				foreach ($class_attr_arr as $value) {
+					if ($value == 'alignright') {
+						$align = "right";
+						break;
+					} else if ($value == 'alignleft' || $value == 'alignnone') {
+						$align = "left";
+						break;
+					} else if ($value == 'aligncenter') {
+						$align = "center";
+						break;
+					}
+				}
+				
+				if ($align != null) {
+					$pos = strpos($icx_story, "src=\"" . $src . "\"");
+					if ($pos) {
+						$icx_story = substr_replace($icx_story, " align=\"" . $align . "\" ", $pos, 0);
+					}
+				}
+			}
+		}
+	}  
+  
   //get url
   $icx_url = get_permalink($id);
 
