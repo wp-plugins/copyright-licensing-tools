@@ -207,6 +207,21 @@ function icopyright_admin_init() {
   
   add_settings_field('icopyright_searchable', 'Searchable', 'searchable_field_callback', 'copyright-licensing-tools', 'deployment-mechanism');
   register_setting('icopyright-settings-group', 'icopyright_searchable');
+  
+  add_settings_field('icopyright_use_category_filter', 'Excludes', 'use_category_filter_field_callback', 'copyright-licensing-tools', 'deployment-mechanism');
+  register_setting('icopyright-settings-group', 'icopyright_use_category_filter');
+
+  /*add_settings_field('icopyright_categories', '', '', 'copyright-licensing-tools', '');
+  register_setting('icopyright-settings-group', 'icopyright_categories');*/
+
+  add_settings_field('icopyright_exclude_categories', '', '', 'copyright-licensing-tools', '');
+  register_setting('icopyright-settings-group', 'icopyright_exclude_categories');  
+  
+  add_settings_field('icopyright_exclude_author_filter', '', '', 'copyright-licensing-tools', '');
+  register_setting('icopyright-settings-group', 'icopyright_exclude_author_filter');
+
+  add_settings_field('icopyright_authors', '', '', 'copyright-licensing-tools', '');
+  register_setting('icopyright-settings-group', 'icopyright_authors');    
 
   add_settings_section('toolbar-appearance', 'Toolbar Appearance:', 'toolbar_appearance_section_callback', 'copyright-licensing-tools');
 
@@ -225,33 +240,16 @@ function icopyright_admin_init() {
   add_settings_field('copyright_notice_preview', 'Preview of Interactive Copyright Notice (displayed below articles)', 'copyright_notice_preview_callback', 'copyright-licensing-tools', 'toolbar-appearance');
   register_setting('icopyright-settings-group', 'copyright_notice_preview');
 
-  add_settings_section('toolbar-display', 'Tools Displayed on Pages With:', 'display_section_callback', 'copyright-licensing-tools');
+  //add_settings_section('toolbar-display', 'Tools Displayed on Pages With:', 'display_section_callback', 'copyright-licensing-tools');
 
-  add_settings_field('icopyright_show', 'Display style', 'show_preview_callback', 'copyright-licensing-tools', 'toolbar-display');
+  add_settings_field('icopyright_show', 'Display style', 'show_preview_callback', 'copyright-licensing-tools', 'toolbar-appearance');
   register_setting('icopyright-settings-group', 'icopyright_show');
 
-  add_settings_field('icopyright_display_on_pages', 'Pages', 'display_on_pages_field_callback', 'copyright-licensing-tools', 'toolbar-display');
+  add_settings_field('icopyright_display_on_pages', 'Pages', 'display_on_pages_field_callback', 'copyright-licensing-tools', 'toolbar-appearance');
   register_setting('icopyright-settings-group', 'icopyright_display_on_pages');
 
-  add_settings_field('icopyright_use_category_filter', 'Excludes', 'use_category_filter_field_callback', 'copyright-licensing-tools', 'toolbar-display');
-  register_setting('icopyright-settings-group', 'icopyright_use_category_filter');
-
-  /*add_settings_field('icopyright_categories', '', '', 'copyright-licensing-tools', '');
-  register_setting('icopyright-settings-group', 'icopyright_categories');*/
-
-  add_settings_field('icopyright_exclude_categories', '', '', 'copyright-licensing-tools', '');
-  register_setting('icopyright-settings-group', 'icopyright_exclude_categories');  
-  
-  add_settings_field('icopyright_exclude_author_filter', '', '', 'copyright-licensing-tools', '');
-  register_setting('icopyright-settings-group', 'icopyright_exclude_author_filter');
-
-  add_settings_field('icopyright_authors', '', '', 'copyright-licensing-tools', '');
-  register_setting('icopyright-settings-group', 'icopyright_authors');  
 
   add_settings_section('service-settings', 'Service Settings:', 'service_section_callback', 'copyright-licensing-tools');
-
-  add_settings_field('icopyright_share', 'Share services', 'share_field_callback', 'copyright-licensing-tools', 'service-settings');
-  register_setting('icopyright-settings-group', 'icopyright_share');
 
   add_settings_field('icopyright_ez_excerpt', 'EZ Excerpt', 'ez_excerpt_field_callback', 'copyright-licensing-tools', 'service-settings');
   register_setting('icopyright-settings-group', 'icopyright_ez_excerpt');
@@ -265,6 +263,8 @@ function icopyright_admin_init() {
     register_setting('icopyright-settings-group', 'icopyright_pricing_optimizer_apply_automatically');
   }
 
+  add_settings_field('icopyright_share', 'Share services', 'share_field_callback', 'copyright-licensing-tools', 'service-settings');
+  register_setting('icopyright-settings-group', 'icopyright_share');
 
   if (!empty($address)) {
     add_account_settings_section();

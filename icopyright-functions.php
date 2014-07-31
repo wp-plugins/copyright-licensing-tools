@@ -368,7 +368,10 @@ function icopyright_check_for_searchable($post) {
     if ($icopyright_hide_toolbar_cur != $icopyright_hide_toolbar_new) {
 	    $icopyright_searchable = get_option('icopyright_searchable');
       $searchable_override = ($icopyright_hide_toolbar_new != NULL && $icopyright_hide_toolbar_new == "yes") ? true : false;
-      $searchable = !$searchable_override && icopyright_post_passes_category_filter($post->ID) && $icopyright_searchable == 'true';
+      $searchable = !$searchable_override && 
+      				icopyright_post_passes_category_filter($post->ID) && 
+      				icopyright_post_passes_author_filter($post->post_author) && 
+				      $icopyright_searchable == 'true';
 
 
 			$user_agent = ICOPYRIGHT_USERAGENT;
@@ -437,10 +440,12 @@ function icopyright_current_page_url() {
  * @return bool true if the post passes
  */
 function icopyright_post_passes_filters($post_id = NULL) {
+	global $post;
   if($post_id == NULL) {
-    global $post;
     $post_id = $post->ID;
   }
+  $user_info = get_userdata($post->post_author);
+  $post_author = $user_info->display_name;
   
   // Is there even a configured publication ID? If not, no point in continuing
   $pub_id_no = get_option('icopyright_pub_id');
@@ -461,6 +466,10 @@ function icopyright_post_passes_filters($post_id = NULL) {
     // Does the post pass all the category filters? If not, then return false
     if(!icopyright_post_passes_category_filter($post_id)) {
       return FALSE;
+    }
+    
+    if (!icopyright_post_passes_author_filter($post_author)) {
+    	return FALSE;
     }
   }
   // Is there content within the post that we *know* can't be reused?
@@ -508,15 +517,33 @@ function icopyright_post_passes_category_filter($post_id) {
   if(count($icopyright_categories) == 0)
     return TRUE;
 
-  // There are categories that we allow through, so check these
+  // There are categories that we exclude, so check these
   $post_categories = wp_get_post_categories($post_id);
   foreach($post_categories as $cat ) {
     if(in_array($cat, $icopyright_categories))
       return FALSE;
   }
 
-  // Got this far? Then we fail the filter
-  return FALSE;
+  // Got this far? Then we pass the filter
+  return TRUE;
+}
+
+function icopyright_post_passes_author_filter($post_author) {
+  // If the filter itself is not being used, then we always pass
+  $use_filter = get_option('icopyright_exclude_author_filter');
+  if($use_filter != 'yes') return TRUE;
+
+  // Which authors are we excluding?
+  $icopyright_authors = get_option('icopyright_authors');
+  if(count($icopyright_authors) == 0)
+    return TRUE;
+
+  // There are authors that we exclude, so check these
+  if(in_array($post_author, $icopyright_authors))
+      return FALSE;
+
+  // Got this far? Then we pass the filter
+  return TRUE;
 }
 
 

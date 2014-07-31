@@ -381,7 +381,7 @@ function display_field_callback() {
        onclick="hide_manual_option()" <?php $icopyright_displayNone = get_option('icopyright_display'); if ($icopyright_displayNone == "none") {
   echo "checked";
 }?>/>
-  <?php _e('Do not display iCopyright Toolbar on my site')?><br/>
+  <?php _e('Do not display')?><br/>
   
 <?php
 }
@@ -580,7 +580,7 @@ function use_category_filter_field_callback() {
   }
   ?>
 <fieldset>
-	<table class="icopyright_excludes" width="60%">
+	<table class="icopyright_excludes" width="65%">
 		<thead>
 			<tr>
       	<td width="50%">Authors</td>
@@ -734,7 +734,7 @@ function searchable_field_callback() {
   <fieldset>
     <input name="icopyright_searchable" type="checkbox"
           value="true" <?php if ($icopyright_searchable == "true") echo('checked="checked"'); ?> <?php if (empty($check_email) || empty($check_password)) echo(' disabled="disabled"');?>/>
-    <?php _e('Allow the articles on my site which bear the iCopyright Toolbar, or are in the Categories selected below, to be searchable by tools such as the Republish module in this plugin and iCopyright <a href="http://www.repubhub.com" target="_blank">repubHub</a>&trade;')?>
+    <?php _e('Allow the articles on my site to be searchable by tools such as the Republish module in this plugin and iCopyright <a href="http://www.repubhub.com" target="_blank">repubHub</a>&trade;')?>
   </fieldset>
 <?php
 }
