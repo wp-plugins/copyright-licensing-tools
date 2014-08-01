@@ -568,19 +568,20 @@ function display_on_pages_field_callback() {
 }
 
 function use_category_filter_field_callback() {
+	icopyright_update_excludes();
   $use_filter = get_option('icopyright_use_category_filter');
   $exclude_author_filter = get_option('icopyright_exclude_author_filter');
   $selectedCategories = get_option('icopyright_exclude_categories', array());
   $selectedAuthors = get_option('icopyright_authors', array());
   $systemCategories = get_categories();
-  $authors = wp_list_authors('html=0&echo=0&hide_empty=0');
+  $authors = wp_list_authors('html=0&echo=0&hide_empty=0&exclude_admin=0');
   $authors_arr = NULL;
   if ($authors) {
     $authors_arr = explode(',', $authors);
   }
   ?>
 <fieldset>
-	<table class="icopyright_excludes" width="65%">
+	<table class="icopyright_excludes" width="672px">
 		<thead>
 			<tr>
       	<td width="50%">Authors</td>

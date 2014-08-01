@@ -224,7 +224,7 @@ function icopyright_post_settings($input) {
 				$systemCategories = get_categories();
 				if ($systemCategories != NULL && count($systemCategories) > 0) {
 					$allowedCategoryNames = array(); 
-					$icopyright_categories = get_option('icopyright_exclude_categories');			
+					$icopyright_categories = get_option('icopyright_exclude_categories', array());			
 					foreach ($systemCategories as $cat) {
 						if (!empty($icopyright_categories) && in_array($cat->term_id, $icopyright_categories)) {
 							$excludedCategoryNames[] = $cat->name;

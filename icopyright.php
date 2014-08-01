@@ -5,7 +5,7 @@ Plugin URI: http://info.icopyright.com/wordpress
 Description: Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 2.4.6
+Version: 2.4.7
 */
 
 //define constant that need to be changed from test environment to live environment
@@ -20,7 +20,7 @@ define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.4.6");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.4.7");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php
@@ -107,24 +107,31 @@ register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
 function icopyright_activate() {
   update_option('icopyright_redirect_on_first_activation', 'true');
   
-  if (!get_option('icopyright_exclude_categories')) {
+  icopyright_update_excludes();
+}
+
+function icopyright_update_excludes() {
+	if (!get_option('icopyright_did_exclude_migrate')) {
 		$selectedCategories = get_option('icopyright_categories', array());
 		$systemCategories = get_categories();  
-	
+
 		if ($selectedCategories && $systemCategories) {
 			$excludeCategories = array();
 			foreach ($systemCategories as $sys) {
-			  if (!in_array($sys->term_id, $selectedCategories)) {
-			    array_push($excludeCategories, $sys->term_id);
-			  }
+				if (!in_array($sys->term_id, $selectedCategories)) {
+					$excludeCategories[] = $sys->term_id;
+				}
 			}
 
 			if ($excludeCategories) {
 				update_option('icopyright_exclude_categories', $excludeCategories);
 			}
 		}
+		update_option('icopyright_exclude_author_filter', get_option('icopyright_use_category_filter'));
+		update_option('icopyright_did_exclude_migrate', 'yes');
 	}
 }
+
 
 /**
  * On first activation, redirect the user to the general options page

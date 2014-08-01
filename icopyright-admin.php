@@ -125,7 +125,7 @@ function account_settings_section_callback() {
   } else {
 ?>
     <h3>Send Revenue Checks To:</h3>
-    <div style="float:left;max-width: 700px;">
+    <div style="float:left;max-width: 900px;">
 <?php
   }
 }
@@ -134,7 +134,7 @@ function deployment_mechanism_section_callback() {
   $address = get_option('icopyright_address_line1');
   if (!empty($address)) {
   ?>
-<div style="float:left;max-width: 700px;">
+<div style="float:left;max-width: 900px;">
   <?php
   }
   ?>

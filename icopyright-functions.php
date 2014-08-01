@@ -513,7 +513,11 @@ function icopyright_post_passes_category_filter($post_id) {
   if($use_filter != 'yes') return TRUE;
 
   // Which categories are we excluding?
-  $icopyright_categories = get_option('icopyright_exclude_categories');
+  $icopyright_categories = get_option('icopyright_exclude_categories', array());
+  
+  if (!$icopyright_categories || !is_array($icopyright_categories))
+  	return TRUE;
+  	
   if(count($icopyright_categories) == 0)
     return TRUE;
 
@@ -534,13 +538,15 @@ function icopyright_post_passes_author_filter($post_author) {
   if($use_filter != 'yes') return TRUE;
 
   // Which authors are we excluding?
-  $icopyright_authors = get_option('icopyright_authors');
+  $icopyright_authors = get_option('icopyright_authors', array());
   if(count($icopyright_authors) == 0)
     return TRUE;
 
-  // There are authors that we exclude, so check these
-  if(in_array($post_author, $icopyright_authors))
-      return FALSE;
+	foreach ($icopyright_authors as $ia) {
+		if (trim($ia) == trim($post_author)) {
+			return FALSE;
+		}
+	}
 
   // Got this far? Then we pass the filter
   return TRUE;
