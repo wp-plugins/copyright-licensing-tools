@@ -9,7 +9,11 @@ function icopyright_wp_feed_add_feed() {
  * Feed function to display data from a post in the format expected by iCopyright's servers
  */
 function icopyright_wp_feed_emit_feed() {
-  // Load up the post
+  get_feed_xml(true);
+}
+
+function get_feed_xml($applyFilters) {
+// Load up the post
   $id = $_GET['id'];
 
   // Is this a heartbeat check?
@@ -58,7 +62,13 @@ function icopyright_wp_feed_emit_feed() {
   //get story from database
   //add in <br> to format content, so that no break tags are inserting during processing of shortcodes!
   $icx_story_raw = nl2br($feed_post->post_content);
-  $icx_story = apply_filters('the_content', $icx_story_raw);
+  $icx_story = '';
+  if ($applyFilters) {
+	  $icx_story = apply_filters('the_content', $icx_story_raw);
+  } else {
+  	$icx_story = '<p>' . $icx_story_raw . '</p>';
+  }
+  
   $icx_excerpt = $feed_post->post_excerpt;
   $icx_featured_image = get_the_post_thumbnail($id, 'medium', array("style" => "float: left; margin: 0 10px 10px 0;"));
 
@@ -188,6 +198,6 @@ function icopyright_wp_feed_emit_feed() {
   $xml .= "<icx_url>$icx_url</icx_url>\n";
   $xml .= "</icx>";
   echo $xml;
-}
 
+}
 ?>

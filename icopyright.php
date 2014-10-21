@@ -5,7 +5,7 @@ Plugin URI: http://info.icopyright.com/wordpress
 Description: Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 2.4.7
+Version: 2.4.8
 */
 
 //define constant that need to be changed from test environment to live environment
@@ -20,7 +20,7 @@ define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.4.7");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.4.8");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php

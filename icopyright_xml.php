@@ -9,8 +9,6 @@ if (file_exists($root . '/wp-load.php')) {
   require_once($root . '/wp-config.php');
 }
 
-// Just redirect to the new loc
-$icopyright_post_id = $_GET['id']; //requested post id
-$new_location = site_url() . "/?feed=icopyright_feed&id=$icopyright_post_id";
-wp_redirect( $new_location, 301 );
-die();
+require_once (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-feed.php');
+
+get_feed_xml(false);
