@@ -455,7 +455,7 @@ function icopyright_admin_defaults() {
   update_option('icopyright_theme', 'CLASSIC');
   update_option('icopyright_background', 'OPAQUE');
   update_option('icopyright_show', 'both');
-  update_option('icopyright_show_multiple', 'notice');
+  update_option('icopyright_show_multiple', 'nothing');
   update_option('icopyright_ez_excerpt', 'yes');
   update_option('icopyright_share', 'yes');
   update_option('icopyright_categories', '');

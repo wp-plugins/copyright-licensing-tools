@@ -5,7 +5,7 @@ Plugin URI: http://info.icopyright.com/wordpress
 Description: Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 2.4.8
+Version: 2.4.9
 */
 
 //define constant that need to be changed from test environment to live environment
@@ -20,7 +20,7 @@ define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.4.8");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.4.9");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php
@@ -55,56 +55,30 @@ function icopyright_settings_link($links, $file) {
   return $links;
 }
 
-//function to delete option during uninstallation
-function icopyright_remove_settings() {
-  delete_option("icopyright_fname");
-  delete_option("icopyright_lname");
-  delete_option("icopyright_site_name");
-  delete_option("icopyright_site_url");
-  delete_option("icopyright_address_line1");
-  delete_option("icopyright_address_line2");
-  delete_option("icopyright_address_line3");
-  delete_option("icopyright_address_city");
-  delete_option("icopyright_address_state");
-  delete_option("icopyright_address_country");
-  delete_option("icopyright_address_postal");
-  delete_option("icopyright_address_phone");
-  delete_option("icopyright_display");
-  delete_option("icopyright_tools");
-  delete_option("icopyright_theme");
-  delete_option("icopyright_background");
-  delete_option("icopyright_align");
-  delete_option("icopyright_show");
-  delete_option("icopyright_show_multiple");
-  delete_option("icopyright_display_on_pages");
-  delete_option("icopyright_use_category_filter");
-  delete_option("icopyright_categories");
-  delete_option("icopyright_exclude_categories");
-  delete_option("icopyright_exclude_author_filter");
-  delete_option("icopyright_authors");  
-  delete_option("icopyright_ez_excerpt");
-  delete_option("icopyright_share");
-  delete_option("icopyright_syndication");
-  delete_option("icopyright_feed_url");
-  delete_option('icopyright_tou');
-  delete_option('icopyright_conductor_password');
-  delete_option('icopyright_conductor_email');
-  delete_option('icopyright_redirect_on_first_activation');
-  delete_option('icopyright_pricing_optimizer_opt_in');
-  delete_option('repubhub_dismiss_post_new_info_box');
-  delete_option('icopyright_searchable');
-  $pid = get_option('icopyright_pub_id');
-  delete_option("icopyright_unread_republish_clips_$pid");
-  delete_option("icopyright_unread_republish_markers_$pid");
-  delete_option('icopyright_pub_id');
+
+
+function icopyright_suspend_conductor() {
+	$pid = get_option('icopyright_pub_id');
+	$playerStatus = 'SUSPENDED';
+	icopyright_deactivate($pid, $playerStatus);
 }
 
-register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
+function icopyright_deactivate($pid, $playerStatus) {
+	deactivate_account($pid, $playerStatus);
+}
+
+//register_uninstall_hook(__FILE__, 'icopyright_remove_settings');
+register_deactivation_hook(__FILE__, 'icopyright_suspend_conductor');
 
 /**
  * Called on activation.
  */
 function icopyright_activate() {
+  $pid = get_option('icopyright_pub_id');
+	$icopyright_searchable = get_option('icopyright_searchable');
+
+	reactivate_account($pid, $icopyright_searchable);
+
   update_option('icopyright_redirect_on_first_activation', 'true');
   
   icopyright_update_excludes();

@@ -12,3 +12,5 @@ if (file_exists($root . '/wp-load.php')) {
 require_once (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-feed.php');
 
 get_feed_xml(false);
+
+?>

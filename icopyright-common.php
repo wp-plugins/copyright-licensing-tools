@@ -18,9 +18,16 @@ define('ICOPYRIGHT_PORT', 80);
  *      should we go over https?
  * @return the full server specification
  */
-function icopyright_get_server($secure = FALSE) {
+function icopyright_get_server($secure = FALSE, $includeHttp = TRUE) {
 //$secure = false;
-$server = ($secure ? 'https' : 'http') . '://' . ICOPYRIGHT_SERVER;
+$server = "";
+
+if ($includeHttp) {
+  $server = ($secure ? 'https:' : 'http:');
+}
+
+$server .= '//' . ICOPYRIGHT_SERVER;
+
   if (ICOPYRIGHT_PORT != 80) {
     $server .= ':' . ICOPYRIGHT_PORT;
   }
@@ -202,6 +209,36 @@ function icopyright_delete_topic($topicId, $useragent, $email, $password) {
   $url = "/api/xml/repubhub/topics/".$topicId;
   $res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "DELETE");
   return $res;
+}
+
+function deactivate_account($pid, $playerStatus) {
+ /* $user_agent = ICOPYRIGHT_USERAGENT;
+  $email = get_option('icopyright_conductor_email');
+  $password = get_option('icopyright_conductor_password');
+  
+  $post = array(
+  		'playerStatus' => $playerStatus
+  		); 
+  $postdata = http_build_query($post);
+
+  $url = "/api/xml/publication/deactivate/". $pid;
+  $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "POST");
+  return $res;*/
+}
+
+function reactivate_account($pid, $icopyright_searchable) {
+  /*$user_agent = ICOPYRIGHT_USERAGENT;
+  $email = get_option('icopyright_conductor_email');
+  $password = get_option('icopyright_conductor_password');
+  
+  $post = array(
+  		'searchable' => $icopyright_searchable
+  		); 
+  $postdata = http_build_query($post);
+
+  $url = "/api/xml/publication/reactivate/". $pid;
+  $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "POST");
+  return $res;*/
 }
 
 /**

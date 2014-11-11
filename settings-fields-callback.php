@@ -734,7 +734,7 @@ function searchable_field_callback() {
   ?>
   <fieldset>
     <input name="icopyright_searchable" type="checkbox"
-          value="true" <?php if ($icopyright_searchable == "true") echo('checked="checked"'); ?> <?php if (empty($check_email) || empty($check_password)) echo(' disabled="disabled"');?>/>
+          value="true" <?php if ($icopyright_searchable == "true") echo('checked="checked"'); ?>/>
     <?php _e('Allow the articles on my site to be searchable by tools such as the Republish module in this plugin and iCopyright <a href="http://www.repubhub.com" target="_blank">repubHub</a>&trade;')?>
   </fieldset>
 <?php

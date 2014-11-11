@@ -17,7 +17,7 @@ function icopyright_toolbar_common($comment, $script) {
   $toolbar .= "var icx_publication_id = $pub_id_no;\n";
   $toolbar .= "var icx_content_id = $post_id;\n";
   $toolbar .= "</script>\n";
-  $toolbar_script_url = ICOPYRIGHT_URL . "rights/js/$script"; //ICOPYRIGHT_URL constant defined in icopyright.php
+  $toolbar_script_url = icopyright_get_server(false, false) . "/rights/js/$script"; //ICOPYRIGHT_URL constant defined in icopyright.php
   $toolbar .= "<script type=\"text/javascript\" src=\"$toolbar_script_url\"></script>\n";
   $toolbar .= "<!-- End of iCopyright $comment Article Toolbar -->\n";
   return $toolbar;
@@ -144,7 +144,7 @@ add_shortcode('interactive copyright notice', 'icopyright_interactive_copyright_
 //Added Multiple Post Display Option -- Version 2.8
 //Added intensive condition checks -- Version 2.8
 //function to filter content or excerpt and automatically add icopyright toolbars and interactive copyright notice
-function auto_add_icopyright_toolbars($content, $doTop, $doBottom) {
+function auto_add_icopyright_toolbars($content) {
 
   //get settings from icopyright_admin option array
 
@@ -180,7 +180,7 @@ function auto_add_icopyright_toolbars($content, $doTop, $doBottom) {
   }
 
   // Build the toolbar and ICN if we need to display them
-  if($show_toolbar && $doTop) {
+  if($show_toolbar) {
     if($selected_toolbar == 'horizontal')
       $pre = icopyright_horizontal_toolbar();
     else if($selected_toolbar == 'vertical')
@@ -188,54 +188,30 @@ function auto_add_icopyright_toolbars($content, $doTop, $doBottom) {
     else
       $pre = icopyright_onebutton_toolbar();
   }
-  if($show_icn && $doBottom) {
+  if($show_icn) {
     $post = icopyright_interactive_notice();
   }
 
   // Regardless, return what we have
-  $result = $content;
-  if ($doTop) {
-  	$result = $pre . $result;
-  }
-  
-  if ($doBottom) {
-  	$result = '<p>' . $result . '</p>' . $post;
-  }
-  
-  return $result;
-}
-
-function auto_add_icopyright_toolbars_top($content) {
-	return auto_add_icopyright_toolbars($content, true, false);
-}
-
-function auto_add_icopyright_toolbars_bottom($content) {
-  return auto_add_icopyright_toolbars($content, false, true);
+  return $pre . $content . $post;
 }
 
 //end function auto_add_icopyright_toolbars($content)
 
 //since version 1.0
-$icopyright_high_int = 11;
-if(defined('PHP_INT_MAX')){
-  $icopyright_high_int = PHP_INT_MAX;
-}
-else {
-  $icopyright_high_int = 2147483647;
-}
+add_filter('the_content', 'auto_add_icopyright_toolbars');
 
 // Giving these a set priority and adding the bottom separately because
 // Wordpress SEO by Yoast plugin has also added a 'the_content' filter with
 // a default priority, and for whatever reason, it's causing our filters not to 
 // fire.  The bottom toolbar is being added first otherwise it'll appear after
 // things like "You may also like..."
-add_filter('the_content', 'auto_add_icopyright_toolbars_bottom', '' . -$icopyright_high_int);
-add_filter('the_content', 'auto_add_icopyright_toolbars_top', '' . $icopyright_high_int);
+//add_filter('the_content', 'auto_add_icopyright_toolbars_bottom');
+//add_filter('the_content', 'auto_add_icopyright_toolbars_top');
 
 //Version 1.0.8
 //add toolbars in excerpt
-add_filter('the_excerpt', 'auto_add_icopyright_toolbars_bottom');
-add_filter('the_excerpt', 'auto_add_icopyright_toolbars_top');
+add_filter('the_excerpt', 'auto_add_icopyright_toolbars');
 
 //added in Version 1.0.8
 //replace wp_trim_excerpt() found in wp-includes/formatting.php in version WordPress 3.0
@@ -245,7 +221,11 @@ add_filter('the_excerpt', 'auto_add_icopyright_toolbars_top');
 //so as to prevent toolbars duplication.
 function icopyright_trim_excerpt($text) {
   $raw_excerpt = $text;
-
+  $isSingle = is_single();
+  $isPage = is_page();
+  if ($isSingle || $isPage) {
+    return apply_filters('icopyright_trim_excerpt', $text, $raw_excerpt);
+  }
   //if empty text
   if ('' == $text) {
     //if there is no excerpt crafted from add post admin
@@ -253,8 +233,7 @@ function icopyright_trim_excerpt($text) {
     //therefore we need to remove tools filter in content,
     //so as not to cause duplicate,
     //anyway the strip_tags below will cause the tools bars to malfunction
-    remove_filter('the_content', 'auto_add_icopyright_toolbars_bottom');
-    remove_filter('the_content', 'auto_add_icopyright_toolbars_top');
+		remove_filter('the_content', 'auto_add_icopyright_toolbars');
 
     //The following are default wp_trim_excerpt() behaviour, left for theme compatibility.
     //codes copy and paste from wp_trim_excerpt with added explanation.
@@ -876,4 +855,3 @@ function icopyright_parseRfc822Date($date)
   }
   return gmmktime($matches['hour'], $matches['minute'], (int)$matches['second'], $matches['month'], $matches['day'], $matches['year']) - $matches['timezone'];
 }
-
