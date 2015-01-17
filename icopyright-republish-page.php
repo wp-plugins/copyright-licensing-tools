@@ -7,6 +7,8 @@ add_action('edit_form_after_title', 'icopyright_edit_form_after_title' );
 function icopyright_edit_form_after_title() {
   if (!empty($_GET['icx_tag']) || (!empty($_GET['post']) && get_post_meta($_GET['post'], "icopyright_republish_content"))) {
     if(get_option("repubhub_dismiss_post_new_info_box") == null) {
+    $adminAjaxUrl = admin_url('admin-ajax.php');
+    $dataLoc = admin_url('edit.php?page=repubhub-republish');
     ?>
       <p style="float:left; background:lightblue; padding:10px; margin: 0 0 20px 0;" id="icx_post_new_info_box">
         This embed code (appearing as an empty box if you're in the Visual tab) will display the republished article.
@@ -21,9 +23,9 @@ function icopyright_edit_form_after_title() {
           jQuery("#icx_dismiss_post_new_info_box").click(function (event) {
             jQuery("#icx_post_new_info_box").hide();
             jQuery.ajax({
-              url : "/wp-admin/admin-ajax.php",
+              url : '<?php echo $adminAjaxUrl;?>',
               type : "get",
-              data : {action: "repubhub_dismiss_post_new_info_box", loc: '/wp-admin/edit.php?page=repubhub-republish'},
+              data : {action: "repubhub_dismiss_post_new_info_box", loc: '<?php echo $dataLoc;?>'},
               success: function() {}
             });
             event.preventDefault();
@@ -58,8 +60,10 @@ function icopyright_post_menu() {
 add_action( 'admin_bar_menu', 'icopyright_admin_bar', 999 );
 function icopyright_admin_bar( $wp_admin_bar ){
   $title = icopyright_get_republish_title(false);
+  $url = admin_url( 'edit.php?page=repubhub-republish');
+  
   $args = array(
-    'href' => '/wp-admin/edit.php?page=repubhub-republish',
+    'href' => $url,
     'title' => $title,
     'parent' => 'new-content', // false for a root menu, pass the ID value for a submenu of that menu.
     'id' => 'republish-1', // defaults to a sanitized title value.
@@ -68,7 +72,7 @@ function icopyright_admin_bar( $wp_admin_bar ){
   $wp_admin_bar->add_node( $args );
 
   $args = array(
-    'href' => '/wp-admin/edit.php?page=repubhub-republish',
+    'href' => $url,
     'title' => $title,
     'parent' => false, // false for a root menu, pass the ID value for a submenu of that menu.
     'id' => 'republish-2', // defaults to a sanitized title value.
@@ -240,6 +244,9 @@ function icopyright_republish_page_get($data, $topic_id = NULL) {
 function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
   wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.2.0');  // Update the version when the style changes.  Refreshes cache.
   wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.2.0');
+  
+	wp_localize_script( 'icopyright-admin-js', 'admin_ajax_url', array('url' => admin_url('admin-ajax.php')));
+  
   $frequencies = array(
     'IMMED' => 'As Stories Break',
     'DAILY' => 'Daily',
@@ -390,11 +397,13 @@ function icopyright_republish_recent_headlines() {
   $email = get_option('icopyright_conductor_email');
   $password = get_option('icopyright_conductor_password');
   $res = icopyright_get_recent_headlines($user_agent, $email, $password);
+  $adminUrl = admin_url();
+  $pluginsUrl = plugins_url();
   if((strlen($res->http_code) > 0) && ($res->http_code != '200')) {
     echo "<p>Failed to get recent headlines (" . $res->http_code . ': ' . $res->http_expl . ")</p>";
     if ($res->http_code == 401) {
       echo '<p>Your email address and password don\'t match a valid account in Conductor. Please visit the ' .
-        '<a href="/wp-admin/options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
+        '<a href="' . $adminUrl . 'options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
         'push <em>Show Advanced Settings</em> to check your Conductor email address and password.</p>';
     }
     exit;
@@ -413,9 +422,9 @@ function icopyright_republish_recent_headlines() {
             <img class="icx_clip_icon" src="<?php echo($clip->image); ?>"/>
           </div>
           <div class="icx_clip_wrapper">
-            <a class="icx_clip_title" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode(icopyright_server_url($_SERVER)."/wp-admin/post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
+            <a class="icx_clip_title" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode($adminUrl . "post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
             <?php if (strcmp($clip->embeddable, "true") == 0) { ?>
-              <a class="icx_republish_btn" href="/wp-admin/post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="/wp-content/plugins/copyright-licensing-tools/images/republishBtn.png"/></a>
+              <a class="icx_republish_btn" href="<?php echo($adminUrl); ?>post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="<?php echo($pluginsUrl); ?>/copyright-licensing-tools/images/republishBtn.png"/></a>
             <?php } ?>
             <div class="icx_clear"></div>
             <div class="icx_clip_byline">
@@ -445,6 +454,8 @@ function icopyright_republish_topic_hits() {
   $topicId = $_GET['topicid'];
   $unreadMarkers = icopyright_get_unread_markers();
   $lastReadclipId = 0;
+	$adminUrl = admin_url();
+  $pluginsUrl = plugins_url();
   if (array_key_exists((int)$topicId, $unreadMarkers)) {
     $lastReadclipId = (int) $unreadMarkers[(int)$topicId];
   }
@@ -456,7 +467,7 @@ function icopyright_republish_topic_hits() {
     echo "<p>Failed to get topic clips (" . $res->http_code . ': ' . $res->http_expl . ")</p>";
     if ($res->http_code == 401) {
       echo '<p>Your email address and password don\'t match a valid account in Conductor. Please visit the ' .
-        '<a href="/wp-admin/options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
+        '<a href="' . $adminUrl . 'options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
         'push <em>Show Advanced Settings</em> to check your Conductor email address and password.</p>';
     }
     exit;
@@ -475,9 +486,9 @@ function icopyright_republish_topic_hits() {
             <img class="icx_clip_icon" src="<?php echo($clip->image); ?>"/>
           </div>
           <div class="icx_clip_wrapper">
-            <a class="icx_clip_title <?php if ($clipId>$lastReadclipId) { ?>icx_unread_title<?php } ?>" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode(icopyright_server_url($_SERVER)."/wp-admin/post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
+            <a class="icx_clip_title <?php if ($clipId>$lastReadclipId) { ?>icx_unread_title<?php } ?>" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode($adminUrl . "post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
             <?php if (strcmp($clip->embeddable, "true") == 0) { ?>
-              <a class="icx_republish_btn" href="/wp-admin/post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="/wp-content/plugins/copyright-licensing-tools/images/republishBtn.png"/></a>
+              <a class="icx_republish_btn" href="<?php echo($adminUrl); ?>/post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="<?php echo($pluginsUrl); ?>/copyright-licensing-tools/images/republishBtn.png"/></a>
             <?php } ?>
             <div class="icx_clear"></div>
             <div class="icx_clip_byline">
@@ -535,6 +546,7 @@ function icopyright_includes_embeddable($clips) {
 function icopyright_republish_page_get_edit_topic($data, $displayTopicId = '') {
   wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.1.0');  // Update the version when the style changes.  Refreshes cache.
   wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.1.0');
+  wp_localize_script( 'icopyright-admin-js', 'admin_ajax_url', array('url' => admin_url('admin-ajax.php')));
   $frequencies = array(
     'IMMED' => 'As Stories Break',
     'DAILY' => 'Daily',

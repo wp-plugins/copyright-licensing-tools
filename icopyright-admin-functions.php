@@ -212,6 +212,7 @@ function icopyright_post_settings($input) {
     }
   }
   else {
+    $showSuccess = TRUE;
     // Update the categories
 		$use_filter = get_option('icopyright_use_category_filter');
 		$use_exclude_authors_filter = get_option('icopyright_exclude_author_filter');
@@ -254,6 +255,7 @@ function icopyright_post_settings($input) {
 				$cat_res = icopyright_post_publication_categories($icopyright_pubid, $excludedCategoryNames, $excludedAuthors, $user_agent, $conductor_email, $conductor_password);
 				
 				if (icopyright_check_response($cat_res) != TRUE) {
+				  $showSuccess = FALSE;
 					// The update failed; let's pull out the errors and report them
 					$xml = @simplexml_load_string($cat_res->response);
 					if (is_object($xml) && ($xml->status->messages->count() > 0)) {
@@ -267,6 +269,10 @@ function icopyright_post_settings($input) {
 				}
 			}
 		}
+  
+  	if ($showSuccess == TRUE) {
+  		add_settings_error('icopyright', '', 'Settings have been saved.&nbsp;&nbsp;Please allow up to 15 minutes for these changes to be applied to your site.', 'updated');
+  	}
   }
 
   return $input;

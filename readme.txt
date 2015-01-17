@@ -2,8 +2,8 @@
 Contributors: iCopyright Inc.
 Tags: ads, advertising, article tools, attribution, copyright, creative commons, curate, curation, curation tools, content distribution, icopyright, infringement, license, licensing, monetization, monetize, network, piracy, publish, publishing, reblog, repost, re-use, reprints, republish, republish network, republishing network, repubHub, reuse, Share, sharing, syndicate, syndication
 Requires at least: 3.0
-Tested up to: 4.0
-Stable tag: 2.4.9
+Tested up to: 4.1
+Stable tag: 2.5.0
 
 Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content.
 
@@ -42,6 +42,10 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 3. An example of the print services dialog
 
 == Changelog ==
+
+= 2.5.0 =
+1. Updated plugin to work when plugin is installed in sub-folder.
+2. Minor changes to static file links.
 
 = 2.4.9 =
 1. Fixed an issue with code showing up in excerpts.

@@ -34,6 +34,10 @@ $server .= '//' . ICOPYRIGHT_SERVER;
   return $server;
 }
 
+function icopyright_static_server() {
+  return '//d2uzdrx7k4koxz.cloudfront.net';
+}
+
 /**
  * Asks the iCopyright server to ping us, to see if there's a successful link between the iCopyright servers
  * and us. If there isn't, then the quality of service will be somewhat degraded

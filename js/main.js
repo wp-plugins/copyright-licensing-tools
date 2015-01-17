@@ -159,14 +159,14 @@ jQuery(document).ready(function () {
     })(div, topic);
     if (topic == 0) {
         jQuery.ajax({
-            url : "/wp-admin/admin-ajax.php",
+            url : admin_ajax_url.url,
             type : "get",
             data : {action: "repubhub_recent_headlines"},
             success: onSuccess
         });
     } else {
         jQuery.ajax({
-          url : "/wp-admin/admin-ajax.php",
+          url : admin_ajax_url.url,
           type : "get",
           data : {action: "repubhub_clips", loc: jQuery(this).data("loc"), topicid: jQuery(this).data("topicid")},
           success: onSuccess
@@ -191,7 +191,7 @@ function icopyright_update_unread_notification(topicId, contentId) {
     }
 
     jQuery.ajax({
-        url : "/wp-admin/admin-ajax.php",
+        url : admin_ajax_url.url,
         type : "get",
         data : {action: "repubhub_clips_read", topicid: topicId, contentid: contentId},
         success: onSuccess

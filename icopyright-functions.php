@@ -17,7 +17,7 @@ function icopyright_toolbar_common($comment, $script) {
   $toolbar .= "var icx_publication_id = $pub_id_no;\n";
   $toolbar .= "var icx_content_id = $post_id;\n";
   $toolbar .= "</script>\n";
-  $toolbar_script_url = icopyright_get_server(false, false) . "/rights/js/$script"; //ICOPYRIGHT_URL constant defined in icopyright.php
+  $toolbar_script_url = icopyright_static_server() . "/rights/js/$script"; //ICOPYRIGHT_URL constant defined in icopyright.php
   $toolbar .= "<script type=\"text/javascript\" src=\"$toolbar_script_url\"></script>\n";
   $toolbar .= "<!-- End of iCopyright $comment Article Toolbar -->\n";
   return $toolbar;
@@ -86,7 +86,8 @@ function icopyright_interactive_notice() {
   $pname = addslashes(empty($site_name) ? get_bloginfo() : $site_name);
   $icx_copyright = "Copyright " . $date['0'] . " $pname";
 
-  $server = icopyright_get_server();
+	$server = icopyright_get_server();
+  $static_server = icopyright_static_server();
 
   //construct icopyright interactive copyright notice
 
@@ -96,13 +97,13 @@ function icopyright_interactive_notice() {
     var icx_copyright_notice = '$icx_copyright';
     var icx_content_id = '$post_id';
 </script><script type="text/javascript"
-        src="$server/rights/js/copyright-notice.js"></script><noscript>
+        src="$static_server/rights/js/copyright-notice.js"></script><noscript>
     <a style="color: #336699; font-family: Arial, Helvetica, sans-serif; font-size: 12px;"
        href="$server/3.$pub_id_no?icx_id=$post_id"
        target="_blank" title="Main menu of all reuse options">
       <img height="25" width="27" border="0" align="bottom"
            alt="[Reuse options]"
-           src="$server/images/icopy-w.png"/>Click here for reuse options!</a>
+           src="$static_server/images/icopy-w.png"/>Click here for reuse options!</a>
 </noscript><!-- iCopyright Interactive Copyright Notice -->
 NOTICE;
 
@@ -226,6 +227,7 @@ function icopyright_trim_excerpt($text) {
   if ($isSingle || $isPage) {
     return apply_filters('icopyright_trim_excerpt', $text, $raw_excerpt);
   }
+
   //if empty text
   if ('' == $text) {
     //if there is no excerpt crafted from add post admin
@@ -499,7 +501,8 @@ function icopyright_post_contains_known_unlicensable_content($post) {
   $fingerprints = array(
     'src=\"(http:)?\/\/\w+\.icopyright\.net\/user\/viewFreeUse\.act\?fuid',
     'src=\"(http:)?\/\/\w+\.icopyright\.net\/user\/webEprint\.act\?id',
-    'src=\"https:\/\/\d+.rp-api.com\/rjs\/repost-article.js'
+    'src=\"https:\/\/\d+.rp-api.com\/rjs\/repost-article.js',
+    'class=\"repubhubembed\"'
   );
   foreach($fingerprints as $fingerprint) {
     if(preg_match("/$fingerprint/", $post->post_content)) {
