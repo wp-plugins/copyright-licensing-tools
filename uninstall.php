@@ -1,7 +1,7 @@
 <?php
 define("ICOPYRIGHT_PLUGIN_NAME", "copyright-licensing-tools");
 define("ICOPYRIGHT_PLUGIN_DIR", WP_PLUGIN_DIR . "/" . ICOPYRIGHT_PLUGIN_NAME);
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.5.1");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.5.2");
 
 require (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
@@ -53,6 +53,7 @@ delete_option('icopyright_searchable');
 delete_option("icopyright_unread_republish_clips_$pid");
 delete_option("icopyright_unread_republish_markers_$pid");
 delete_option('icopyright_pub_id');
+delete_option('repubhub_dismiss_save_search_info_box');
   
 
 

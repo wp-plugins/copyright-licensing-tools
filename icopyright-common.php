@@ -180,6 +180,12 @@ function icopyright_add_topic($postdata, $useragent, $email, $password) {
   return $res;
 }
 
+function icopyright_search($postdata, $useragent, $email, $password) {
+  $url = "/api/xml/repubhub/search";
+  $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "POST");
+  return $res;
+}
+
 function icopyright_edit_topic($topicId, $postdata, $useragent, $email, $password) {
   $url = "/api/xml/repubhub/topics/".$topicId;
   $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "POST");
@@ -198,8 +204,26 @@ function icopyright_get_topics($useragent, $email, $password) {
   return $res;
 }
 
-function icopyright_get_recent_headlines($useragent, $email, $password) {
-  $url = "/api/xml/repubhub/recent-headlines";
+function icopyright_get_search_filters($useragent, $email, $password) {
+	$url = "/api/xml/repubhub/search-filters";
+	$res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
+	return $res;
+}
+
+function icopyright_get_global_settings($useragent, $email, $password) {
+	$url = "/api/xml/repubhub/global-settings";
+	$res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
+	return $res;
+}
+
+function icopyright_post_global_settings($useragent, $postdata, $email, $password) {
+	$url = "/api/xml/repubhub/global-settings";
+	$res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "POST", false);
+	return $res;
+}
+
+function icopyright_get_recent_headlines($useragent, $email, $password, $page) {
+  $url = "/api/xml/repubhub/recent-headlines/" . $page;
   $res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
   return $res;
 }

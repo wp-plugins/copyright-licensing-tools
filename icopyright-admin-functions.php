@@ -271,7 +271,7 @@ function icopyright_post_settings($input) {
 		}
   
   	if ($showSuccess == TRUE) {
-  		add_settings_error('icopyright', '', 'Settings have been saved.&nbsp;&nbsp;Please allow up to 15 minutes for these changes to be applied to your site.', 'icopyright-hide');
+  		add_settings_error('icopyright', 'settings-15', 'Settings have been saved.&nbsp;&nbsp;Please allow up to 15 minutes for these changes to be applied to your site.', 'icopyright-hide');
   	}
   }
 

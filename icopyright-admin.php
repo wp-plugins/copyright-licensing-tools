@@ -335,9 +335,16 @@ function icopyright_admin_notices() {
 
   $wp_settings_errors = get_settings_errors('icopyright');
   if (sizeof($wp_settings_errors) > 0) {
+  	$settingsMessages = FALSE;
     echo("<div class=\"updated settings-error\">");
     foreach ($wp_settings_errors as $error) {
-      echo("<p>" . $error['message'] . "</p>");
+    	if ($settingsMessage == FALSE) {
+      	echo("<p>" . $error['message'] . "</p>");
+    	}
+      
+      if ($settingsMessage == FALSE && $error['code'] && $error['code'] == 'settings-15') {
+      	$settingsMessage = TRUE;
+      }      
     }
     echo("</div>");
   }

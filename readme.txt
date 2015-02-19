@@ -3,7 +3,7 @@ Contributors: iCopyright Inc.
 Tags: ads, advertising, article tools, attribution, copyright, creative commons, curate, curation, curation tools, content distribution, icopyright, infringement, license, licensing, monetization, monetize, network, piracy, publish, publishing, reblog, repost, re-use, reprints, republish, republish network, republishing network, repubHub, reuse, Share, sharing, syndicate, syndication
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 
 Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content.
 
@@ -42,6 +42,18 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 3. An example of the print services dialog
 
 == Changelog ==
+
+= 2.5.2 =
+1. New search box for quicker searches.
+2. Can now filter results using the publication dropdown.
+3. Can now filter results using the date range dropdown.
+4. Can search by author and publication name.
+5. Clicking on an author or publication name will do a search for that author/publication.
+6. Pagination in search results and recent headlines.
+7. New Global Settings button to set up exclusions. 
+8. New delete button on tabs.
+9. New ability to save a search and get email notifications.
+10. Email notifications default to NEVER.
 
 = 2.5.1 =
 1.  Fixed issue with success message showing up multiple times.
