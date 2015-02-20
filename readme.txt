@@ -3,7 +3,7 @@ Contributors: iCopyright Inc.
 Tags: ads, advertising, article tools, attribution, copyright, creative commons, curate, curation, curation tools, content distribution, icopyright, infringement, license, licensing, monetization, monetize, network, piracy, publish, publishing, reblog, repost, re-use, reprints, republish, republish network, republishing network, repubHub, reuse, Share, sharing, syndicate, syndication
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 2.5.3
+Stable tag: 2.5.4
 
 Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content.
 
@@ -42,6 +42,9 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 3. An example of the print services dialog
 
 == Changelog ==
+
+= 2.5.4 =
+1. Fixed an issue with Global Settings throwing an error after saving.
 
 = 2.5.3 =
 1. Fixed toolbars not showing up in Settings page.

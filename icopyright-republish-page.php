@@ -180,7 +180,7 @@ function icopyright_display_global_settings() {
 	   		  <?php 
 	   		  foreach ($global_settings_xml->groupExcludes as $group_exclude) {
 	   		  	$checked = ($group_exclude->checked == "true") ? 'checked' : '';
-	   		  	echo '<input type="checkbox" name="icx_global_settings_checkboxes" value="' . $group_exclude->code . ' ' . $checked . '"/>' . $group_exclude->display . '<br/>';
+	   		  	echo '<input type="checkbox" name="icx_global_settings_checkboxes" value="' . $group_exclude->code . '" ' . $checked . '/>' . $group_exclude->display . '<br/>';
 	   		  }
 	   		  echo '</div>';
 					echo '<br/>';
@@ -189,7 +189,7 @@ function icopyright_display_global_settings() {
 					echo '<div class="icx_global_setting_section_data">';
 					foreach ($global_settings_xml->featuredPublicationExcludes as $pub_exclude) {
 						$checked = ($pub_exclude->checked == "true") ? 'checked' : '';
-						echo '<input type="checkbox" name="icx_global_settings_checkboxes" value="' . $pub_exclude->code . ' ' . $checked . '"/>' . $pub_exclude->display . '<br/>';
+						echo '<input type="checkbox" name="icx_global_settings_checkboxes" value="' . $pub_exclude->code . '" ' . $checked . '/>' . $pub_exclude->display . '<br/>';
 					}
 					echo '</div>';
 					echo '<br/>';
@@ -197,7 +197,7 @@ function icopyright_display_global_settings() {
 					echo '<div class="icx_global_setting_section_data">';
 					foreach ($global_settings_xml->myPublicationExcludes as $my_pub_exclude) {
 						$checked = ($my_pub_exclude->checked == "true") ? 'checked' : '';
-						echo '<input type="checkbox" name="icx_global_settings_checkboxes" value="' . $my_pub_exclude->code . ' ' . $checked . '"/>' . $my_pub_exclude->display . '<br/>';
+						echo '<input type="checkbox" name="icx_global_settings_checkboxes" value="' . $my_pub_exclude->code . '" ' . $checked . '/>' . $my_pub_exclude->display . '<br/>';
 					}
 					echo '</div>';
 					echo '</div>';
@@ -1139,9 +1139,10 @@ function icopyright_edit_form_after_title() {
 			$dataLoc = admin_url('edit.php?page=repubhub-republish');
 			?>
       <p style="float:left; background:lightblue; padding:10px; margin: 0 0 20px 0;" id="icx_post_new_info_box">
-        This embed code (appearing as an empty box if you're in the Visual tab) will display the republished article.
-        To preview it, be sure to click "Save Draft" first, and then "View Post" at top (since clicking Preview will not
-        work in some browsers). You may add an intro or conclusion above or below the embed code.
+			The embed code in the text editor will display the republished article. 
+			To preview the article, be sure to click &quot;Save Draft&quot; first, 
+			and then &quot;View Post&quot; at top (since clicking Preview will not work in some browsers). 
+			You may add an intro or conclusion above or below the embed code in the text editor.
         <br/>
         <a style="float: right;" href="" id="icx_dismiss_post_new_info_box">Dismiss</a>
       </p>
