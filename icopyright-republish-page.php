@@ -116,7 +116,7 @@ function icopyright_republish_page_get($data, $topic_id = NULL) {
 
 function initDisplay($data, $topic_id) {
 	if (!wp_script_is( 'icopyright-admin-js', $list = 'enqueued' ))
-		wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.4.0');
+		wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.5.0');
 	
 	if (!wp_script_is( 'icopyright-admin-css', $list = 'enqueued' ))
 		wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.4.0');  // Update the version when the style changes.  Refreshes cache.
@@ -933,7 +933,7 @@ function icopyright_republish_page_get_edit_topic($data, $displayTopicId = '') {
 	$search_xml = @simplexml_load_string($search_res->response);
 		
   wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.4.0');  // Update the version when the style changes.  Refreshes cache.
-  wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.4.0');
+  wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.5.0');
   wp_localize_script( 'icopyright-admin-js', 'admin_ajax_url', array('url' => admin_url('admin-ajax.php')));
   
   wp_enqueue_style('icopyright-admin-css-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.css');

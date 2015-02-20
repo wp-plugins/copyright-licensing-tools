@@ -67,23 +67,25 @@ function icxInitGlobalSettings() {
 }
 
 function icxInitSearchSection() {
-	jQuery("#featuredPublicationSelect").select2({
-		placeholderOption: "first",
-		width: "resolve"
-	});
+	if (typeof jQuery.fn.select2 == "function") {
+		jQuery("#featuredPublicationSelect").select2({
+			placeholderOption: "first",
+			width: "resolve"
+		});
 
-	jQuery("#featuredPublicationSelectEdit").select2({
-		placeholderOption: "first",
-		width: "resolve"
-	});	
-	
-	jQuery("#featuredPublicationSelect").on("select2-opening", function(event) {
-		jQuery("ul.select2-choices").addClass("icx_bottom_border_none");
-	});
+		jQuery("#featuredPublicationSelectEdit").select2({
+			placeholderOption: "first",
+			width: "resolve"
+		});	
+		
+		jQuery("#featuredPublicationSelect").on("select2-opening", function(event) {
+			jQuery("ul.select2-choices").addClass("icx_bottom_border_none");
+		});
 
-	jQuery("#featuredPublicationSelect").on("select2-close", function(event) {
-		jQuery("ul.select2-choices").removeClass("icx_bottom_border_none");
-	});	
+		jQuery("#featuredPublicationSelect").on("select2-close", function(event) {
+			jQuery("ul.select2-choices").removeClass("icx_bottom_border_none");
+		});			
+	}
 	
 	jQuery(".icx_republish_advanced_btn").click(function (event) {
 	    if (jQuery(".icx_republish_advanced_fields_front_page").is(":visible")) {
