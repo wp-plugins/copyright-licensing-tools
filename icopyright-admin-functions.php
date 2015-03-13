@@ -114,7 +114,7 @@ function icopyright_post_settings($input) {
 
   $icopyright_fname = sanitize_text_field(stripslashes($_POST['icopyright_fname']));
   $icopyright_lname = sanitize_text_field(stripslashes($_POST['icopyright_lname']));
-  $icopyright_site_name = sanitize_text_field(stripslashes($_POST['icopyright_site_name']));
+  $icopyright_site_name = sanitize_text_field(stripslashes($_POST['icopyright_publication']));
   $icopyright_site_url = sanitize_text_field(stripslashes($_POST['icopyright_site_url']));
   $icopyright_address_line1 = sanitize_text_field(stripslashes($_POST['icopyright_address_line1']));
   $icopyright_address_line2 = sanitize_text_field(stripslashes($_POST['icopyright_address_line2']));
@@ -485,7 +485,7 @@ function icopyright_admin_defaults() {
 function icopyright_set_up_new_account($fname, $lname, $pname, $url) {
   update_option('icopyright_fname', $fname);
   update_option('icopyright_lname', $lname);
-  update_option('icopyright_site_name', $pname);
+  update_option('icopyright_publication', $pname);
   update_option('icopyright_site_url', $url);
   
   //update_option('icopyright_pricing_optimizer_opt_in', 'true');
@@ -529,7 +529,7 @@ function icopyright_create_register_form() {
     $pname = get_bloginfo('name');
   }
 
-  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Site Name:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"pname\" value=\"$pname\"/></td></tr>";
+  $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Publication:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"pname\" value=\"$pname\"/></td></tr>";
 
   //auto populate using WordPress site url
   //since version 1.1.4

@@ -6,10 +6,10 @@
 
 // Which iCopyright server should we talk to via REST? The standard is license.icopyright.net, port 80,
 // but you can target alternate infrastructures (normally for debugging purposes) by changing these variables.
-define('ICOPYRIGHT_SERVER', 'license.icopyright.net');
-define('ICOPYRIGHT_PORT', 80);
-//define('ICOPYRIGHT_SERVER', 'localhost');
-//define('ICOPYRIGHT_PORT', 8080);
+ define('ICOPYRIGHT_SERVER', 'license.icopyright.net');
+ define('ICOPYRIGHT_PORT', 80);
+//  define('ICOPYRIGHT_SERVER', 'localhost');
+//  define('ICOPYRIGHT_PORT', 8080);
 
 /**
  * Return the iCopyright server and port that is handling the various services
@@ -175,7 +175,7 @@ function icopyright_update_searchable($tag, $searchable, $searchable_override, $
 }
 
 function icopyright_add_topic($postdata, $useragent, $email, $password) {
-  $url = "/api/xml/repubhub/topics";
+  $url = "/api/xml/repubhub/topics-create";
   $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "PUT");
   return $res;
 }
@@ -187,7 +187,7 @@ function icopyright_search($postdata, $useragent, $email, $password) {
 }
 
 function icopyright_edit_topic($topicId, $postdata, $useragent, $email, $password) {
-  $url = "/api/xml/repubhub/topics/".$topicId;
+  $url = "/api/xml/repubhub/topics-update/".$topicId;
   $res = icopyright_post($url, $postdata, $useragent, icopyright_make_header($email, $password), "POST");
   return $res;
 }
@@ -202,6 +202,12 @@ function icopyright_get_topics($useragent, $email, $password) {
   $url = "/api/xml/repubhub/topics";
   $res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
   return $res;
+}
+
+function icopyright_get_topic($useragent, $email, $password, $topicId) {
+	$url = "/api/xml/repubhub/topics/".$topicId;
+	$res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
+	return $res;
 }
 
 function icopyright_get_search_filters($useragent, $email, $password) {
@@ -228,9 +234,16 @@ function icopyright_get_recent_headlines($useragent, $email, $password, $page) {
   return $res;
 }
 
-function icopyright_get_topic($rssUrl, $useragent, $email, $password) {
-  $res = icopyright_post($rssUrl, NULL, $useragent, icopyright_make_header($email, $password), "GET");
+function icopyright_search_topic($useragent, $email, $password, $topic_id, $page) {
+	$url = "/api/xml/repubhub/search-topic/" . $topic_id . "/" . $page;
+  $res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET");
   return $res;
+}
+
+function icopyright_read_topic($useragent, $email, $password, $topic_id) {
+	$url = "/api/xml/repubhub/read-topic/" . $topic_id;
+	$res = icopyright_post($url, NULL, $useragent, icopyright_make_header($email, $password), "GET", false);
+	return $res;
 }
 
 function icopyright_delete_topic($topicId, $useragent, $email, $password) {

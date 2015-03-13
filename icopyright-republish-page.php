@@ -4,12 +4,15 @@ add_action('wp_ajax_repubhub_clips', 'icopyright_republish_topic_hits');
 add_action('wp_ajax_repubhub_recent_headlines', 'icopyright_republish_recent_headlines');
 add_action('wp_ajax_repubhub_search', 'icopyright_republish_page_search');
 add_action('wp_ajax_repubhub_add_topic', 'icopyright_republish_page_post_add');
+add_action('wp_ajax_repubhub_get_topic', 'icopyright_republish_get_topic');
+add_action('wp_ajax_repubhub_edit_topic', 'icopyright_republish_page_post_edit' );
 add_action('wp_ajax_repubhub_delete_topic', 'icopyright_republish_page_post_delete' );
 add_action('wp_ajax_repubhub_update_global_settings', 'icopyright_update_global_settings' );
 add_action('edit_form_after_title', 'icopyright_edit_form_after_title' );
 add_action('wp_ajax_repubhub_dismiss_post_new_info_box', 'icopyright_repubhub_dismiss_post_new_info_box');
 add_action('wp_ajax_repubhub_dismiss_save_search_info_box', 'icopyright_repubhub_dismiss_save_search_info_box');
 add_action('wp_ajax_repubhub_clips_read', 'icopyright_republish_topic_read');
+add_action('wp_ajax_repubhub_update_unread_total', 'icopyright_republish_update_unread_total');
 add_action('admin_menu', 'icopyright_post_menu');
 add_action( 'admin_bar_menu', 'icopyright_admin_bar', 999 );
 add_filter( 'default_content', 'icopyright_republish_content', 10, 2 );
@@ -74,17 +77,13 @@ function icopyright_republish_title( $title, $post ) {
 }
 
 function icopyright_republish_page() {
-  if ($_SERVER['REQUEST_METHOD'] === 'POST')
-    icopyright_republish_page_post();
-  else
-    icopyright_republish_page_get(array());
+	// Clear the unread count
+	$unreadCounts["total"] = 0;
+	update_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'), json_encode($unreadCounts));
+
+  icopyright_republish_page_get(array());
 }
 
-function icopyright_republish_page_post() {
-  if ($_POST['action'] === "edit") {
-    icopyright_republish_page_post_edit();
-  }
-}
 
 function icopyright_republish_page_get($data, $topic_id = NULL) {
 	if($topic_id == NULL) {
@@ -95,31 +94,16 @@ function icopyright_republish_page_get($data, $topic_id = NULL) {
 	}
 	if (!empty($_GET['success']))
 		$data['success'] = $_GET['success'];
-	if ($_GET['action'] === "edit") {
-		$data['topicId'] = $_GET['topicId'];
-		$data['andWords'] = $_GET['andWords'];
-		$data['exactPhrase'] = $_GET['exactPhrase'];
-		$data['orWords'] = $_GET['orWords'];
-		$data['notWords'] = $_GET['notWords'];
-		$data['frequency'] = $_GET['frequency'];
-		$data['featuredPublicationString'] = $_GET['featuredPublicationString'];
-		$data['publicationName'] = $_GET['publicationName'];
-		$data['author'] = $_GET['author'];
-		if (empty($topic_id))
-			icopyright_republish_page_get_edit_topic($data);
-		else
-			icopyright_republish_page_get_edit_topic($data, $topic_id);
-	} else {
-		initDisplay($data, $topic_id);
-	}
+
+	initDisplay($data, $topic_id);
 }
 
 function initDisplay($data, $topic_id) {
 	if (!wp_script_is( 'icopyright-admin-js', $list = 'enqueued' ))
-		wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.5.0');
+		wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.6.0');
 	
 	if (!wp_script_is( 'icopyright-admin-css', $list = 'enqueued' ))
-		wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.4.0');  // Update the version when the style changes.  Refreshes cache.
+		wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.6.0');  // Update the version when the style changes.  Refreshes cache.
 	
 	wp_enqueue_style('icopyright-admin-css-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.css');
 	wp_enqueue_script('icopyright-admin-js-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.js');
@@ -158,17 +142,17 @@ function icopyright_display_global_settings() {
 	   <div id="icx_global_settings_wrap" class="nav-tab">
 	   Global Settings
 	   </div>
+
 		<div id="icx_global_settings_wrap_inner" style="display: none;">
 				<div id="icx_global_settings_overlay">
 					
 				</div>
-				<div id="icx_global_settings_message">
-				</div>
+
 	   		<form id="icx_global_settings_form" method="post" action="#">
 	   		  <div class="icx_settings_title">Exclude Publications:</div>
 	   		  <div class="icx_settings_desc">
 	   		  If you would like to exclude certain publications from your searches and feeds when &quot;All Publications&quot;
-	   		  is selected, please do so below.
+	   		  is selected, please do so below. (This does not affect the Recent Headlines tab.)
 	   		  
 	   		  <br style="clear: both;"/><br/>
 	   		  <div>
@@ -229,6 +213,87 @@ function icopyright_display_global_settings() {
 	   	<?php     
 }
 
+function icopyright_edit_topic_section($search_xml) {
+?>	
+	<div id="editTopic" style="display: none;">
+	<p class="editError" style="display: none; color: red;"></p>
+	<div id="icx_edit_topic_overlay">
+	</div>	
+	<h3>Edit Search</h3>
+	<div class="icx_search_wrapper">
+	<form id="icx_republish_form" method="post" action="">
+			<input type="hidden" name="topicId" value=""/>
+			<label id="" class="icx_republish_label" for="icx_and_words">With all the words:</label><input id="icx_and_words" type="text" name="andWords" value=""/>
+			<div class="icx_republish_advanced_fields" style="">
+				<label class="icx_republish_label" for="icx_exact_words">With the exact phrase:</label><input id="icx_exact_words" type="text" name="exactPhrase" value=""/>
+				<br/>
+				<label class="icx_republish_label" for="icx_or_words">With at least one of the words:</label><input id="icx_or_words" type="text" name="orWords" value=""/>
+				<br/>
+				<label class="icx_republish_label" for="icx_not_words">Without the words:</label><input id="icx_not_words" type="text" name="notWords" value=""/>
+				<br/>
+				<label class="icx_republish_label" for="icx_author">Author:</label><input id="icx_author" type="text" name="author" value=""/>
+				<br/>
+				<label class="icx_republish_label" for="icx_publication_name">Publication Name:</label><input id="icx_publication_name" type="text" name="publicationName" value=""/>
+				<br/>
+				<label class="icx_republish_label" for="featuredPublicationString">Publication(s):</label>
+				<select id="featuredPublicationSelectEdit" name="featuredPublicationStringEdit" multiple="multiple">
+				<?php
+			$optGroupOpen = false;
+			foreach ($search_xml->featuredPublications as $featured_pub) {
+				if ($featured_pub->id == 'parent') {
+					if ($optGroupOpen == true) {
+						echo '</optgroup>';
+						$optGroupOpen = false;
+					}
+					echo '<optgroup label="' . $featured_pub->display . '">';
+					$optGroupOpen = true;
+				} else {
+					$selected = '';//(!empty($selected_pubs) && in_array($featured_pub->id, $selected_pubs)) ? 'selected' : '';
+					echo '<option value="' . $featured_pub->id . '" ' .  $selected .'>' . $featured_pub->display . '</option>';
+				}
+			}
+			$frequencies = array(
+					'IMMED' => 'As Stories Break',
+					'DAILY' => 'Daily',
+					'WEEKLY' => 'Weekly',
+					'MONTHLY' => 'Monthly',
+					'NEVER' => 'Never'
+			);			
+			
+			?>
+	      </select>  
+	      <br/>
+	      <label class="icx_republish_label" for="dateFilter">Search date range::</label>
+	      <select id="icx_date_filter_edit" name="dateFilter">
+	      <?php 
+	        $selected_date = 'TWO_DAYS';//$data['dateFilter'];
+	        //if(empty($selected_date)) {$selected_date = 'TWO_DAYS';}
+		      foreach ($search_xml->dateFilters as $date_filter) {
+	      		$selected = ($selected_date == $date_filter->name) ? 'selected' : '';
+		      	echo '<option value="' . $date_filter->name . '" ' . $selected .'>' . $date_filter->displayName . '</option>';
+		      }      
+	      ?>
+	      </select>
+	      <br/>              
+	    <label class="icx_republish_label" for="icx_frequency">Email me updated list:</label>
+	    <select name="frequency" id="icx_frequency">
+	      <?php foreach ($frequencies as $key => $name) { ?>
+	        <option value="<?php echo $key ?>"><?php echo $name ?></option>
+	      <?php } ?>
+	    </select>
+	    <br/>
+	    <label class="icx_republish_label" for="icx_allow_rss">Create RSS Feed:</label><input id="icx_allow_rss" type="checkbox" name="allowRss" value="true"/>		    
+	    </div>
+	    <br/>
+	    <input class="icx_save_edit_btn" type="submit" value="Save"/>
+	    <input id="icx_save_cancel_btn" type="button" value="Cancel"/>
+	  </form>
+	</div>
+	<div class="icx_clear"></div>	
+	 </div>
+	<?php 
+}
+
 function icopyright_search_terms_section() {
 	$custom_css = "
     #repubhub-logo a {
@@ -250,7 +315,10 @@ function icopyright_search_terms_section() {
 	$search_res = icopyright_get_search_filters($user_agent, $email, $password);
 	$search_xml = @simplexml_load_string($search_res->response);
 	
+	icopyright_edit_topic_section($search_xml);
 	?>
+		<div id="icx_status_message">
+		</div>	   	
 	  <div id="repubhub-logo">
 	 		<a id="rh" href="http://repubhub.icopyright.net" target="_blank"></a>
 	 		<h3>Find Republishable Articles</h3>
@@ -264,6 +332,9 @@ function icopyright_search_terms_section() {
 	      <select id="featuredPublicationSelect" name="featuredPublicationString" multiple="multiple">
 	      <?php 
 	        $selected_pub = $data['featuredPublicationString'];
+	        if (empty($selected_pub)) {
+	        	$selected_pub = '0';
+	        }
 	        $optGroupOpen = false;
 		      foreach ($search_xml->featuredPublications as $featured_pub) {
 		      	if ($featured_pub->id == 'parent') {
@@ -331,8 +402,8 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
 	$email = get_option('icopyright_conductor_email');
 	$password = get_option('icopyright_conductor_password');
 
-  icopyright_calculate_unread_republish_clips();
-  $unreadCounts = icopyright_get_unread_counts();
+//   icopyright_calculate_unread_republish_clips();
+//   $unreadCounts = icopyright_get_unread_counts();
 
   $res = icopyright_get_topics($user_agent, $email, $password);
   $xml = @simplexml_load_string($res->response);
@@ -354,7 +425,7 @@ function icopyright_republish_page_get_topics($data, $displayTopicId = '') {
       $index = 0;
       foreach ($xml->response as $topic) {
         ?>
-          <a id="icx_nav_tab_<?php echo $topic->id; ?>" class="icx_nav_tab nav-tab<?php if(!empty($displayTopicId) &&  $displayTopicId == $topic->id){ ?> nav-tab-active icx-nav-tab-active<?php } ?>" href="<?php echo $topic->id; ?>"><?php echo icopyright_republish_topic_name($topic, $unreadCounts); ?></a>
+          <a id="icx_nav_tab_<?php echo $topic->id; ?>" class="icx_nav_tab nav-tab<?php if(!empty($displayTopicId) &&  $displayTopicId == $topic->id){ ?> nav-tab-active icx-nav-tab-active<?php } ?>" href="<?php echo $topic->id; ?>"><?php echo icopyright_republish_topic_name($topic); ?></a>
         <?php
         $index ++;
       }
@@ -422,61 +493,90 @@ function icopyright_republish_page_post_add() {
 	$res = icopyright_add_topic(http_build_query($post), $user_agent, $email, $password);
 
 	$topic = @simplexml_load_string($res->response);
+	$message = '<div class="icx_success fadeout"><p>Search has been saved.</p></div>';
 	 if(!icopyright_check_response($res)) {
-	 if (is_object($topic) && ($topic->status->messages->count() > 0)) {
-	 $post['error'] = (string)$topic->status->messages[0]->message;
-	 } else {
-	 $post['error'] = 'Sorry, we were unable to add that topic.';
-	 }
-	 } else {
-	 $post = array();
-	 $post['success'] = "Topic has been added.";
-	 $post['topicId'] = (string)$topic->id;
+	 	$topic->error = 'true';
+		 if (is_object($topic) && ($topic->status->messages->count() > 0)) {
+		 $message = '<div class="icx_error fadeout"><p>'. (string)$topic->status->messages[0]->message . '.</p></div>';
+		 } else {
+		 	$message = '<div class="icx_error fadeout"><p>Sorry, we were unable to save that search.</p></div>';
+		 }
 	}
 	
+	$topic->message = $message;
+	echo json_encode($topic);
 	//echo$post;
-	$_GET['page'] = 'repubhub-republish';
-	icopyright_republish_page_get_topics($post, $post['topicId']);
+//  	$_GET['page'] = 'repubhub-republish';
+//  	icopyright_republish_page_get_topics($post, $post['topicId']);
+	exit();
+}
+
+function icopyright_republish_get_topic() {
+	$topicId = $_POST['topicId'];
+	
+	// Call WS
+	$user_agent = ICOPYRIGHT_USERAGENT;
+	$email = get_option('icopyright_conductor_email');
+	$password = get_option('icopyright_conductor_password');
+	$res = icopyright_get_topic($user_agent, $email, $password, $topicId);
+	
+	$topic = @simplexml_load_string($res->response);
+
 	exit();
 }
 
 function icopyright_republish_page_post_edit() {
   // Get values
-  $post = array();
-
-  foreach($_POST as $key => $value) {
-  	if ($key == 'featuredPublicationString') {
-  		$post['featuredPublicationString'] = implode(",", $value);
-  	} else {
-  		$post[$key] = sanitize_text_field(stripslashes($value));
-  	}  	
-  }  
-
+	$formData = $_POST['formValues'];
+	$formData = explode("&",$_POST['formValues']);
+	$post = array();
+	$featuredPublicationString = '';
+	foreach($formData as $val) {
+		$keyVal = explode("=", $val);
+		
+		if ($keyVal[0] == 'featuredPublicationStringEdit') {
+			$featuredPublicationString .= $keyVal[1] . ',';
+		} else { 
+			$post[$keyVal[0]] = sanitize_text_field(stripslashes($keyVal[1]));
+		}
+	}
+	$post['featuredPublicationString'] = $featuredPublicationString;
+	
   // Validate params.
+  $results = array();
   if (empty($post['andWords']) && empty($post['exactPhrase']) &&
     empty($post['orWords']) && empty($post['notWords']) &&
-  	empty($post['featuredPublicationString']) && empty($post['author']) &&
+  	empty($post['featuredPublicationStringEdit']) && empty($post['author']) &&
   		empty($post['publicationName'])) {
-    $post['error'] = "Please provide search values.";
-    icopyright_republish_page_get_edit_topic($post);
-    return;
+    $results['edit_error'] = "Please provide search values.";
+    echo json_encode($results);
+    exit();
   }
-
   // Call WS
   $user_agent = ICOPYRIGHT_USERAGENT;
   $email = get_option('icopyright_conductor_email');
   $password = get_option('icopyright_conductor_password');
   $res = icopyright_edit_topic($post['topicId'], http_build_query($post), $user_agent, $email, $password);
-  if(!icopyright_check_response($res)) {
-    $post['error'] = "Unable to edit topic at this time.  Please try again later.";
-    icopyright_republish_page_get_edit_topic($post, $post['topicId']);
-  } else {
-    $results = array();
-    $results['success'] = "Topic has been modified.";
-    $xml = @simplexml_load_string($res->response);
-    $tid = (string)$xml->id;
-    icopyright_republish_page_get($results, $tid);
-  }
+  
+  if((strlen($res->http_code) > 0) && ($res->http_code != '200')) {
+  	echo "<p>" . $errorMessage . " (" . $res->http_code . ': ' . $res->http_expl . ")</p>";
+  	if ($res->http_code == 401) {
+  		$results['error'] = '<p>Your email address and password don\'t match a valid account in Conductor. Please visit the ' .
+  				'<a href="' . $adminUrl . 'options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
+  				'push <em>Show Advanced Settings</em> to check your Conductor email address and password.</p>';
+  	} else {
+    $results['error'] = "<div class=\"icx_error fadeout\"><p>Unable to edit Search at this time.  Please try again later.</p></div>";
+  	}
+  	exit();
+  }  
+  
+  $results['success'] = "<div class=\"icx_success fadeout\"><p>Search has been modified.</p></div>";
+  $topic = @simplexml_load_string($res->response);
+  
+  $results['topic'] = $topic;
+  
+  echo json_encode($results);
+  exit();
 }
 
 function icopyright_republish_page_post_delete() {
@@ -499,11 +599,15 @@ function icopyright_republish_page_post_delete() {
 function icopyright_search_topic_display($response, $obj, $active, $isSearch = FALSE) {
 	$id = $isSearch ? 'search_results' : $obj->id;
 	$action = $isSearch ? 'addTopic' : 'edit';
-	$submitText = $isSearch ? 'Save Search' : 'Edit Topic';
+	$submitText = $isSearch ? 'Save Search' : 'Edit Search';
   $method = $isSearch ? 'post' : 'get';
   $formLocation = '';
-  $formId = $isSearch ? 'icx_form_save_search' : 'icx_form_edit_topic';
+  $formId = $isSearch ? 'icx_form_save_search' : 'icx_form_edit_topic_'.$id;
+  $data = $isSearch ? '' : ' data-topicid='.$id;
   $hideBtn = ($isSearch && $obj->hideFeed == "true");
+  $btnClass = $isSearch ? 'icx_save_btn' : 'icx_edit_btn';
+  $btnTitle = $isSearch ? 'Save this search' : 'Edit Search';
+  $btnText = $isSearch ? 'Save Search' : 'Edit Search';
   $frequencies = array(
   		'IMMED' => 'As Stories Break',
   		'DAILY' => 'Daily',
@@ -521,7 +625,7 @@ function icopyright_search_topic_display($response, $obj, $active, $isSearch = F
 				if($isSearch && get_option("repubhub_dismiss_save_search_info_box") == null) {
 				    ?>
 				      <p style="float:left; background:lightblue; padding:10px; margin: 0 0 20px 0;" id="icx_save_hint_info_box">
-								Tip: Click <em>Save Search</em> to automatically see new articles on this topic next time you visit. Saving a search also allows you to set up email alerts when new articles on this topic come in. 
+								Tip: Click the <em>Save Search</em> button to automatically see new articles on this topic next time you visit. Saving a search also allows you to set up email alerts when new articles on this topic come in. 
 				        <br/>
 				        <a style="float: right;" href="#" id="icx_dismiss_save_hint_info_box">Dismiss</a>
 				      </p>
@@ -549,13 +653,20 @@ function icopyright_search_topic_display($response, $obj, $active, $isSearch = F
 		      if (!empty($obj->author)) {
 		      	echo "Author: <strong>" . str_replace("+", " ", $obj->author) . "</strong><br/>";
 		      }
-		      if (!empty($obj->dateFilter)) {
-		      	echo "Date range: <strong>" . str_replace("_", " ", $obj->dateFilter) . "</strong><br/>";
-		      }	      
-		      
+		      if (!empty($obj->friendlyDateFilter)) {
+		      	echo "Date range: <strong>" . str_replace("_", " ", $obj->friendlyDateFilter) . "</strong><br/>";
+		      }
 		      ?>
 		      Email me: <strong><?php echo($frequencies[$obj->frequency.""]); ?></strong><br/>
-	<?php }?>	      
+	<?php 
+				
+				if (!empty($obj->allowRss) && $obj->allowRss == 'true') {
+					echo '<p>';
+					echo '<a href="' . $obj->rssLocation . '" target="_blank"><img src="' . ICOPYRIGHT_PLUGIN_URL . '/images/feed-rss.gif"/></a>';
+					echo '&nbsp;&nbsp;<a href="' . $obj->htmlLocation . '" target="_blank"><img src="' . ICOPYRIGHT_PLUGIN_URL . '/images/feed-html.gif"/></a>';
+					echo '</p>';
+				}
+				}?>	      
 	      
 	    </div>
 		  
@@ -563,7 +674,20 @@ function icopyright_search_topic_display($response, $obj, $active, $isSearch = F
 		  if(!$hideBtn) {
 		  ?>
 		    <div class="icx_topic_controls">
-		      <form id="<?php echo $formId; ?>" method="<?php echo $method; ?>" action="<?php echo $formLocation; ?>">
+		      <?php 
+		      if (!$isSearch) {
+		      	// Refresh topic button
+		      	?>
+		      	<form style="display: inline;" class="topic_refresh" method="<?php echo $method; ?>" action="<?php echo $formLocation; ?>">
+		      		<input type="hidden" name="topicId" value="<?php echo $obj->id; ?>"/>
+							<button class="icx_refresh_btn icx_btn" type="submit" title="Refresh this search">
+							Refresh
+							</button>		      		
+		      	</form>
+		      	<?php 
+		      }
+		      ?>
+		      <form style="display: inline;" id="<?php echo $formId; ?>" method="<?php echo $method; ?>" action="<?php echo $formLocation; ?>" <?php echo $data; ?>>
 		        <input type="hidden" name="action" value="<?php echo $action; ?>"/>
 		        <input type="hidden" name="page" value="<?php echo $_GET['page']; ?>"/>
 		        <input type="hidden" name="topicId" value="<?php echo $obj->id; ?>"/>
@@ -575,8 +699,12 @@ function icopyright_search_topic_display($response, $obj, $active, $isSearch = F
 		        <input type="hidden" name="featuredPublicationString" value="<?php if(!empty($obj->featuredPublicationString)) echo $obj->featuredPublicationString; ?>"/>
 		        <input type="hidden" name="author" value="<?php if(!empty($obj->author)) echo $obj->author; ?>"/>
 		        <input type="hidden" name="publicationName" value="<?php if(!empty($obj->publicationName)) echo $obj->publicationName; ?>"/>
-		        <input type="hidden" name="dateFilter" value=""/>
-		        <input class="icx_submit_btn" type="submit" value="<?php echo $submitText ?>"/>
+		        <input type="hidden" name="dateFilter" value="<?php if(!empty($obj->dateFilter)) echo $obj->dateFilter; ?>"/>
+		        <input type="hidden" name="allowRss" value="<?php if(!empty($obj->allowRss)) echo $obj->allowRss; ?>"/>
+		        
+						<button class="icx_btn <?php echo $btnClass; ?>" type="submit" title="<?php echo $btnTitle; ?>">
+						<?php echo $btnText; ?>
+						</button>		      			        
 		      </form>
 		    </div>
 		  <?php 
@@ -591,28 +719,7 @@ function icopyright_search_topic_display($response, $obj, $active, $isSearch = F
 		    </div>
 		  <?php 
 	    } else {
-	    	icopyright_display_solr_content($response, $obj->content, FALSE);
-	    	
-	    	$pageCount = (int)$obj->pageCount;
-	    	$page = (int)$obj->page;
-
-	    	echo '<p></p>';
-	    	if ($page > 1) {
-	    		echo "<a style=\"float: left; text-decoration: none;\"class=\"icx_pager\" href =\"prev\">";
-	    		echo "<img src=\"" . icopyright_static_server() . "/portal/images/repubhub_prev.png\" alt=\"Previous\"/>";
-	    		echo "</a>";
-	    	}	    	
-	    	
-	    	if ($page < $pageCount) {
-	    		echo "<a style=\"float: right; text-decoration: none;\"class=\"icx_pager\" href =\"next\">";
-	    		echo "<img src=\"" . icopyright_static_server() . "/portal/images/repubhub_next.png\" alt=\"Next\"/>";
-	    		echo "</a>";
-	    	}
-	    	
-	    	if ($pageCount > 0) {
-	    		echo "<p style=\"width: 100%; text-align: center; padding-top: 4px;\">Page " . $page . " of " . $pageCount . "</p>";
-	    	}	    	
-	    	
+	    	icopyright_display_solr_content($response, $obj->content, FALSE, (int)$obj->page, (int)$obj->pageCount);
 	    	exit();
 	    }  
 	    
@@ -624,19 +731,6 @@ function icopyright_search_topic_display($response, $obj, $active, $isSearch = F
  	  
 }
 
-/**
- * When a topic is read, decrease the "unread" numbers for the total and set this one to zero
- */
-
-function icopyright_republish_topic_read() {
-  $topicId = (int) $_GET['topicid'];
-  $total = icopyright_update_unread_count($topicId);
-  $unreadMarkers = icopyright_get_unread_markers();
-  $unreadMarkers[$topicId] = (int) $_GET['contentid'];
-  update_option('icopyright_unread_republish_markers_' . get_option('icopyright_pub_id'), json_encode($unreadMarkers));
-  echo $total;
-  exit();
-}
 
 /**
  * Given an XML location, returns HTML for the hits. Used in an AJAX call to fill out the page
@@ -754,7 +848,7 @@ function icopyright_republish_page_search() {
  * Used to display recent headlines and search results
  * @param unknown $res
  */
-function icopyright_display_solr_content($res, $contentList, $isRecentHeadlines, $rhPage = 1) {
+function icopyright_display_solr_content($res, $contentList, $isRecentHeadlines, $page = 1, $pageCount = 0, $lastRefreshDate = 0, $isTopic = FALSE) {
 	$adminUrl = admin_url();
 	$pluginsUrl = plugins_url();
 	$errorMessage = $isRecentHeadlines ? "Failed to get recent headlines" : "Failed to do search";
@@ -769,9 +863,16 @@ function icopyright_display_solr_content($res, $contentList, $isRecentHeadlines,
 	}	
 	
 	if (sizeof($contentList) > 0 && icopyright_includes_embeddable($contentList)) {
+		
 		$firstClipId = -1;
 		foreach ($contentList as $clip) {
 			if (strcmp($clip->embeddable, "true") == 0) {
+				$titleClass = "icx_clip_title";
+				if (!$isRecentHeadlines) {
+					if (strtotime($clip->createdDate) > $lastRefreshDate) {
+						$titleClass .= " icx_unread_title";
+					}
+				}				
 				$clipId = (int) $clip->clipId;
 				if ($clipId > $firstClipId) {
 					$firstClipId = $clipId;
@@ -781,11 +882,11 @@ function icopyright_display_solr_content($res, $contentList, $isRecentHeadlines,
 	            <img class="icx_clip_icon" src="<?php echo($clip->image); ?>"/>
 	          </div>
 	          <div class="icx_clip_wrapper">
-	            <a class="icx_clip_title" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode($adminUrl . "post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
+	            <a class="<?php echo($titleClass); ?>" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode($adminUrl . "post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
 	            <?php if (strcmp($clip->embeddable, "true") == 0) { ?>
 	              <a class="icx_republish_btn" target="_blank" href="<?php echo($adminUrl); ?>post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="<?php echo($pluginsUrl); ?>/copyright-licensing-tools/images/republishBtn.png"/></a>
 	            <?php } ?>
-	            <div class="icx_clear"></div>
+<!-- 	            <div class="icx_clear"></div> -->
 	            <div class="icx_clip_byline">
 	              <?php if(!empty($clip->author)) echo "<a class=\"icx_clip_author\" href=\"" . $clip->author . "\">By " . $clip->author . "</a> &mdash;"; ?>
 	              <?php echo($clip->pubDate);?>
@@ -794,7 +895,7 @@ function icopyright_display_solr_content($res, $contentList, $isRecentHeadlines,
 	            	<b>
 	            	<?php 
 
-	            		echo "<a class=\"icx_clip_publicationName\" href=\"" . $clip->publication . "\">" . $clip->publication . "</a>";
+	            		echo "<a class=\"icx_clip_publicationName\" href=\"" . $clip->publication . "\">" . $clip->publication . "</a>&nbsp;&nbsp;";
 	            		?>
 	             </b> 
 	              <?php echo($clip->description); ?>
@@ -809,21 +910,39 @@ function icopyright_display_solr_content($res, $contentList, $isRecentHeadlines,
 	    <p>No articles currently match that topic.</p>
 	  <?php }
 	  	
-	if ($isRecentHeadlines) {
-		
-		echo '<p></p>';
-		if ($rhPage > 1) {
-			echo "<a style=\"display: inline-block; float: left; text-decoration: none;\"class=\"icx_pager_rh\" href =\"" . ($rhPage - 1) . "\">";
-			echo "<img src=\"" . icopyright_static_server() . "/portal/images/repubhub_prev.png\" alt=\"Previous\"/>";
-			echo "</a>";
+	  
+	  $pagerClass = '';
+	  if ($isRecentHeadlines) {
+	  	$pagerClass = "icx_pager_rh";
+	  } else if ($isTopic) {
+			$pagerClass = "icx_pager_topic";
+		} else {
+			$pagerClass = "icx_pager";
 		}
 		
-		echo "<a style=\"display: inline-block; float: right; text-decoration: none;\"class=\"icx_pager_rh\" href =\"" . ($rhPage + 1) . "\">";
-		echo "<img src=\"" . icopyright_static_server() . "/portal/images/repubhub_next.png\" alt=\"Next\"/>";
-		echo "</a>";
-		
-		exit();
-	}
+	  echo '<p></p>';
+	  
+	  if ($page > 1) {
+	  	$href = ($isRecentHeadlines || $isTopic) ? ($page - 1) : "prev";
+	  	echo "<a style=\"float: left; text-decoration: none;\"class=\"" . $pagerClass . "\" href=\"" . $href . "\">";
+	  	echo "<img src=\"" . icopyright_static_server() . "/portal/images/repubhub_prev.png\" alt=\"Previous\"/>";
+	  	echo "</a>";
+	  }
+	  
+	  if (($page < $pageCount) || $isRecentHeadlines) {
+	  	$href = ($isRecentHeadlines || $isTopic) ? ($page + 1) : "next";
+	  	echo "<a style=\"float: right; text-decoration: none;\"class=\"" . $pagerClass . "\" href=\"" . $href . "\">";
+	  	echo "<img src=\"" . icopyright_static_server() . "/portal/images/repubhub_next.png\" alt=\"Next\"/>";
+	  	echo "</a>";
+	  }
+	  
+	  if ($pageCount > 0) {
+	  	echo "<p style=\"width: 100%; text-align: center; padding-top: 4px;\">Page " . $page . " of " . $pageCount . "</p>";
+	  } 
+	  
+		if ($isRecentHeadlines) {
+			exit();
+		}		
 }
 
 /**
@@ -832,87 +951,48 @@ function icopyright_display_solr_content($res, $contentList, $isRecentHeadlines,
 function icopyright_republish_topic_hits() {
   $xml_location = $_GET['loc'];
   $topicId = $_GET['topicid'];
-  $unreadMarkers = icopyright_get_unread_markers();
-  $lastReadclipId = 0;
-	$adminUrl = admin_url();
-  $pluginsUrl = plugins_url();
-  if (array_key_exists((int)$topicId, $unreadMarkers)) {
-    $lastReadclipId = (int) $unreadMarkers[(int)$topicId];
+  $page = $_GET['page'];
+  if (!$page) {
+  	$page = "1";
   }
+
+  
   $user_agent = ICOPYRIGHT_USERAGENT;
   $email = get_option('icopyright_conductor_email');
   $password = get_option('icopyright_conductor_password');
-  $res = icopyright_get_topic(str_replace("http://".ICOPYRIGHT_SERVER, "", $xml_location), $user_agent, $email, $password);
-  if((strlen($res->http_code) > 0) && ($res->http_code != '200')) {
-    echo "<p>Failed to get topic clips (" . $res->http_code . ': ' . $res->http_expl . ")</p>";
-    if ($res->http_code == 401) {
-      echo '<p>Your email address and password don\'t match a valid account in Conductor. Please visit the ' .
-        '<a href="' . $adminUrl . 'options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
-        'push <em>Show Advanced Settings</em> to check your Conductor email address and password.</p>';
-    }
-    exit;
+  $res = icopyright_search_topic($user_agent, $email, $password, $topicId, $page);
+  $search = @simplexml_load_string($res->response);
+  
+  if (is_object($search) && ($search->status->messages->count() > 0)) {
+  	echo '<p style="color: red;">' . (string)$search->status->messages[0]->message . '</p>';
+  } else {  	
+
+  	$lastRefreshDate = 0;
+  	if ($search->lastRefreshDate) {
+  		$lastRefreshDate = strtotime($search->lastRefreshDate);
+  	}  	
+  	
+  	if ($page == "1") {
+	  	$numNewClips = 0;
+	   	foreach ($search->content as $clip) {
+	   		$clipCreatedDate = strtotime($clip->createdDate);
+	   		if ($clipCreatedDate > $lastRefreshDate) {
+	   			$numNewClips++;
+	   		}
+	   	}
+				
+	   	if ($numNewClips >= $search->maxPerPage) {
+	   		$numNewClips = $numNewClips . '+';
+	   	}
+	  	
+			echo '<div id="num_topics_' . $topicId . '" style="display: none;" data-num="' . $numNewClips . '"></div>';
+  	}
+  	
+    icopyright_display_solr_content($res, $search->content, FALSE, (int)$search->page, (int)$search->pageCount, $lastRefreshDate, TRUE);
   }
-  $topicxml = @simplexml_load_string($res->response);
-  if (sizeof($topicxml->clips->clip) > 0 && icopyright_includes_embeddable($topicxml->clips->clip)) {
-    $firstClipId = -1;
-    foreach ($topicxml->clips->clip as $clip) {
-      if (strcmp($clip->embeddable, "true") == 0) {
-        $clipId = (int) $clip->clipId;
-        if ($clipId > $firstClipId) {
-          $firstClipId = $clipId;
-        }?>
-        <div class="icx_clip">
-          <div class="icx_clip_icon_wrapper">
-            <img class="icx_clip_icon" src="<?php echo($clip->image); ?>"/>
-          </div>
-          <div class="icx_clip_wrapper">
-            <a class="icx_clip_title <?php if ($clipId>$lastReadclipId) { ?>icx_unread_title<?php } ?>" target="_blank" href="<?php echo($clip->link); ?><?php if (strcmp($clip->embeddable, "true") == 0) { ?>&wp_republish_url=<?php echo(urlencode($adminUrl . "post-new.php?icx_tag=".$clip->tag)); ?><?php } ?>"><?php echo($clip->title); ?></a>
-            <?php if (strcmp($clip->embeddable, "true") == 0) { ?>
-              <a class="icx_republish_btn" href="<?php echo($adminUrl); ?>/post-new.php?icx_tag=<?php echo(urlencode($clip->tag)); ?>"><img src="<?php echo($pluginsUrl); ?>/copyright-licensing-tools/images/republishBtn.png"/></a>
-            <?php } ?>
-            <div class="icx_clear"></div>
-            <div class="icx_clip_byline">
-              <b><?php echo($clip->publication); ?></b>
-              <?php echo($clip->pubDate);?>
-            </div>
-            <div class="icx_clip_body">
-              <?php echo($clip->description); ?>
-            </div>
-          </div>
-        </div>
-      <?php }
-    }
-    ?>
-    <div id="icx_topic_<?php echo $topicId; ?>_first_clip_id" style="display:none;"><?php echo $firstClipId; ?></div>
-    <?php
-  } else { ?>
-    <p>No articles currently match that topic.</p>
-  <?php }
-  exit();
+  exit();  
 }
 
-/**
- * When a topic is "read" by the user clicking on the tab, set the number of unread stories to be zero and update the
- * totals for all topics accordingly
- * @param $topicId
- * @return int
- */
-function icopyright_update_unread_count($topicId) {
-  $unreadCounts = icopyright_get_unread_counts();
-  $topicCount = 0;
-  if (array_key_exists($topicId, $unreadCounts)) {
-    $topicCount = $unreadCounts[$topicId];
-  }
-  $total = 0;
-  if (array_key_exists('total', $unreadCounts))
-    $total = $unreadCounts['total'];
-  $total = $total - $topicCount;
-  if ($total<0) $total = 0;
-  $unreadCounts['total'] = $total;
-  $unreadCounts[$topicId] = 0;
-  update_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'), json_encode($unreadCounts));
-  return $total;
-}
 
 
 function icopyright_includes_embeddable($clips) {
@@ -923,116 +1003,32 @@ function icopyright_includes_embeddable($clips) {
   return false;
 }
 
-function icopyright_republish_page_get_edit_topic($data, $displayTopicId = '') {
-	$user_agent = ICOPYRIGHT_USERAGENT;
-	$email = get_option('icopyright_conductor_email');
-	$password = get_option('icopyright_conductor_password');
-	
-	
-	$search_res = icopyright_get_search_filters($user_agent, $email, $password);
-	$search_xml = @simplexml_load_string($search_res->response);
-		
-  wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.4.0');  // Update the version when the style changes.  Refreshes cache.
-  wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.5.0');
-  wp_localize_script( 'icopyright-admin-js', 'admin_ajax_url', array('url' => admin_url('admin-ajax.php')));
-  
-  wp_enqueue_style('icopyright-admin-css-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.css');
-  wp_enqueue_script('icopyright-admin-js-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.js');
-    
-  $frequencies = array(
-    'IMMED' => 'As Stories Break',
-    'DAILY' => 'Daily',
-    'WEEKLY' => 'Weekly',
-    'MONTHLY' => 'Monthly',
-    'NEVER' => 'Never'
-  );  
-  ?>
-  <?php if(!empty($data['error'])) { ?>
-    <div class="icx_error fadeout"><p><?php echo $data['error']; ?></p></div>
-  <?php } ?>
-<div class="icx_republish_header">
-  <h3>Edit Topic</h3>
-</div>
-<div class="icx_search_wrapper">
-  <form id="icx_republish_form" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $_GET['page'] ?>">
-    <input type="hidden" name="action" value="edit"/>
-    <input type="hidden" name="topicId" value="<?php echo $data['topicId']; ?>"/>
-    <label id="" class="icx_republish_label" for="icx_and_words">With all the words:</label><input id="icx_and_words" type="text" name="andWords" value="<?php echo $data['andWords']; ?>"/>
-   
-    <div class="icx_republish_advanced_fields" style="display: ;">
-    
-      <label class="icx_republish_label" for="icx_exact_words">With the exact phrase:</label><input id="icx_exact_words" type="text" name="exactPhrase" value="<?php echo $data['exactPhrase']; ?>"/>
-      <br/>
-      <label class="icx_republish_label" for="icx_or_words">With at least one of the words:</label><input id="icx_or_words" type="text" name="orWords" value="<?php echo $data['orWords']; ?>"/>
-      <br/>
-      <label class="icx_republish_label" for="icx_not_words">Without the words:</label><input id="icx_not_words" type="text" name="notWords" value="<?php echo $data['notWords']; ?>"/>
-			<br/>
-      <label class="icx_republish_label" for="icx_author">Author:</label><input id="icx_author" type="text" name="author" value="<?php echo $data['author']; ?>"/>      
-      <br/>
-      <label class="icx_republish_label" for="icx_publication_name">Publication Name:</label><input id="icx_publication_name" type="text" name="publicationName" value="<?php echo $data['publicationName']; ?>"/>
-    	 <br/>
-    	<label class="icx_republish_label" for="featuredPublicationString">Publication/Group:</label> 
-      <select id="featuredPublicationSelectEdit" name="featuredPublicationString[]" multiple="multiple">
-      <?php 
-        $selected_pubs = $data['featuredPublicationString'];
-        if (!empty ($selected_pubs)) {
-        	$selected_pubs = explode(",", $selected_pubs);
-        }
-        $optGroupOpen = false;
-	      foreach ($search_xml->featuredPublications as $featured_pub) {
-	      	if ($featured_pub->id == 'parent') {
-	      	  if ($optGroupOpen == true) {
-	      	  	echo '</optgroup>';
-	      	  	$optGroupOpen = false;
-	      	  }
-	      	  echo '<optgroup label="' . $featured_pub->display . '">';
-	      	  $optGroupOpen = true;
-	      	} else {
-	      		$selected = (!empty($selected_pubs) && in_array($featured_pub->id, $selected_pubs)) ? 'selected' : '';
-		      	echo '<option value="' . $featured_pub->id . '" ' .  $selected .'>' . $featured_pub->display . '</option>';
-	      	}
-	      }      
-      ?>
-      </select>       
-    </div>
-    <label class="icx_republish_label" for="icx_frequency">Email me updated list:</label>
-    <select name="frequency" id="icx_frequency">
-      <?php foreach ($frequencies as $key => $name) { ?>
-        <option value="<?php echo $key ?>"<?php if(strcmp($data['frequency'], $key) == 0){ ?> selected="selected"<?php } ?>><?php echo $name ?></option>
-      <?php } ?>
-    </select>
-    <br/>
-    <input class="icx_save_edit_btn" type="submit" value="Save"/>
-  </form>
-</div>
-<div class="icx_clear"></div>
-<?php
-}
-
 function icopyright_republish_has_unread($topic, $unreadCounts) {
   $topicId = (int)$topic->id;
   return array_key_exists($topicId, $unreadCounts) && $unreadCounts[$topicId]>0;
 }
 
-function icopyright_republish_topic_name($topic, $unreadCounts) {
-  $name = $topic->friendlyString;
-  if (strlen($name) > 10) {
-    $nameWords = preg_split('/\s+/', $name);
-    $name = "";
+function icopyright_republish_topic_name($topic) {
+  $nameFriendlyString = $topic->friendlyString;
+  if (strlen($nameFriendlyString) > 10) {
+    $nameWords = preg_split('/\s+/', $nameFriendlyString);
+    $nameFriendlyString = "";
     $div = "";
     foreach($nameWords as $nameWord) {
-      $name .= $div . $nameWord;
-      if (strlen($name)>10)
+      $nameFriendlyString .= $div . $nameWord;
+      if (strlen($nameFriendlyString)>10)
         break;
       $div = " ";
     }
   }
-  
+  $name = '<span class="icx_unread_tab_count">' . $nameFriendlyString . '</span>';
   if (isset($topic->id)) {
 	  $topicId = (int)$topic->id;
-	  if (array_key_exists($topicId, $unreadCounts) && $unreadCounts[$topicId]>0)
-	    $name .= '<span class="icx_unread_tab_count"><span class="icx_unread update-plugins count-1"><span class="plugin-count">'.$unreadCounts[$topicId].'</span></span></span>';
-	    //$name .= ' <span>'.$unreadCounts[$topicId].'</span>';
+	  //if (array_key_exists($topicId, $unreadCounts) && $unreadCounts[$topicId]>0)
+	  $idName = 'img_spinner_' . $topicId;
+	  $name .= '<img id="' . $idName . '" class="icx_spinner_tab" src="' . ICOPYRIGHT_PLUGIN_URL . '/images/ajax-loader4.gif"/>';
+	    //$name .= '<span class="icx_unread_tab_count"><span class="icx_unread update-plugins count-1"><span class="plugin-count">'.$unreadCounts[$topicId].'</span></span></span>';
+
 	    
 	  $name .= '<div class="icx_topic_delete_btn" data-topicid="' . $topic->id . '">X</div>';
   }
@@ -1054,7 +1050,7 @@ function icopyright_calculate_unread_republish_clips() {
   //
   // Only do this every 30 mins
   //
-  $prevUpdate = get_option('icopyright_update_unread_republish_time');
+ /* $prevUpdate = get_option('icopyright_update_unread_republish_time');
   if (empty($prevUpdate)) $prevUpdate = 0;
   $now = time();
   if (($now - $prevUpdate) < (60*30))
@@ -1096,7 +1092,48 @@ function icopyright_calculate_unread_republish_clips() {
     }
   }
   $unreadCounts["total"] = $totalUnreadCount;
-  update_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'), json_encode($unreadCounts));
+  update_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'), json_encode($unreadCounts));*/
+}
+
+/**
+ * When a topic is read, decrease the "unread" numbers for the total and set this one to zero
+ */
+
+function icopyright_republish_topic_read() {
+	// Call to server to update the last_refresh_date of topic
+	$topicId = (int) $_GET['topicId'];
+	$user_agent = ICOPYRIGHT_USERAGENT;
+	$email = get_option('icopyright_conductor_email');
+	$password = get_option('icopyright_conductor_password');
+	icopyright_read_topic($user_agent, $email, $password, $topicId);
+
+	// Update local database and return total
+	$icxNumRead = (int) $_GET['icxNumRead'];
+	$unreadCounts = icopyright_get_unread_counts();
+	$total = 0;
+	if (array_key_exists('total', $unreadCounts))
+		$total = $unreadCounts['total'];
+	
+	$total = $total - $icxNumRead;
+	if ($total<0) $total = 0;
+	$unreadCounts['total'] = $total;
+	update_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'), json_encode($unreadCounts));
+	echo $total;
+
+	exit();
+}
+
+/**
+ * AJAX call to update unread total
+ */
+function icopyright_republish_update_unread_total() {
+	$totalUnreadClips = (int)$_POST['icxTotalUnreadClips'];
+	$unreadCounts = array();
+	$unreadCounts['total'] = $totalUnreadClips;	
+	update_option('icopyright_unread_republish_clips_' . get_option('icopyright_pub_id'), json_encode($unreadCounts));
+	
+	echo $total;
+	exit();
 }
 
 function icopyright_get_unread_counts() {

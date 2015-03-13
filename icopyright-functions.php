@@ -82,7 +82,10 @@ function icopyright_interactive_notice() {
   //construct copyright notice
   $publish_date = $post->post_date;
   $date = explode('-', $publish_date);
-  $site_name = get_option('icopyright_site_name');
+  $site_name = get_option('icopyright_publication');
+  if ($site_name == NULL || empty($site_name)) {
+  	$site_name = get_option('icopyright_site_name');  // legacy
+  }
   $pname = addslashes(empty($site_name) ? get_bloginfo() : $site_name);
   $icx_copyright = "Copyright " . $date['0'] . " $pname";
 
@@ -242,20 +245,29 @@ function icopyright_trim_excerpt($text) {
 
     //if empty use content.
     $text = get_the_content('');
+    
     //remove shortcodes
     $text = strip_shortcodes($text);
     //apply content filters
     $text = apply_filters('the_content', $text);
+    
     //replace > with html character entity to prevent script executing.
     $text = str_replace(']]>', ']]&gt;', $text);
-    //strip out html tags.
-    $text = strip_tags($text);
+    
     //excerpt_length filter, default 55 words
     $excerpt_length = apply_filters('excerpt_length', 55);
     //excerpt_more filter, default [...]
     $excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
     // split the phrase by any number of commas or space characters,
     // which include " ", \r, \t, \n and \f
+    
+    // code from wp_trim_words in formatting.php
+    $text = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $text );
+    $text = strip_tags($text);
+    
+    $text = trim( $text);    
+    
+    
     $words = preg_split("/[\n\r\t ]+/", $text, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
     if (count($words) > $excerpt_length) {
       array_pop($words);
@@ -618,7 +630,7 @@ function icopyright_update_settings() {
       if ($settings['success']) {
         update_option("icopyright_fname", $settings['fname']);
         update_option("icopyright_lname", $settings['lname']);
-        update_option("icopyright_site_name", $settings['pname']);
+        update_option("icopyright_publication", $settings['pname']);
         update_option("icopyright_site_url", $settings['purl']);
         update_option('icopyright_address_line1', $settings['line1']);
         update_option('icopyright_address_line2', $settings['line2']);

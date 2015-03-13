@@ -103,7 +103,10 @@ function icopyright_options_page() {
       //
       // Add various id's used by JavaScript
       //
-      $siteName = get_option('icopyright_site_name');
+      $siteName = get_option('icopyright_publication');
+      if ($siteName == NULL || empty($siteName)) {
+      	$siteName = get_option('icopyright_site_name'); //legacy
+      }
       ?>
     <div id="pub_id" style="display:none;"><?php print get_option('icopyright_pub_id') ?></div>
     <div id="site_name" style="display:none;"><?php echo(empty($siteName) ? get_bloginfo() : $siteName); ?></div>
@@ -297,8 +300,8 @@ function add_account_settings_section() {
   add_settings_field('icopyright_lname', 'Last Name', 'last_name_field_callback', 'copyright-licensing-tools', 'account-settings');
   register_setting('icopyright-settings-group', 'icopyright_lname');
 
-  add_settings_field('icopyright_site_name', 'Site Name', 'site_name_field_callback', 'copyright-licensing-tools', 'account-settings');
-  register_setting('icopyright-settings-group', 'icopyright_site_name');
+  add_settings_field('icopyright_publication', 'Publication', 'site_name_field_callback', 'copyright-licensing-tools', 'account-settings');
+  register_setting('icopyright-settings-group', 'icopyright_publication');
 
   add_settings_field('icopyright_site_url', 'Site URL', 'site_url_field_callback', 'copyright-licensing-tools', 'account-settings');
   register_setting('icopyright-settings-group', 'icopyright_site_url');

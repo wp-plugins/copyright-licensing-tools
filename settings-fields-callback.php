@@ -14,7 +14,11 @@ function last_name_field_callback() {
 }
 
 function site_name_field_callback() {
-  icopyright_make_account_row(350, 'icopyright_site_name');
+	$site_name = get_option('icopyright_publication');
+	if ($site_name == NULL || empty($site_name)) {
+		$site_name = get_option('icopyright_site_name');
+	}
+  icopyright_make_account_row(350, 'icopyright_publication', NULL, $site_name);
 }
 
 function site_url_field_callback() {
@@ -47,7 +51,7 @@ function address_country_field_callback() {
   if(empty($current_value)) $current_value = 'US';
   $countries = array(
     "AF" => "Afghanistan",
-    "AX" => "Åland Islands",
+    "AX" => "��land Islands",
     "AL" => "Albania",
     "DZ" => "Algeria",
     "AS" => "American Samoa",

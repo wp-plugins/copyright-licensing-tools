@@ -3,7 +3,7 @@ Contributors: iCopyright Inc.
 Tags: ads, advertising, article tools, attribution, copyright, creative commons, curate, curation, curation tools, content distribution, icopyright, infringement, license, licensing, monetization, monetize, network, piracy, publish, publishing, reblog, repost, re-use, reprints, republish, republish network, republishing network, repubHub, reuse, Share, sharing, syndicate, syndication
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 2.5.4
+Stable tag: 2.5.5
 
 Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content.
 
@@ -16,7 +16,7 @@ With the iCopyright Toolbar plugin, you can:
 * Search for and monitor articles by leading publishers on topics of interest to your readers
 * Republish them legally with just one click directly from your Posts menu
 * Get alerts when new articles on your topics are available for republication
-* Syndicate and monetize your content with a Republish button that feeds your content into iCopyright’s repubHub portal for others to discover and republish.
+* Syndicate and monetize your content with a Republish button that feeds your content into iCopyright���s repubHub portal for others to discover and republish.
 
 The powerful iCopyright Toolbar lets you do it all.
 
@@ -42,6 +42,15 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 3. An example of the print services dialog
 
 == Changelog ==
+
+= 2.5.5 =
+1. Updated tabs to refresh on a more regular basis.
+2. Added the ability to refresh an individual tab.
+3. Can now specify if you would like an rss feed in the Edit Topic page.
+4. New links to RSS/HTML feeds of topics.
+5. Updating global settings will now refresh all tabs.
+6. Edit search is now done in a pop-up box.
+
 
 = 2.5.4 =
 1. Fixed an issue with Global Settings throwing an error after saving.
@@ -176,7 +185,7 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 1. Allow users to update address from plugins page
 2. More explicit terms of use OK
 3. Add warning message if iCopyright system cannot communicate with plugin
-4. Use site name from iCopyright settings for interactive copyright notice
+4. Use publication from iCopyright settings for interactive copyright notice
 5. Minor bug fixes
 
 = 1.6.1 =

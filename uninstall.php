@@ -1,7 +1,7 @@
 <?php
 define("ICOPYRIGHT_PLUGIN_NAME", "copyright-licensing-tools");
 define("ICOPYRIGHT_PLUGIN_DIR", WP_PLUGIN_DIR . "/" . ICOPYRIGHT_PLUGIN_NAME);
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.5.4");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.5.5");
 
 require (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
@@ -17,6 +17,7 @@ deactivate_account($pid, $playerStatus);
 delete_option("icopyright_fname");
 delete_option("icopyright_lname");
 delete_option("icopyright_site_name");
+delete_option("icopyright_publication");
 delete_option("icopyright_site_url");
 delete_option("icopyright_address_line1");
 delete_option("icopyright_address_line2");

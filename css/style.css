@@ -115,9 +115,8 @@ span.help {
 
 .icx_save_edit_btn{
 	width: 70px;
-  margin: 0 auto;
-  display: block;
-  margin-top: 20px;
+  display: inline-block;
+  margin-left: 202px;
 }
 
 .icx_clear {
@@ -127,7 +126,7 @@ span.help {
 .icx_topic {
   margin-right: 20px;
   margin-bottom: 30px;
-  width: 800px;
+  width: 1000px;
   margin-top: 20px;
 }
 
@@ -143,11 +142,10 @@ span.help {
 .icx_clips {
   overflow-y: hidden;
   overflow-x: hidden;
-  width: 800px;
 }
 
 .icx_clip {
-  padding: 10px;
+  margin-top: 20px;
   overflow: hidden;
 }
 
@@ -156,6 +154,7 @@ span.help {
   height: 100px;
   overflow: hidden;
   float: left;
+  margin-right: 10px;
 }
 
 .icx_clip_icon {
@@ -165,16 +164,14 @@ span.help {
 }
 
 .icx_clip_wrapper {
-  float: left;
-  margin-left: 10px;
   overflow: hidden;
-  width: 650px;
+  display: inline
 }
 
 .icx_clip_title {
-  float: left;
-  max-width: 560px;
+  max-width: 690px;
   font-size: 14px;
+  display: inline-block;
 }
 
 .icx_republish_btn {
@@ -412,7 +409,7 @@ div.icx_global_setting_section_data {
 	padding: 10px 0 6px 20px;
 }
 
-#icx_global_settings_overlay {
+#icx_global_settings_overlay, #icx_edit_topic_overlay {
 	display: none;
 	width: 100%;
 	height: 100%;
@@ -455,4 +452,50 @@ ul.select2-results {
 
 input.select2-input {
 	padding-top: 6px !important;
+}
+
+img.icx_spinner_tab{
+  position: relative;
+  top: 2px;
+  left: 7px;	
+}
+
+button.icx_refresh_btn {
+/* 	border: 0; 
+  background: url('../images/knob_refresh.ico') no-repeat center;
+  width: 32px;
+  height: 32px; */
+  margin-right: 5px;
+}
+
+button.icx_save_btn {
+/*   width: 32px;
+  height: 32px; */	
+}
+
+button.icx_edit_btn {
+/*   border: 0; 
+  background: url('../images/advanced.ico') no-repeat center;
+  width: 32px;
+  height: 32px;	 */
+}
+
+button.icx_btn:hover {
+	cursor: pointer;
+}
+
+
+#editTopic {
+	position: absolute;
+	left: 200px;
+	z-index: 100;
+	width: 700px;
+  font-size: 9pt; 
+  background: white; 
+  border: 1px solid rgb(194, 194, 194);
+  border-radius: 8px;
+  -webkit-box-shadow: 3px 3px 2px 0px rgba(46,46,46,0.5);
+  -moz-box-shadow: 3px 3px 2px 0px rgba(46,46,46,0.5);
+  box-shadow: 3px 3px 2px 0px rgba(46,46,46,0.5);  
+	padding: 10px;
 }
