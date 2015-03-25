@@ -766,21 +766,27 @@ function icxInit() {
 	  if (jQuery("input[name='icopyright_pub_id']").val() != "") {
 	    jQuery("#no_pub_id_message").hide();
 	  }
+
+	  jQuery("#icopyright_manual_option").click(function() {
+		  jQuery('#M3').show();
+	  });
+	  
+	  jQuery("#icopyright_auto_option").click(function() {
+		  jQuery('#M3').hide();
+	  });
+	  
+	  jQuery("#icopyright_none_option").click(function() {
+		  jQuery('#M3').hide();
+	  });	  
 	  
 	  jQuery('a#icopyright_wp_settings_video').colorbox({ href: 'http://www.youtube.com/embed/bpYG-Frhh9E?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
+	  jQuery('a#icopyright_wp_republishing_video').colorbox({ href: 'https://www.youtube.com/embed/0MtjRF51i_k?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
+	  jQuery('a#icopyright_wp_syndicating_video').colorbox({ href: 'https://www.youtube.com/embed/feMZLIgURtQ?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
 }
 
 function icxInitFadeOut() {
   jQuery('.fadeout').delay(5000).fadeOut('slow');
 }
-
-function show_manual_option() {
-	  jQuery('#M3').show();
-	}
-
-	function hide_manual_option() {
-	  jQuery('#M3').hide();
-	}
 
 
 	// Function to update the previews with what the toolbars will look like with these settings

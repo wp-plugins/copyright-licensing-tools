@@ -156,12 +156,12 @@ function icopyright_post_settings($input) {
 
   //check conductor email
   if (empty($icopyright_conductor_email)) {
-    add_settings_error('icopyright', '', 'Please enter your Conductor Email Address.', 'icopyright-hide');
+    add_settings_error('icopyright', '', 'Please enter your Email Address.', 'icopyright-hide');
   }
 
   //check conductor password
   if (empty($icopyright_conductor_password)) {
-    add_settings_error('icopyright', '', 'Please enter your Conductor Password.', 'icopyright-hide');
+    add_settings_error('icopyright', '', 'Please enter your Password.', 'icopyright-hide');
   }
   if (!empty($error_message)) {
     return $input;
@@ -523,6 +523,8 @@ function icopyright_create_register_form() {
 
   $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Email Address:</label></td><td><input style=\"width:300px\" type=\"text\" name=\"email\" id=\"email\" value=\"$email\"/></td></tr>";
   $form .= "<tr class=\"odd\"><td align=\"right\" width=\"400px\"><label>Password:</label></td><td><input style=\"width:300px\" type=\"password\" name=\"password\" id=\"password\" value=\"\"/></td></tr>";
+  $form .= "<tr><td colspan=\"2\" align=\"right\"><span style=\"font-size: 8pt;\">(same as at <a style=\"text-decoration: none;\" href=\"//repubhub.com\" target=\"_blank\">www.repubhub.com</a>, if you have one)</span></td></tr>";
+  $form .= "<tr><td colspan=\"2\" align=\"right\"><a style=\"font-size: 8pt; text-decoration: none;\" href=\"//" . ICOPYRIGHT_SERVER . "/user/forgotPassword.act?email=\" target=\"_blank\">Forgot Password?</a></td></tr>";
   $form .= "<tr><td colspan=\"2\"><h2>About This Site</h2></td></tr>";
 
   if (empty($pname)) {

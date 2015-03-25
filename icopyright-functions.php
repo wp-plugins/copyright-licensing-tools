@@ -24,13 +24,13 @@ function icopyright_toolbar_common($comment, $script) {
 }
 
 //Generate Horizontal Toolbar from hosted script
-function icopyright_horizontal_toolbar() {
+function icopyright_horizontal_toolbar($isShortCode = FALSE, $floatRight = FALSE) {
   if(!icopyright_post_passes_filters())
     return;
   $toolbar = icopyright_toolbar_common('Horizontal', 'horz-toolbar.js');
   // Wrap the toolbar with some styles
   $css = '.icx-toolbar-closure{clear: both;}';
-  if(get_option('icopyright_align') == 'right') {
+  if(($isShortCode && $floatRight) || (!$isShortCode && get_option('icopyright_align') == 'right')) {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
     $css .= '.icx-toolbar-align-right{float: right;}';
   }
@@ -40,14 +40,14 @@ function icopyright_horizontal_toolbar() {
 }
 
 //Generate Vertical Toolbar from hosted script
-function icopyright_vertical_toolbar() {
+function icopyright_vertical_toolbar($isShortCode = FALSE, $floatRight = FALSE) {
   if(!icopyright_post_passes_filters())
     return;
   $toolbar = icopyright_toolbar_common('Vertical', 'vert-toolbar.js');
 
   // Wrap the toolbar with some styles
   $css = get_option('icopyright_align') == 'right' ? '.icx-toolbar{padding: 0 0 0 5px;}' : '.icx-toolbar{padding: 0 5px 0 0;}';
-  if(get_option('icopyright_align') == 'right') {
+  if(($isShortCode && $floatRight) || (!$isShortCode && get_option('icopyright_align') == 'right')) {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
     $css .= '.icx-toolbar-align-right{float: right;}';
   }
@@ -56,13 +56,13 @@ function icopyright_vertical_toolbar() {
 }
 
 //Generate One button from hosted script or directy
-function icopyright_onebutton_toolbar() {
+function icopyright_onebutton_toolbar($isShortCode = FALSE, $floatRight = FALSE) {
   if(!icopyright_post_passes_filters())
     return;
   $toolbar = icopyright_toolbar_common('OneButton', 'one-button-toolbar.js');
   // Wrap the toolbar with some styles
   $css = '.icx-toolbar{padding: 0 0 5px 0;}';
-  if(get_option('icopyright_align') == 'right') {
+  if(($isShortCode && $floatRight) || (!$isShortCode && get_option('icopyright_align') == 'right')) {
     $toolbar = '<div class="icx-toolbar-align-right">' . $toolbar . '</div>';
     $css .= ' .icx-toolbar-align-right{float: right;}';
   }
@@ -116,21 +116,42 @@ NOTICE;
 
 //WordPress Shortcode [icopyright horizontal toolbar]
 function icopyright_horizontal_toolbar_shortcode($atts) {
-  $h_toolbar = icopyright_horizontal_toolbar();
+	$floatRight = FALSE;
+	if($atts != NULL && count($atts) > 0) {
+		if ($atts["float"] == "right") {
+			$floatRight = TRUE;
+		}
+	}
+	
+  $h_toolbar = icopyright_horizontal_toolbar(true, $floatRight);
   return "<!--horizontal toolbar wrapper -->" . $h_toolbar . "<!--end of wrapper -->";
 }
 add_shortcode('icopyright horizontal toolbar', 'icopyright_horizontal_toolbar_shortcode');
 
 //WordPress Shortcode [icopyright vertical toolbar]
 function icopyright_vertical_toolbar_shortcode($atts) {
-  $v_toolbar = icopyright_vertical_toolbar();
+	$floatRight = FALSE;
+	if($atts != NULL && count($atts) > 0) {
+		if ($atts["float"] == "right") {
+			$floatRight = TRUE;
+		}
+	}
+		
+  $v_toolbar = icopyright_vertical_toolbar(true, $floatRight);
   return "<!--vertical toolbar wrapper -->" . $v_toolbar . "<!--end of wrapper -->";
 }
 add_shortcode('icopyright vertical toolbar', 'icopyright_vertical_toolbar_shortcode');
 
 // WordPress shortcode [icopyright_onebutton_toolbar]
 function icopyright_onebutton_toolbar_shortcode($atts) {
-  $ob_toolbar = icopyright_onebutton_toolbar();
+	$floatRight = FALSE;
+	if($atts != NULL && count($atts) > 0) {
+		if ($atts["float"] == "right") {
+			$floatRight = TRUE;
+		}
+	}
+		
+  $ob_toolbar = icopyright_onebutton_toolbar(true, $floatRight);
   return "<!--onebutton toolbar wrapper -->" . $ob_toolbar . "<!--end of wrapper -->";
 }
 add_shortcode('icopyright one button toolbar', 'icopyright_onebutton_toolbar_shortcode');
@@ -674,7 +695,7 @@ function icopyright_check_connectivity() {
     if(!icopyright_ping(ICOPYRIGHT_USERAGENT, $icopyright_pubid, $email, $password)) {
       print '<div id="message" class="updated">';
       print '<p><strong>WARNING</strong>: The iCopyright servers cannot communicate with this site. Services that require the link will be degraded.</p>';
-      print '<p>Check your Conductor Feed URL, in <em>Advanced Settings</em>.</p>';
+      print '<p>Check your email, password, and Feed URL in <em>Advanced Settings</em> below.</p>';
       print '</div>';
 
     }

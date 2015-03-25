@@ -100,10 +100,10 @@ function icopyright_republish_page_get($data, $topic_id = NULL) {
 
 function initDisplay($data, $topic_id) {
 	if (!wp_script_is( 'icopyright-admin-js', $list = 'enqueued' ))
-		wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.6.0');
+		wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), array(), '1.7.1');
 	
 	if (!wp_script_is( 'icopyright-admin-css', $list = 'enqueued' ))
-		wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.6.0');  // Update the version when the style changes.  Refreshes cache.
+		wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.7.1');  // Update the version when the style changes.  Refreshes cache.
 	
 	wp_enqueue_style('icopyright-admin-css-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.css');
 	wp_enqueue_script('icopyright-admin-js-select2', '//cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.js');
@@ -496,7 +496,7 @@ function icopyright_republish_page_post_add() {
 	$message = '<div class="icx_success fadeout"><p>Search has been saved.</p></div>';
 	 if(!icopyright_check_response($res)) {
 	 	$topic->error = 'true';
-		 if (is_object($topic) && ($topic->status->messages->count() > 0)) {
+		 if (is_object($topic) && ($topic->status->messages)) {
 		 $message = '<div class="icx_error fadeout"><p>'. (string)$topic->status->messages[0]->message . '.</p></div>';
 		 } else {
 		 	$message = '<div class="icx_error fadeout"><p>Sorry, we were unable to save that search.</p></div>';
@@ -561,9 +561,9 @@ function icopyright_republish_page_post_edit() {
   if((strlen($res->http_code) > 0) && ($res->http_code != '200')) {
   	echo "<p>" . $errorMessage . " (" . $res->http_code . ': ' . $res->http_expl . ")</p>";
   	if ($res->http_code == 401) {
-  		$results['error'] = '<p>Your email address and password don\'t match a valid account in Conductor. Please visit the ' .
+  		$results['error'] = '<p>Your email address and password don\'t match a valid account. Please visit the ' .
   				'<a href="' . $adminUrl . 'options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
-  				'push <em>Show Advanced Settings</em> to check your Conductor email address and password.</p>';
+  				'click <em>Show Advanced Settings</em> to update your email address and password.  (If you\'ve set a password for <a style="text-decoration: none;" target="_blank" href="//repubhub.com">www.repubhub.com</a>, be sure to use the same password here.)</p>';
   	} else {
     $results['error'] = "<div class=\"icx_error fadeout\"><p>Unable to edit Search at this time.  Please try again later.</p></div>";
   	}
@@ -778,9 +778,9 @@ function icopyright_update_global_settings() {
 	if((strlen($res->http_code) > 0) && ($res->http_code != '200')) {
 		echo "<p>" . $errorMessage . " (" . $res->http_code . ': ' . $res->http_expl . ")</p>";
 		if ($res->http_code == 401) {
-			echo '<p>Your email address and password don\'t match a valid account in Conductor. Please visit the ' .
+			echo '<p>Your email address and password don\'t match a valid account. Please visit the ' .
 					'<a href="' . $adminUrl . 'options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
-					'push <em>Show Advanced Settings</em> to check your Conductor email address and password.</p>';
+					'click <em>Show Advanced Settings</em> to update your email address and password.  (If you\'ve set a password for <a style="text-decoration: none;" target="_blank" href="//repubhub.com">www.repubhub.com</a>, be sure to use the same password here.)</p>';
 		}
 		exit();
 	}
@@ -835,7 +835,7 @@ function icopyright_republish_page_search() {
 	$res = icopyright_search(http_build_query($post), $user_agent, $email, $password);
 	$search = @simplexml_load_string($res->response);
 	
-	if (is_object($search) && ($search->status->messages->count() > 0)) {
+	if (is_object($search) && ($search->status->messages)) {
 		echo '<p style="color: red;">' . (string)$search->status->messages[0]->message . '</p>'; 
 	} else {
 		icopyright_search_topic_display($res, $search, TRUE, TRUE);
@@ -855,9 +855,9 @@ function icopyright_display_solr_content($res, $contentList, $isRecentHeadlines,
 	if((strlen($res->http_code) > 0) && ($res->http_code != '200')) {
 		echo "<p>" . $errorMessage . " (" . $res->http_code . ': ' . $res->http_expl . ")</p>";
 		if ($res->http_code == 401) {
-			echo '<p>Your email address and password don\'t match a valid account in Conductor. Please visit the ' .
+			echo '<p>Your email address and password don\'t match a valid account. Please visit the ' .
 					'<a href="' . $adminUrl . 'options-general.php?page=copyright-licensing-tools#advanced">iCopyright settings page</a> and ' .
-					'push <em>Show Advanced Settings</em> to check your Conductor email address and password.</p>';
+					'click <em>Show Advanced Settings</em> to update your email address and password.  (If you\'ve set a password for <a style="text-decoration: none;" target="_blank" href="//repubhub.com">www.repubhub.com</a>, be sure to use the same password here.)</p>';
 		}
 		exit();
 	}	
@@ -963,7 +963,7 @@ function icopyright_republish_topic_hits() {
   $res = icopyright_search_topic($user_agent, $email, $password, $topicId, $page);
   $search = @simplexml_load_string($res->response);
   
-  if (is_object($search) && ($search->status->messages->count() > 0)) {
+  if (is_object($search) && ($search->status->messages)) {
   	echo '<p style="color: red;">' . (string)$search->status->messages[0]->message . '</p>';
   } else {  	
 

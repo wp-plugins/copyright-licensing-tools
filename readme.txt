@@ -3,7 +3,7 @@ Contributors: iCopyright Inc.
 Tags: ads, advertising, article tools, attribution, copyright, creative commons, curate, curation, curation tools, content distribution, icopyright, infringement, license, licensing, monetization, monetize, network, piracy, publish, publishing, reblog, repost, re-use, reprints, republish, republish network, republishing network, repubHub, reuse, Share, sharing, syndicate, syndication
 Requires at least: 3.0
 Tested up to: 4.1
-Stable tag: 2.5.5
+Stable tag: 2.5.6
 
 Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content.
 
@@ -42,6 +42,12 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 3. An example of the print services dialog
 
 == Changelog ==
+
+= 2.5.6 =
+1. Added new tutorial videos to the settings page.
+2. Added forgot password links to settings page.
+3. Fixed an error with SimpleXMLElement::count() 
+4. Fixed an issue with some radio buttons not working in Settings page in safari.
 
 = 2.5.5 =
 1. Updated tabs to refresh on a more regular basis.

@@ -317,8 +317,8 @@ function address_phone_field_callback() {
 
 function display_field_callback() {
   ?>
-<input name="icopyright_display" type="radio" value="auto"
-       onclick="hide_manual_option()" <?php $icopyright_display = get_option('icopyright_display'); if (empty($icopyright_display) || $icopyright_display == "auto") {
+<input id="icopyright_auto_option" name="icopyright_display" type="radio" value="auto"
+        <?php $icopyright_display = get_option('icopyright_display'); if (empty($icopyright_display) || $icopyright_display == "auto") {
   echo "checked";
 }?> />
   <?php _e('Automatic ')?><br/>
@@ -328,8 +328,8 @@ function display_field_callback() {
 
 <br/>
 
-<input name="icopyright_display" type="radio" value="manual"
-       onclick="show_manual_option()" <?php $icopyright_display2 = get_option('icopyright_display'); if ($icopyright_display2 == "manual") {
+<input id="icopyright_manual_option" name="icopyright_display" type="radio" value="manual"
+        <?php $icopyright_display2 = get_option('icopyright_display'); if ($icopyright_display2 == "manual") {
   echo "checked";
 }?>/>
   <?php _e('Manual ')?><br/>
@@ -379,10 +379,10 @@ function display_field_callback() {
   </table>
 </div>
 
-<br/>
+<br style="display: block; clear: both;"/>
 
-<input name="icopyright_display" type="radio" value="none"
-       onclick="hide_manual_option()" <?php $icopyright_displayNone = get_option('icopyright_display'); if ($icopyright_displayNone == "none") {
+<input id="icopyright_none_option" name="icopyright_display" type="radio" value="none"
+        <?php $icopyright_displayNone = get_option('icopyright_display'); if ($icopyright_displayNone == "none") {
   echo "checked";
 }?>/>
   <?php _e('Do not display')?><br/>
@@ -804,6 +804,11 @@ function conductor_password_field_callback() {
   ?>
 <input type="password" name="icopyright_conductor_password" style="width:200px;"
        value="<?php echo sanitize_text_field(stripslashes(get_option('icopyright_conductor_password'))); ?>"/>
+       <p style="font-size: 8pt; width: 200px;">
+         (same as at <a style="text-decoration: none;" target="_blank" href="//repubhub.com">www.repubhub.com</a>, if you have one)
+			   <a href="//<?php echo ICOPYRIGHT_SERVER . '/user/forgotPassword.act?email=';?>" target="_blank" style="text-decoration: none; margin-left: 10px;">Forgot Password?</a>       
+       </p>
+       
 <?php
 }
 

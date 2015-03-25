@@ -35,9 +35,9 @@ function icopyright_options_page() {
   //
   // Add JS and CSS
   //
-  wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.0.1');  // Update the version when the style changes.  Refreshes cache.
+  wp_enqueue_style('icopyright-admin-css', plugins_url('css/style.css', __FILE__), array(), '1.7.1');  // Update the version when the style changes.  Refreshes cache.
   wp_enqueue_style('icopyright-admin-css-2', "http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/example1/colorbox.css", array(), '1.0.0');
-  wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__));
+  wp_enqueue_script('icopyright-admin-js', plugins_url('js/main.js', __FILE__), '1.7.1');
   wp_enqueue_script("icopyright-admin-js-2", "http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/jquery.colorbox-min.js");
 
   $tou = get_option('icopyright_tou');
@@ -60,12 +60,20 @@ function icopyright_options_page() {
       ?>
     <div class="wrap">
       <h2>iCopyright Settings</h2>
-      <div id="intro-video" style="position:relative;">
-        <a href="http://www.youtube.com/embed/bpYG-Frhh9E?autoplay=1&vq=hd720" target="_blank" id="icopyright_wp_settings_video" title="iCopyright WordPress Settings">
-          <img src="/wp-content/plugins/copyright-licensing-tools/images/bpYG-Frhh9E-mq.png" style="border: 1px solid black"/>
+      <div class="intro-video" >
+        <a href="https://www.youtube.com/embed/0MtjRF51i_k?autoplay=1&vq=hd720" target="_blank" id="icopyright_wp_republishing_video" title="iCopyright Republishing Articles">
+          <img src="/wp-content/plugins/copyright-licensing-tools/images/Tutorial_1.png" style="border: 1px solid black"/>
           <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:157px;top:76px;opacity:.5;width:45px"/>
         </a>
       </div>
+      
+      <div class="intro-video">
+        <a href="https://www.youtube.com/embed/feMZLIgURtQ?autoplay=1&vq=hd720" target="_blank" id="icopyright_wp_syndicating_video" title="iCopyright Syndicating Articles">
+          <img src="/wp-content/plugins/copyright-licensing-tools/images/Tutorial_2.png" style="border: 1px solid black"/>
+          <img src="/wp-content/plugins/copyright-licensing-tools/images/btn.play.png" style="position:absolute;left:157px;top:76px;opacity:.5;width:45px"/>
+        </a>
+      </div>
+      <div style="clear: both;"></div>            
       <form action="options.php" method="POST">
         <?php
         settings_fields('icopyright-settings-group');
@@ -278,13 +286,13 @@ function icopyright_admin_init() {
   add_settings_field('icopyright_pub_id', 'Publication ID', 'pub_id_field_callback', 'copyright-licensing-tools', 'advanced-settings');
   register_setting('icopyright-settings-group', 'icopyright_pub_id');
 
-  add_settings_field('icopyright_conductor_email', 'Conductor Email Address', 'conductor_email_field_callback', 'copyright-licensing-tools', 'advanced-settings');
+  add_settings_field('icopyright_conductor_email', 'Email Address', 'conductor_email_field_callback', 'copyright-licensing-tools', 'advanced-settings');
   register_setting('icopyright-settings-group', 'icopyright_conductor_email');
 
-  add_settings_field('icopyright_conductor_password', 'Conductor Password', 'conductor_password_field_callback', 'copyright-licensing-tools', 'advanced-settings');
+  add_settings_field('icopyright_conductor_password', 'Password', 'conductor_password_field_callback', 'copyright-licensing-tools', 'advanced-settings');
   register_setting('icopyright-settings-group', 'icopyright_conductor_password');
 
-  add_settings_field('icopyright_feed_url', 'Conductor Feed URL', 'feed_url_field_callback', 'copyright-licensing-tools', 'advanced-settings');
+  add_settings_field('icopyright_feed_url', 'Feed URL', 'feed_url_field_callback', 'copyright-licensing-tools', 'advanced-settings');
   register_setting('icopyright-settings-group', 'icopyright_feed_url', 'icopyright_post_settings');
 
   add_settings_field('icopyright_show_multiple', '', 'show_multiple_callback', 'copyright-licensing-tools', '');

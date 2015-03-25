@@ -1,7 +1,7 @@
 <?php
 define("ICOPYRIGHT_PLUGIN_NAME", "copyright-licensing-tools");
 define("ICOPYRIGHT_PLUGIN_DIR", WP_PLUGIN_DIR . "/" . ICOPYRIGHT_PLUGIN_NAME);
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.5.5");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.5.6");
 
 require (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 

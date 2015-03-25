@@ -203,12 +203,14 @@ span.help {
   padding: 2px;
 }
 
-#intro-video {
-  float: none;
+.intro-video {
+  float: left;
   width: 350px;
   height: auto;
+  position:relative;
+  margin-right: 30px;
 }
-#intro-video img {
+.intro-video img {
   max-width: 100%;
 }
 
