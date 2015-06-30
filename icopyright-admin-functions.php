@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Migrate old options to new options that use settings api.
  */
@@ -235,7 +234,7 @@ function icopyright_post_settings($input) {
 			}
 
 			if ($use_exclude_authors_filter == 'yes') {
-				$authors = wp_list_authors('html=0&echo=0&hide_empty=0');
+				$authors = wp_list_authors('html=0&echo=0&hide_empty=0&exclude_admin=0');
 				$authors_arr = NULL;
 				if ($authors) {
 					$authors_arr = explode(',', $authors);

@@ -2,8 +2,8 @@
 Contributors: iCopyright Inc.
 Tags: ads, advertising, article tools, attribution, copyright, creative commons, curate, curation, curation tools, content distribution, icopyright, infringement, license, licensing, monetization, monetize, network, piracy, publish, publishing, reblog, repost, re-use, reprints, republish, republish network, republishing network, repubHub, reuse, Share, sharing, syndicate, syndication
 Requires at least: 3.0
-Tested up to: 4.1
-Stable tag: 2.5.6
+Tested up to: 4.2
+Stable tag: 2.5.7
 
 Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content.
 
@@ -16,7 +16,7 @@ With the iCopyright Toolbar plugin, you can:
 * Search for and monitor articles by leading publishers on topics of interest to your readers
 * Republish them legally with just one click directly from your Posts menu
 * Get alerts when new articles on your topics are available for republication
-* Syndicate and monetize your content with a Republish button that feeds your content into iCopyright���s repubHub portal for others to discover and republish.
+* Syndicate and monetize your content with a Republish button that feeds your content into iCopyright's repubHub portal for others to discover and republish.
 
 The powerful iCopyright Toolbar lets you do it all.
 
@@ -42,6 +42,12 @@ Please visit http://info.icopyright.com/faqs for an up-to-date list of FAQs.
 3. An example of the print services dialog
 
 == Changelog ==
+
+= 2.5.7 =
+1. Minor text tweaks and fixed typos.
+2. Link to new video.
+3. Exclude authors/categories section is now scrollable if the list is long.
+4. Fixed a bug with exclude authors that included "admin".
 
 = 2.5.6 =
 1. Added new tutorial videos to the settings page.

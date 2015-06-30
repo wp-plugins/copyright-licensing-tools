@@ -386,16 +386,35 @@ function icopyright_publish_post($post_id, $post) {
 		$pub_id_no = get_option('icopyright_pub_id');
 		$tag = "3." . $pub_id_no . "?icx_id=" . $post_id;    	
   	
+		$featured_pub_last_check = get_option('icopyright_featured_pub_check');
+		
+		// If we have not done this check before or it has been at least 2 days since the last time we checked
+	  $is_featured = 'false';
+		if (!$featured_pub_last_check || ((time() - (int)$featured_pub_last_check) > 30)) {
+		  update_option('icopyright_featured_pub_check', time());	// Reset time to now
+
+		  $res = icopyright_is_featured_publication($user_agent, $pub_id_no, $email, $password);
+		  if ($res->http_code == '200') {
+		  	$res_xml = @simplexml_load_string($res->response);
+				$is_featured = (string)$res_xml->featured;
+		    update_option('icopyright_is_featured', $is_featured);	
+		  }
+		  
+		} else {
+			$is_featured = get_option('icopyright_is_featured');
+		}
+		
 		// Do some filter checks.  Don't register content if it's a page.
 		// Make sure client has 'none' selected for article tools display option
 		$display_status = get_option('icopyright_display');
-		if ($display_status != 'none')
+		if ($display_status != 'none' && $is_featured == 'false')
 			return;
+		
 		
 		if (is_page())
 			return;
-
-		if(!icopyright_post_passes_filters())
+		
+		if(!icopyright_post_passes_filters(NULL, $post->post_author))
 			return;
 
 		$result = update_post_meta($post_id, 'icopyright_registered_content', 'yes');
@@ -483,12 +502,18 @@ function icopyright_current_page_url() {
  * @param $post_id integer the post ID to look at, or null for current post
  * @return bool true if the post passes
  */
-function icopyright_post_passes_filters($post_id = NULL) {
+function icopyright_post_passes_filters($post_id = NULL, $post_author_id = NULL) {
 	global $post;
+	
   if($post_id == NULL) {
     $post_id = $post->ID;
   }
-  $user_info = get_userdata($post->post_author);
+  
+  if ($post_author_id == NULL) {
+  	$post_author_id = $post->post_author;
+  }
+  
+  $user_info = get_userdata($post_author_id);
   $post_author = $user_info->display_name;
   
   // Is there even a configured publication ID? If not, no point in continuing
@@ -584,6 +609,7 @@ function icopyright_post_passes_author_filter($post_author) {
 
   // Which authors are we excluding?
   $icopyright_authors = get_option('icopyright_authors', array());
+  
   if(count($icopyright_authors) == 0)
     return TRUE;
 

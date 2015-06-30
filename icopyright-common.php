@@ -56,6 +56,11 @@ function icopyright_ping($useragent, $pid, $email, $password) {
   return icopyright_check_response($res);
 }
 
+function icopyright_is_featured_publication($useragent, $pid, $email, $password) {
+	$res = icopyright_post("/api/xml/repubhub/is-featured/$pid", NULL, $useragent, icopyright_make_header($email, $password), 'GET');
+	return $res;
+}
+
 /**
  * Fetch a Publication's settings:
  *

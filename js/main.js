@@ -779,7 +779,7 @@ function icxInit() {
 		  jQuery('#M3').hide();
 	  });	  
 	  
-	  jQuery('a#icopyright_wp_settings_video').colorbox({ href: 'http://www.youtube.com/embed/bpYG-Frhh9E?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
+	  jQuery('a#icopyright_wp_settings_video').colorbox({ href: 'https://www.youtube.com/embed/0MtjRF51i_k?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
 	  jQuery('a#icopyright_wp_republishing_video').colorbox({ href: 'https://www.youtube.com/embed/0MtjRF51i_k?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
 	  jQuery('a#icopyright_wp_syndicating_video').colorbox({ href: 'https://www.youtube.com/embed/feMZLIgURtQ?autoplay=1&vq=hd720"', width: '800px', height: '600px', iframe: true });
 }

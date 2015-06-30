@@ -1,5 +1,4 @@
 <?php
-
 //
 // Field callbacks
 //
@@ -345,9 +344,9 @@ function display_field_callback() {
     <strong><?php _e('Available WordPress Shortcodes: ')?></strong>
   </p>
   <ul>
+    <li>[icopyright one button toolbar]</li>
     <li>[icopyright horizontal toolbar]</li>
     <li>[icopyright vertical toolbar]</li>
-    <li>[icopyright one button toolbar]</li>
     <li>[interactive copyright notice]</li>
   </ul>
   <p>
@@ -367,13 +366,13 @@ function display_field_callback() {
       <td>Default</td>
       <td>--</td>
       <td>--</td>
-      <td>[icopyright horizontal toolbar]</td>
+      <td>[icopyright one button toolbar]</td>
     </tr>
     <tr>
       <td>For alignment</td>
       <td>float="right"</td>
       <td>float="left"<br/>float="right"</td>
-      <td>[icopyright horizontal toolbar float="right"]</td>
+      <td>[icopyright one button toolbar float="right"]</td>
     </tr>
     </tbody>
   </table>
@@ -626,7 +625,7 @@ function use_category_filter_field_callback() {
 			<!-- list of authors and categories -->
 			<tr>
 				<td>
-					<table id="icopyright-author-list" class="icopyright_excludes" style="padding-left: 21px;">
+					<table id="icopyright-author-list" class="icopyright_excludes" style="">
 						<?php 
 						if ($authors_arr != NULL) {
 							foreach ($authors_arr as $author) {
@@ -639,7 +638,7 @@ function use_category_filter_field_callback() {
 				</td>
 				
 				<td>
-					<table id="icopyright-category-list" class="icopyright_excludes" style="padding-left: 21px;">
+					<table id="icopyright-category-list" class="icopyright_excludes" style="">
 						<?php
 						foreach ($systemCategories as $cat) {
 							$checked = (!empty($selectedCategories) && in_array($cat->term_id, $selectedCategories) ? 'checked' : '');

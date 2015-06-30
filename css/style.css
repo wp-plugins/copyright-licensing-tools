@@ -266,6 +266,15 @@ div.icx_topic_delete_btn:hover {
   background-color: rgb(232,140,143);
 }
 
+table#icopyright-author-list, table#icopyright-category-list {
+  padding-left: 21px;
+  vertical-align: top;
+  display: block;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
 table.icopyright_excludes td {
   padding: 2px 0;
   vertical-align: top;

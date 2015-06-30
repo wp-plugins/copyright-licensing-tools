@@ -5,7 +5,7 @@ Plugin URI: http://info.icopyright.com/wordpress
 Description: Find current articles from leading publishers and websites. Republish them with one click. Plus, syndicate and monetize your own content. By iCopyright, Inc.
 Author: iCopyright, Inc.  
 Author URI: http://info.icopyright.com
-Version: 2.5.6
+Version: 2.5.7
 */
 
 //define constant that need to be changed from test environment to live environment
@@ -20,7 +20,7 @@ define("ICOPYRIGHT_PLUGIN_URL", WP_PLUGIN_URL . "/" . ICOPYRIGHT_PLUGIN_NAME);
 include (ICOPYRIGHT_PLUGIN_DIR . '/icopyright-common.php');
 
 //define user agent
-define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.5.6");
+define("ICOPYRIGHT_USERAGENT", "iCopyright WordPress Plugin v2.5.7");
 
 //define URL to iCopyright; assuming other file structures will be intact.
 //url constructed from define server from icopyright-common.php
@@ -48,7 +48,7 @@ function icopyright_settings_link($links, $file) {
     wp_enqueue_style('icopyright-admin-css', "http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/example1/colorbox.css", array(), '1.0.0');
     wp_enqueue_script("icopyright-admin-js-2", "http://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/jquery.colorbox-min.js");
     $settings_link = "<a href=\"options-general.php?page=copyright-licensing-tools\">Settings</a>";
-    $video_link = "<a id=\"icopyright_wp_settings_video\" href=\"http://www.youtube.com/watch?v=bpYG-Frhh9E\" target=\"_blank\">View a video introduction to iCopyright</a>"; //added version 1.1.2
+    $video_link = "<a id=\"icopyright_wp_settings_video\" href=\"https://www.youtube.com/watch?v=0MtjRF51i_k\" target=\"_blank\">View a video introduction to iCopyright</a>"; //added version 1.1.2
     $links[] = $settings_link;
     $links[] .= $video_link; //added version 1.1.2
   }
